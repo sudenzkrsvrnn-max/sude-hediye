@@ -234,12 +234,24 @@
             .nav-btns { gap: 6px; }
             .btn-small { padding: 6px 10px; font-size: 11px; }
 
-            .hero { padding: 0 20px; width: 100%; overflow: hidden; }
-            .hero h1 { font-size: clamp(48px, 15vw, 70px); margin-bottom: 60px; } /* Mobilde de açtım */
-            .hero p { font-size: 16px; margin-bottom: 40px; padding: 0 15px; }
-            .cta-btn { padding: 15px 35px; font-size: 15px; width: auto; min-width: 180px; } /* Mobilde daha zarif */
+            .hero { padding: 0 20px; width: 100%; overflow: hidden; justify-content: flex-start; padding-top: 15vh; }
+            .hero h1 { font-size: clamp(48px, 15vw, 68px); margin-bottom: 30px; } 
+            .cta-btn { 
+                padding: 15px 35px; 
+                font-size: 15px; 
+                width: auto; 
+                min-width: 180px; 
+                margin-top: 120px; /* Sadece butonu aşağı, dairenin içine ittim */
+                z-index: 10;
+            }
             
-            .globe-bottom { width: 150%; height: 300px; bottom: -80px; left: -25%; }
+            .globe-bottom { 
+                width: 160%; 
+                height: 400px; 
+                bottom: -80px; 
+                left: -30%; 
+                z-index: 1;
+            }
 
             .products-grid { 
                 grid-template-columns: 1fr; 
@@ -267,7 +279,7 @@
 
     <section class="hero">
         <canvas id="matrixCanvas"></canvas>
-        <div class="hero-badge">🎁 Kupon %100 ücretsiz oluşturuldu</div>
+        <div class="hero-badge">Şimdi bir gülücük hediye etme zamanı! 🤍</div>
         <h1>Gülümse<br>Diye <span class="smiley">:)</span></h1>
 
         <a href="create.html" class="cta-btn">Ücretsiz oluştur</a>
