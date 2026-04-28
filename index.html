@@ -1,537 +1,385 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sürpriz Kutusu 💝</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --primary: #ff1493;
-  --primary-light: #ff69b4;
-  --bg: #0a0a1a;
-  --text: #ffffff;
-  --book-w: min(85vw, 340px);
-  --book-h: min(110vw, 450px);
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sevgili Hediye | Duygularını Dijitalleştir</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #ff1493;
+            --primary-light: #ff69b4;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --gray: #a0a0a0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);overflow:hidden;font-family:'Rajdhani',sans-serif;color:var(--text);height:100vh;width:100vw;touch-action:none;}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-/* PHASES */
-.phase{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease;z-index:10;pointer-events:all;}
-.phase.hidden{opacity:0;pointer-events:none;z-index:1;}
+        /* MATRIX BACKGROUND (HERO ONLY) */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
 
-/* CANVAS LAYERS */
-canvas{position:fixed;inset:0;z-index:1;}
+        /* HEADER */
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text); }
+        .nav-btns { display: flex; gap: 15px; }
+        .btn-small {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            text-decoration: none;
+        }
+        .btn-small:hover { background: rgba(255,255,255,0.15); }
 
-/* COUNTDOWN */
-#countdown{font-size:min(45vw,250px);font-weight:900;color:transparent;background:linear-gradient(135deg,var(--primary),var(--primary-light),#fff);
-  -webkit-background-clip:text;background-clip:text;text-shadow:0 0 60px rgba(255,20,147,0.8);animation:pulse 0.9s ease-in-out infinite;z-index:20;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-badge {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.4);
+            animation: fadeInDown 1s ease;
+        }
+        .hero h1 {
+            font-size: clamp(56px, 14vw, 110px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 80px; /* Mesafeyi artırdım */
+            background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+        .smiley {
+            display: inline-block;
+            margin-left: 0.1em;
+            font-weight: 400; /* Metinden biraz daha ince, daha zarif */
+            transform: rotate(-5deg); /* Çok hafif, estetik bir "gülümseme" eğimi */
+            background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.9;
+        }
+        .hero p {
+            font-size: 20px;
+            color: var(--gray);
+            max-width: 550px;
+            margin-bottom: 60px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        .cta-btn {
+            padding: 15px 40px; /* Biraz küçülttüm */
+            background: var(--text);
+            color: var(--bg);
+            border-radius: 50px;
+            font-size: 16px; /* Yazı boyutunu 18'den 16'ya çektim */
+            font-weight: 800;
+            text-decoration: none;
+            transition: 0.4s;
+            box-shadow: 0 10px 40px rgba(255,255,255,0.25);
+            z-index: 10;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(255,255,255,0.3); }
 
-/* PHASE 2 GIF & TEXT */
-#phase2Content { text-align: center; z-index: 20; display: flex; flex-direction: column; align-items: center; }
-#phase2Gif { width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px; }
-#bigMessage{ font-size: min(15vw, 80px); font-weight: 900; color: var(--primary); text-shadow: 0 0 30px var(--primary); margin-bottom: 30px; transition: all 0.5s ease; }
+        /* GLOBE DECORATION */
+        .globe-bottom {
+            position: absolute;
+            bottom: -300px;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(138,43,226,0.3) 0%, rgba(255,20,147,0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            border-top: 2px solid var(--accent);
+            z-index: 1;
+        }
 
-/* HEART ANIMATION */
-#bigHeart {
-  width: min(40vw, 220px); height: min(40vw, 220px);
-  display: none; opacity: 0; transform: scale(0);
-  filter: drop-shadow(0 0 30px var(--primary));
-  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px var(--primary)); }
-  50% { transform: scale(1.1); filter: drop-shadow(0 0 50px var(--primary-light)); }
-}
-.heart-active { display: block !important; opacity: 1 !important; transform: scale(1) !important; animation: heartBeat 0.8s infinite; }
+        /* PRODUCTS SECTION */
+        .section-title {
+            text-align: center;
+            padding: 100px 5% 40px;
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 800;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 0 10% 100px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .card-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            background-size: 100% 100%;
+            position: relative;
+        }
+        .card-img::after {
+            content: 'OK - 30K';
+            position: absolute;
+            top: 15px; right: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+        }
+        .card h3 { font-size: 24px; margin-bottom: 10px; }
+        .card p { color: var(--gray); font-size: 15px; margin-bottom: 25px; }
+        .card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            width: 100%;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .card-btn:hover { background: var(--text); color: var(--bg); }
 
-/* BUTTONS */
-.continue-btn{
-  padding:18px 50px;background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  border:none;border-radius:50px;color:#fff;font-size:20px;font-weight:700;
-  letter-spacing:2px;cursor:pointer;box-shadow:0 0 30px rgba(255,20,147,0.6);
-  transition:all 0.3s ease;
-}
-.continue-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(255,20,147,0.9);}
+        /* STEPS SECTION */
+        .steps {
+            background: #080808;
+            padding: 100px 10%;
+        }
+        .step-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .step-num { color: var(--primary); font-size: 14px; font-weight: 700; margin-bottom: 10px; display: block; }
+        .step-card h3 { font-size: 28px; margin-bottom: 15px; }
+        .step-card ul { list-style: none; color: var(--gray); }
+        .step-card li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .step-card li::before { content: '●'; color: #00f2fe; font-size: 8px; }
 
-/* PHASE 3 */
-#catGif3 { width: min(70vw, 300px); filter: drop-shadow(0 0 30px rgba(255,105,180,0.5)); animation: float 3s ease-in-out infinite; }
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        /* ANIMATIONS */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* SCRAPBOOK (PHASE 4) */
-#phase4 { justify-content: flex-start; padding-top: 20px; }
-#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        /* MOBILE FIXES */
+        @media (max-width: 768px) {
+            header { padding: 15px 15px; }
+            .logo { font-size: 18px; }
+            .nav-btns { gap: 6px; }
+            .btn-small { padding: 6px 10px; font-size: 11px; }
 
-/* Message box over scrapbook */
-#msgBox{
-  width: min(85vw, 340px); background:rgba(255,255,255,0.95); border-radius:20px;
-  padding:15px 20px; margin-bottom:20px;
-  box-shadow:0 8px 32px rgba(255,20,147,0.3);
-  position:relative; z-index: 100;
-}
-#msgBox::after{content:'💕';position:absolute;top:10px;right:15px;font-size:16px;}
-#msgText{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;
-  color:#333;line-height:1.5;text-align:center;}
+            .hero { padding: 0 20px; width: 100%; overflow: hidden; }
+            .hero h1 { font-size: clamp(48px, 15vw, 70px); margin-bottom: 60px; } /* Mobilde de açtım */
+            .hero p { font-size: 16px; margin-bottom: 40px; padding: 0 15px; }
+            .cta-btn { padding: 15px 35px; font-size: 15px; width: auto; min-width: 180px; } /* Mobilde daha zarif */
+            
+            .globe-bottom { width: 150%; height: 300px; bottom: -80px; left: -25%; }
 
-#scrapbook-container {
-  width: var(--book-w); height: var(--book-h);
-  perspective: 1500px; position: relative;
-}
+            .products-grid { 
+                grid-template-columns: 1fr; 
+                padding: 0 30px 80px;
+                gap: 25px;
+            }
+            .card { padding: 30px; }
+            .section-title { padding: 100px 30px 40px; font-size: 32px; }
 
-.book {
-  width: 100%; height: 100%; position: relative;
-  transform-style: preserve-3d; transition: transform 0.5s;
-}
-
-.page {
-  position: absolute; width: 100%; height: 100%;
-  top: 0; left: 0; transform-origin: left center;
-  transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-  cursor: pointer;
-}
-
-.page-side {
-  position: absolute; width: 100%; height: 100%;
-  backface-visibility: hidden; display: flex; flex-direction: column;
-  border-radius: 5px 15px 15px 5px; overflow: hidden;
-  box-shadow: inset 0 0 100px rgba(0,0,0,0.1), 5px 5px 20px rgba(0,0,0,0.4);
-}
-
-.page-front { z-index: 2; background: #fff; }
-.page-back { transform: rotateY(-180deg); background: #fdfdfd; z-index: 1; border-radius: 15px 5px 5px 15px; }
-
-.flipped { transform: rotateY(-160deg); }
-
-.cover-front { 
-  background-image: url('kapak.jpg'); 
-  background-size: cover; 
-  background-position: center;
-  display: flex; align-items: center; justify-content: center; 
-  color: white; border-left: 10px solid rgba(0,0,0,0.2); 
-}
-.cover-back { 
-  background-image: url('kapak.jpg'); 
-  background-size: cover; 
-  background-position: center;
-  border-right: 10px solid rgba(0,0,0,0.2); 
-}
-
-.page-img { width: 100%; height: 75%; object-fit: cover; border-bottom: 5px solid #eee; }
-.page-content { height: 25%; padding: 15px; display: flex; align-items: center; justify-content: center; text-align: center; color: #333; font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; }
-
-.instruction { position: absolute; bottom: -50px; width: 100%; text-align: center; font-size: 14px; opacity: 0.7; animation: blink 2s infinite; }
-@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-/* PHASE 5: HEART PHOTO WALL */
-#phase5 { background: #000; overflow: hidden; }
-.heart-wall {
-  position: relative; width: 100vw; height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-}
-.mini-photo {
-  position: absolute; 
-  width: min(25vw, 120px); 
-  height: min(25vw, 120px);
-  border: 4px solid #fff; 
-  border-radius: 12px;
-  background-size: cover; 
-  background-position: center;
-  box-shadow: 0 0 20px rgba(255, 20, 147, 0.6), 0 0 40px rgba(255, 20, 147, 0.3);
-  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0; transform: scale(0);
-  z-index: 50;
-}
-.mini-photo:hover { transform: scale(1.3) !important; z-index: 100; box-shadow: 0 0 30px #fff; }
-
-#finalMessage {
-  position: absolute;
-  bottom: 15%;
-  font-family: 'Dancing Script', cursive;
-  font-size: min(10vw, 48px); 
-  color: #fff;
-  text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
-  opacity: 0;
-  z-index: 60;
-  text-align: center;
-  width: 100%;
-}
-#replayBtn { 
-  position: absolute;
-  bottom: 5%;
-  background: rgba(255,255,255,0.1); 
-  border: 1px solid rgba(255,255,255,0.2); 
-  color: #fff; 
-  padding: 8px 16px; 
-  border-radius: 20px; 
-  cursor: pointer; 
-  z-index: 60;
-}
-
-</style>
+            .steps { padding: 100px 30px; }
+            .step-card { padding: 40px; margin-bottom: 30px; }
+            .step-card h3 { font-size: 24px; }
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="matrixCanvas"></canvas>
-<canvas id="starsCanvas" style="display:none;"></canvas>
-
-<!-- PHASE 1 -->
-<div class="phase" id="phase1">
-  <div id="countdown">3</div>
-</div>
-
-<!-- PHASE 2 -->
-<div class="phase hidden" id="phase2">
-  <div id="phase2Content">
-    <div id="bigMessage"></div>
-    <div id="bigHeart">
-      <svg viewBox="0 0 100 100" fill="var(--primary)">
-        <path d="M50 88.9L42.8 82.4C17.1 59.1 0 43.6 0 24.6C0 9.1 12.1 0 27.5 0C36.2 0 44.5 4.1 50 10.5C55.5 4.1 63.8 0 72.5 0C87.9 0 100 9.1 100 24.6C100 43.6 82.9 59.1 57.2 82.5L50 88.9Z" />
-      </svg>
-    </div>
-    <!-- VIDEO OR GIF SUPPORT -->
-    <img id="phase2Gif" src="" alt="CUTE GIF" style="display:none;">
-    <video id="phase2Video" style="display:none; width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px;" autoplay muted loop playsinline></video>
-    
-    <button class="continue-btn" style="display:none; margin-top:20px;" onclick="goPhase4()">Devam Et ✨</button>
-  </div>
-</div>
-
-<!-- PHASE 3 REMOVED - DIRECT TO 4 -->
-
-<!-- PHASE 4 -->
-<div class="phase hidden" id="phase4">
-  <div id="phase4Inner">
-    <div id="msgBox"><p id="msgText"></p></div>
-    <div id="scrapbook-container">
-      <div class="book" id="book">
-        <!-- Pages will be generated here -->
-      </div>
-      <div class="instruction">Sayfaları çevirmek için tıkla veya kaydır 📖</div>
-    </div>
-    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Sürprizi Gör ❤️</button>
-  </div>
-</div>
-
-<!-- PHASE 5 -->
-<div class="phase hidden" id="phase5">
-  <div class="heart-wall" id="heartWall"></div>
-  <h2 id="finalMessage">Seni Çok Seviyorum! ✨</h2>
-  <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
-</div>
-
-<!-- LIBS -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-// SUPABASE CONNECTION (Hata korumalı)
-try {
-  const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_y2Txq-u11881-881881-881881"; // User's key
-  if (window.supabase) {
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  }
-} catch (e) {
-  console.log("Supabase baglantisi su an beklemede.");
-}
-
-const CONFIG = {
-  matrixMessage: "HAPPY BIRTHDAY", 
-  phase2File: "lovebombing.mp4", // Senin dosyan (MP4 olduğu için güncellendi)
-  celebrationGif: "https://media.tenor.com/FeEEBfHmYM0AAAAC/happy-birthday-cat.gif", // Gitar çalan kedi
-  
-  pages: [
-    { 
-      photoFront: 'foto1.jpg', 
-      photoBack: 'foto2.jpg', 
-      message: 'Bizim Hikayemiz Burada Başlıyor 💝' 
-    },
-    { 
-      photoFront: 'foto3.jpg', 
-      photoBack: 'foto4.jpg', 
-      message: 'En Sevdiğim Anılarımızdan Biri ✨' 
-    },
-    { 
-      photoFront: 'foto1.jpg', 
-      photoBack: 'foto3.jpg', 
-      message: 'Seni Her Geçen Gün Daha Çok Seviyorum 💕' 
-    }
-  ]
-};
-
-// --- MATRIX ---
-const mc = document.getElementById('matrixCanvas');
-const mctx = mc.getContext('2d');
-let matrixCols, matrixDrops;
-const matrixChars = CONFIG.matrixMessage.split('');
-
-function initMatrix(){
-  mc.width = window.innerWidth; mc.height = window.innerHeight;
-  const fontSize = 16;
-  matrixCols = Math.floor(mc.width / fontSize);
-  matrixDrops = Array(matrixCols).fill(1);
-}
-function drawMatrix(){
-  mctx.fillStyle = 'rgba(10,10,26,0.1)';
-  mctx.fillRect(0,0,mc.width,mc.height);
-  const fontSize = 16;
-  mctx.font = `900 ${fontSize}px Rajdhani`;
-  for(let i=0; i<matrixDrops.length; i++){
-    const ch = matrixChars[Math.floor(Math.random()*matrixChars.length)];
-    mctx.fillStyle = Math.random() > 0.8 ? '#fff' : '#ff1493';
-    mctx.fillText(ch, i*fontSize, matrixDrops[i]*fontSize);
-    if(matrixDrops[i]*fontSize > mc.height && Math.random() > 0.975) matrixDrops[i] = 0;
-    matrixDrops[i]++;
-  }
-}
-initMatrix();
-let matrixInt = setInterval(drawMatrix, 50);
-
-// --- STARS ---
-const sc = document.getElementById('starsCanvas');
-const sctx = sc.getContext('2d');
-let stars = [];
-function initStars(){
-  sc.width = window.innerWidth; sc.height = window.innerHeight;
-  stars = Array.from({length:200}, ()=>({x:Math.random()*sc.width, y:Math.random()*sc.height, r:Math.random()*1.5, a:Math.random(), s:Math.random()*0.02}));
-}
-function drawStars(){
-  sctx.clearRect(0,0,sc.width,sc.height);
-  stars.forEach(s=>{
-    s.a += s.s; if(s.a>1||s.a<0) s.s*=-1;
-    sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    sctx.fillStyle=`rgba(255,255,255,${Math.abs(s.a)})`; sctx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-
-// --- FLOW ---
-let count = 3;
-const cd = document.getElementById('countdown');
-const cdInt = setInterval(()=>{
-  count--;
-  if(count > 0) { cd.textContent = count; }
-  else { clearInterval(cdInt); goPhase2(); }
-}, 1000);
-
-function goPhase2(){
-  document.getElementById('phase1').classList.add('hidden');
-  document.getElementById('phase2').classList.remove('hidden');
-  
-  const gif = document.getElementById('phase2Gif');
-  const msg = document.getElementById('bigMessage');
-  const heart = document.getElementById('bigHeart');
-  const btn = document.querySelector('#phase2 .continue-btn');
-  
-  const words = CONFIG.matrixMessage.split(' ');
-  let wordIdx = 0;
-
-  function showNextWord() {
-    if (wordIdx < words.length) {
-      msg.textContent = words[wordIdx];
-      msg.style.opacity = '1';
-      msg.style.transform = 'scale(1)';
-      
-      setTimeout(() => {
-        msg.style.opacity = '0';
-        msg.style.transform = 'scale(1.5)';
-        wordIdx++;
-        setTimeout(showNextWord, 600);
-      }, 1200);
-    } else {
-      showHeart();
-    }
-  }
-
-  function showHeart() {
-    heart.classList.add('heart-active');
-    setTimeout(() => {
-      heart.classList.remove('heart-active');
-      heart.style.display = 'none';
-      showGif();
-    }, 2500);
-  }
-
-  function showGif() {
-    const video = document.getElementById('phase2Video');
-    const gif = document.getElementById('phase2Gif');
-    
-    if (CONFIG.phase2File.endsWith('.mp4')) {
-      video.src = CONFIG.phase2File;
-      video.style.display = 'block';
-      video.style.opacity = '1';
-    } else {
-      gif.src = CONFIG.phase2File;
-      gif.style.display = 'block';
-      gif.style.opacity = '1';
-    }
-    
-    setTimeout(() => { btn.style.display = 'block'; }, 2000);
-  }
-
-  showNextWord();
-}
-
-function goPhase4(){
-  document.getElementById('phase2').classList.add('hidden');
-  clearInterval(matrixInt);
-  mc.style.display = 'none';
-  sc.style.display = 'block';
-  initStars(); drawStars();
-  document.getElementById('phase4').classList.remove('hidden');
-  buildBook();
-  launchConfetti();
-}
-
-function goPhase5(){
-  document.getElementById('phase4').classList.add('hidden');
-  document.getElementById('phase5').classList.remove('hidden');
-  buildHeartWall();
-}
-
-function buildHeartWall(){
-  const wall = document.getElementById('heartWall');
-  wall.innerHTML = ''; 
-  const photos = ['foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg'];
-  
-  // Heart formula - MORE POINTS AND LARGER SCALE
-  const points = [];
-  for(let t=0; t<Math.PI*2; t+=0.12){
-    let x = 16 * Math.pow(Math.sin(t), 3);
-    let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-    // Scale up the heart size
-    points.push({x: x*15, y: y*15});
-  }
-
-  points.forEach((p, i) => {
-    setTimeout(() => {
-      const div = document.createElement('div');
-      div.className = 'mini-photo';
-      div.style.backgroundImage = `url('${photos[Math.floor(Math.random()*photos.length)]}')`;
-      
-      // Random variance for more "natural/original" look
-      const rot = Math.random() * 30 - 15;
-      const scale = 0.9 + Math.random() * 0.2;
-      const offset = Math.random() * 15 - 7.5;
-
-      div.style.left = `calc(50% + ${p.x + offset}px - 60px)`;
-      div.style.top = `calc(50% + ${p.y + offset}px - 60px)`;
-      div.style.transform = `rotate(${rot}deg) scale(${scale})`;
-      div.style.opacity = '1';
-      wall.appendChild(div);
-      
-      if(i === points.length - 1){
-        setTimeout(() => {
-          const finalMsg = document.getElementById('finalMessage');
-          finalMsg.style.opacity = '1';
-          finalMsg.style.transition = 'opacity 2s, transform 2s';
-          finalMsg.style.transform = 'translateY(-20px)';
-          launchConfetti();
-        }, 1200);
-      }
-    }, i * 60);
-  });
-}
-
-// --- BOOK ---
-function buildBook(){
-  const book = document.getElementById('book');
-  book.innerHTML = '';
-  const msgText = document.getElementById('msgText');
-  
-  // 1. FRONT COVER
-  const frontCover = document.createElement('div');
-  frontCover.className = 'page';
-  frontCover.style.zIndex = CONFIG.pages.length + 2;
-  frontCover.innerHTML = `
-    <div class="page-side page-front cover-front">
-    </div>
-    <div class="page-side page-back" style="background:#f9f9f9;">
-      <div style="padding: 40px; text-align: center; height: 100%; display: flex; align-items: center;">
-        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha güzel... ❤️</p>
-      </div>
-    </div>
-  `;
-  frontCover.onclick = () => {
-    const isFlipped = frontCover.classList.toggle('flipped');
-    frontCover.style.zIndex = isFlipped ? 1 : CONFIG.pages.length + 2;
-    msgText.textContent = isFlipped ? CONFIG.pages[0].message : "Bizim Hikayemiz 💝";
-  };
-  book.appendChild(frontCover);
-
-  // Set initial message
-  msgText.textContent = "Bizim Hikayemiz 💝";
-
-  // 2. CONTENT PAGES
-  CONFIG.pages.forEach((p, i) => {
-    const page = document.createElement('div');
-    page.className = 'page';
-    page.style.zIndex = CONFIG.pages.length - i;
-    
-    page.innerHTML = `
-      <div class="page-side page-front">
-        <img src="${p.photoFront}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;">
-          <p style="font-size: 13px; color: #888;">Anı ${i + 1}</p>
+    <header>
+        <div class="logo">DG</div>
+        <div class="nav-btns">
+            <a href="#" class="btn-small">Yönetim</a>
+            <a href="#" class="btn-small" style="background: var(--text); color: var(--bg);">Giriş Yap</a>
         </div>
-      </div>
-      <div class="page-side page-back">
-        <img src="${p.photoBack}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;">
-          <p style="font-size: 13px; color: #888;">💕</p>
+    </header>
+
+    <section class="hero">
+        <canvas id="matrixCanvas"></canvas>
+        <div class="hero-badge">🎁 Kupon %100 ücretsiz oluşturuldu</div>
+        <h1>Gülümse<br>Diye <span class="smiley">:)</span></h1>
+
+        <a href="create.html" class="cta-btn">Ücretsiz oluştur</a>
+        <div class="globe-bottom"></div>
+    </section>
+
+    <section id="products">
+        <h2 class="section-title">En Popüler Şablonlar</h2>
+        <div class="products-grid">
+            <!-- ÜRÜNÜMÜZ -->
+            <div class="card">
+                <div class="card-img" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('lovebombing.jpeg');"></div>
+                <h3>Doğum günün kutlu olsun</h3>
+                <p>Matrix girişi, parlayan kalp ve 3D Scrapbook albümü ile eşsiz bir kutlama deneyimi.</p>
+                <a href="create.html" class="card-btn">✨ Şimdi oluştur</a>
+                <a href="lovebombing.html" class="card-btn" style="margin-top: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.1);">↗ Gösteri</a>
+            </div>
+
+            <div class="card">
+                <div class="card-img" style="filter: grayscale(1); opacity: 0.5;"></div>
+                <h3>Yıldönümü Klasörü</h3>
+                <p>Yakında geliyor... İlişkinizin en özel anlarını saklayacağınız dijital bir kasa.</p>
+                <a href="#" class="card-btn" style="pointer-events: none; opacity: 0.3;">🔒 Yakında</a>
+            </div>
         </div>
-      </div>
-    `;
-    
-    page.onclick = () => {
-      const isFlipped = page.classList.toggle('flipped');
-      if(isFlipped){
-        page.style.zIndex = i + 2;
-        if(CONFIG.pages[i+1]) msgText.textContent = CONFIG.pages[i+1].message;
-        else msgText.textContent = "Son sayfa... ❤️";
-      } else {
-        setTimeout(() => { page.style.zIndex = CONFIG.pages.length - i; }, 300);
-        msgText.textContent = p.message || "Anılarımız 💝";
-      }
-    };
-    
-    book.appendChild(page);
-  });
+    </section>
 
-  // 3. BACK COVER
-  const backCover = document.createElement('div');
-  backCover.className = 'page';
-  backCover.style.zIndex = 0;
-  backCover.innerHTML = `
-    <div class="page-side page-front" style="background:#f9f9f9; display: flex; align-items: center; justify-content: center;">
-       <p style="font-family:'Dancing Script'; font-size: 24px; color: #ff1493;">Seni Seviyorum!</p>
-    </div>
-    <div class="page-side page-back cover-back"></div>
-  `;
-  book.appendChild(backCover);
-}
+    <section class="steps">
+        <h2 style="font-size: 40px; margin-bottom: 50px; text-align: center;">Hediye oluşturmak için sadece 3 adım</h2>
+        
+        <div class="step-card">
+            <span class="step-num">ADIM 1</span>
+            <h3>Bir örnek seçin</h3>
+            <ul>
+                <li>Birçok konu mevcut</li>
+                <li>Sadece seç, tasarla değil</li>
+                <li>Koda gerek yok</li>
+            </ul>
+        </div>
 
-// --- HELPERS ---
-function launchConfetti(){
-  for(let i=0; i<100; i++){
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.left = Math.random()*100 + 'vw';
-    c.style.background = ['#ff1493','#ff69b4','#fff','#ffd700'][Math.floor(Math.random()*4)];
-    c.style.transform = `rotate(${Math.random()*360}deg)`;
-    document.body.appendChild(c);
-    const fall = c.animate([
-      { top: '-10px', opacity: 1 },
-      { top: '100vh', opacity: 0, transform: `rotate(${Math.random()*1000}deg)` }
-    ], { duration: 2000 + Math.random()*3000, easing: 'linear' });
-    fall.onfinish = () => c.remove();
-  }
-}
+        <div class="step-card">
+            <span class="step-num">ADIM 2</span>
+            <h3>İçeriği girin</h3>
+            <ul>
+                <li>Dileği girin</li>
+                <li>Daha fazla resim</li>
+                <li>Efektleri seçin</li>
+            </ul>
+        </div>
 
-window.addEventListener('resize', () => { initMatrix(); initStars(); });
-</script>
+        <div class="step-card">
+            <span class="step-num">ADIM 3</span>
+            <h3>Bağlantı ve QR kodu oluşturun</h3>
+            <ul>
+                <li>Bağlantı web sitesi hazır</li>
+                <li>Güzel QR kodu</li>
+                <li>Birkaç saniye içinde gönder</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px;">
+            <h2 style="font-size: 32px; margin-bottom: 30px;">Yaşam duygusuyla bir hediye oluşturun.</h2>
+            <a href="lovebombing.html" class="cta-btn" style="background: transparent; border: 2px solid var(--text); color: #fff;">Oluşturmaya başla</a>
+        </div>
+    </section>
+
+    <footer style="padding: 50px; text-align: center; color: var(--gray); font-size: 14px;">
+        <p>Manifesto | Yardım | İletişim</p>
+        <p style="margin-top: 10px;">&copy; 2026 Sevgili Hediye. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height, columns;
+        const fontSize = 11;
+        const characters = 'GÜLÜMSEDİYE····*··'.split('');
+        let drops = [];
+
+        function initMatrix() {
+            const hero = document.querySelector('.hero');
+            width = canvas.width = hero.offsetWidth;
+            height = canvas.height = hero.offsetHeight;
+            columns = Math.floor(width / fontSize);
+            drops = Array(columns).fill(1);
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.font = fontSize + 'px Outfit';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                
+                // Mix of primary pink and white for depth
+                ctx.fillStyle = Math.random() > 0.9 ? '#fff' : '#ff1493';
+                
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        initMatrix();
+        window.addEventListener('resize', initMatrix);
+        setInterval(drawMatrix, 50);
+    </script>
 </body>
 </html>
