@@ -114,11 +114,30 @@ canvas{position:fixed;inset:0;z-index:1;}
 .instruction { position: absolute; bottom: -50px; width: 100%; text-align: center; font-size: 14px; opacity: 0.7; animation: blink 2s infinite; }
 @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-/* REPLAY */
-#replayBtn { margin-top: 80px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+/* PHASE 5: HEART PHOTO WALL */
+#phase5 { background: radial-gradient(circle, #1a0a2a 0%, #050505 100%); }
+.heart-wall {
+  position: relative; width: min(90vw, 500px); height: min(90vw, 500px);
+  display: flex; align-items: center; justify-content: center;
+}
+.mini-photo {
+  position: absolute; width: 60px; height: 60px;
+  border: 2px solid #fff; border-radius: 8px;
+  background-size: cover; background-position: center;
+  box-shadow: 0 4px 15px rgba(255,20,147,0.4);
+  transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: scale(0);
+}
+.mini-photo:hover { transform: scale(1.2) z-index: 100; box-shadow: 0 0 20px var(--primary); }
 
-/* CONFETTI */
-.confetti { position: fixed; width: 10px; height: 10px; top: -10px; z-index: 100; pointer-events: none; }
+#finalMessage {
+  margin-top: 30px; font-family: 'Dancing Script', cursive;
+  font-size: 32px; color: var(--primary-light);
+  text-shadow: 0 0 10px var(--primary); opacity: 0;
+}
+
+/* REPLAY */
+#replayBtn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-top: 20px; }
 
 </style>
 </head>
@@ -141,7 +160,10 @@ canvas{position:fixed;inset:0;z-index:1;}
         <path d="M50 88.9L42.8 82.4C17.1 59.1 0 43.6 0 24.6C0 9.1 12.1 0 27.5 0C36.2 0 44.5 4.1 50 10.5C55.5 4.1 63.8 0 72.5 0C87.9 0 100 9.1 100 24.6C100 43.6 82.9 59.1 57.2 82.5L50 88.9Z" />
       </svg>
     </div>
+    <!-- VIDEO OR GIF SUPPORT -->
     <img id="phase2Gif" src="" alt="CUTE GIF" style="display:none;">
+    <video id="phase2Video" style="display:none; width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px;" autoplay muted loop playsinline></video>
+    
     <button class="continue-btn" style="display:none; margin-top:20px;" onclick="goPhase4()">Devam Et ✨</button>
   </div>
 </div>
@@ -158,14 +180,36 @@ canvas{position:fixed;inset:0;z-index:1;}
       </div>
       <div class="instruction">Sayfaları çevirmek için tıkla veya kaydır 📖</div>
     </div>
-    <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
+    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Sürprizi Gör ❤️</button>
   </div>
 </div>
 
+<!-- PHASE 5 -->
+<div class="phase hidden" id="phase5">
+  <div class="heart-wall" id="heartWall"></div>
+  <h2 id="finalMessage">Seni Çok Seviyorum! ✨</h2>
+  <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
+</div>
+
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+// SUPABASE CONNECTION (Hata korumalı)
+try {
+  const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_y2Txq-u11881-881881-881881"; // User's key
+  if (window.supabase) {
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (e) {
+  console.log("Supabase baglantisi su an beklemede.");
+}
+
 const CONFIG = {
-  matrixMessage: "HAPPY BIRTHDAY", // Bu harfler akacak
-  phase2Gif: "https://media.tenor.com/On7tS97Wmo8AAAAd/ki-hi-cat-love.gif", // Varsayılan tatlı kedi (Kendi dosyanı kullanmak istersen burayı "lovebombing.gif" yapabilirsin)
+  matrixMessage: "HAPPY BIRTHDAY", 
+  phase2File: "lovebombing.mp4", // Senin dosyan (MP4 olduğu için güncellendi)
   celebrationGif: "https://media.tenor.com/FeEEBfHmYM0AAAAC/happy-birthday-cat.gif", // Gitar çalan kedi
   
   pages: [
@@ -281,14 +325,20 @@ function goPhase2(){
   }
 
   function showGif() {
-    gif.src = CONFIG.phase2Gif;
-    gif.style.display = 'block';
-    gif.style.opacity = '0';
-    gif.style.transition = 'opacity 1s ease';
-    setTimeout(() => { 
-      gif.style.opacity = '1'; 
-      setTimeout(() => { btn.style.display = 'block'; }, 1000);
-    }, 50);
+    const video = document.getElementById('phase2Video');
+    const gif = document.getElementById('phase2Gif');
+    
+    if (CONFIG.phase2File.endsWith('.mp4')) {
+      video.src = CONFIG.phase2File;
+      video.style.display = 'block';
+      video.style.opacity = '1';
+    } else {
+      gif.src = CONFIG.phase2File;
+      gif.style.display = 'block';
+      gif.style.opacity = '1';
+    }
+    
+    setTimeout(() => { btn.style.display = 'block'; }, 2000);
   }
 
   showNextWord();
@@ -303,6 +353,53 @@ function goPhase4(){
   document.getElementById('phase4').classList.remove('hidden');
   buildBook();
   launchConfetti();
+}
+
+function goPhase5(){
+  document.getElementById('phase4').classList.add('hidden');
+  document.getElementById('phase5').classList.remove('hidden');
+  buildHeartWall();
+}
+
+function buildHeartWall(){
+  const wall = document.getElementById('heartWall');
+  wall.innerHTML = ''; // Clear if re-run
+  const photos = [
+    'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg'
+  ];
+  
+  // Heart formula coordinates - MORE DENSE (0.15 step instead of 0.4)
+  const points = [];
+  for(let t=0; t<Math.PI*2; t+=0.15){
+    let x = 16 * Math.pow(Math.sin(t), 3);
+    let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+    points.push({x: x*12, y: y*12});
+  }
+
+  points.forEach((p, i) => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'mini-photo';
+      // Randomly pick from available photos
+      div.style.backgroundImage = `url('${photos[Math.floor(Math.random()*photos.length)]}')`;
+      // Add a bit of random offset for more "dense pile" look
+      const offsetX = (Math.random()*20 - 10);
+      const offsetY = (Math.random()*20 - 10);
+      div.style.left = `calc(50% + ${p.x + offsetX}px - 30px)`;
+      div.style.top = `calc(50% + ${p.y + offsetY}px - 30px)`;
+      div.style.transform = `rotate(${Math.random()*30 - 15}deg) scale(1)`;
+      div.style.opacity = '1';
+      wall.appendChild(div);
+      
+      if(i === points.length - 1){
+        setTimeout(() => {
+          document.getElementById('finalMessage').style.opacity = '1';
+          document.getElementById('finalMessage').style.transition = 'opacity 2s';
+          launchConfetti();
+        }, 1000);
+      }
+    }, i * 50); // Faster appearance
+  });
 }
 
 // --- BOOK ---

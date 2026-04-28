@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sevgili Hediye | Duygularını Dijitalleştir</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #ff1493;
+            --primary-light: #ff69b4;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --gray: #a0a0a0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text); }
+        .nav-btns { display: flex; gap: 15px; }
+        .btn-small {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            text-decoration: none;
+        }
+        .btn-small:hover { background: rgba(255,255,255,0.15); }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-badge {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.4);
+            animation: fadeInDown 1s ease;
+        }
+        .hero h1 {
+            font-size: clamp(48px, 12vw, 100px);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+        .cta-btn {
+            padding: 18px 45px;
+            background: var(--text);
+            color: var(--bg);
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.4s;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+            z-index: 10;
+        }
+        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(255,255,255,0.3); }
+
+        /* GLOBE DECORATION */
+        .globe-bottom {
+            position: absolute;
+            bottom: -300px;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(138,43,226,0.3) 0%, rgba(255,20,147,0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            border-top: 2px solid var(--accent);
+            z-index: 1;
+        }
+
+        /* PRODUCTS SECTION */
+        .section-title {
+            text-align: center;
+            padding: 100px 5% 40px;
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 800;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 0 10% 100px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .card-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            background-image: url('https://raw.githubusercontent.com/sudenzkrsvrnn-max/sude-hediye/main/foto1.jpg'); /* Örnek */
+            background-size: cover;
+            position: relative;
+        }
+        .card-img::after {
+            content: 'OK - 30K';
+            position: absolute;
+            top: 15px; right: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+        }
+        .card h3 { font-size: 24px; margin-bottom: 10px; }
+        .card p { color: var(--gray); font-size: 15px; margin-bottom: 25px; }
+        .card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            width: 100%;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .card-btn:hover { background: var(--text); color: var(--bg); }
+
+        /* STEPS SECTION */
+        .steps {
+            background: #080808;
+            padding: 100px 10%;
+        }
+        .step-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .step-num { color: var(--primary); font-size: 14px; font-weight: 700; margin-bottom: 10px; display: block; }
+        .step-card h3 { font-size: 28px; margin-bottom: 15px; }
+        .step-card ul { list-style: none; color: var(--gray); }
+        .step-card li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .step-card li::before { content: '●'; color: #00f2fe; font-size: 8px; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 60px; }
+            .globe-bottom { width: 100%; height: 400px; bottom: -100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">DG</div>
+        <div class="nav-btns">
+            <a href="#" class="btn-small">Yönetim</a>
+            <a href="#" class="btn-small" style="background: var(--text); color: var(--bg);">Giriş Yap</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-badge">🎁 Kupon %100 ücretsiz oluşturuldu</div>
+        <h1>Gülümse<br>Diye</h1>
+        <p>Duygular gönder. Bu sadece bir mesaj değil, senin hikayen.</p>
+        <a href="index.html" class="cta-btn">Şimdi başla</a>
+        <div class="globe-bottom"></div>
+    </section>
+
+    <section id="products">
+        <h2 class="section-title">En Popüler Şablonlar</h2>
+        <div class="products-grid">
+            <!-- ÜRÜNÜMÜZ -->
+            <div class="card">
+                <div class="card-img" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://media.tenor.com/On7tS97Wmo8AAAAd/ki-hi-cat-love.gif');"></div>
+                <h3>Doğum günün kutlu olsun</h3>
+                <p>Matrix girişi, parlayan kalp ve 3D Scrapbook albümü ile eşsiz bir kutlama deneyimi.</p>
+                <a href="index.html" class="card-btn">✨ Şimdi oluştur</a>
+                <a href="index.html" class="card-btn" style="margin-top: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.1);">↗ Gösteri</a>
+            </div>
+
+            <div class="card">
+                <div class="card-img" style="filter: grayscale(1); opacity: 0.5;"></div>
+                <h3>Yıldönümü Klasörü</h3>
+                <p>Yakında geliyor... İlişkinizin en özel anlarını saklayacağınız dijital bir kasa.</p>
+                <a href="#" class="card-btn" style="pointer-events: none; opacity: 0.3;">🔒 Yakında</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="steps">
+        <h2 style="font-size: 40px; margin-bottom: 50px; text-align: center;">Hediye oluşturmak için sadece 3 adım</h2>
+        
+        <div class="step-card">
+            <span class="step-num">ADIM 1</span>
+            <h3>Bir örnek seçin</h3>
+            <ul>
+                <li>Birçok konu mevcut</li>
+                <li>Sadece seç, tasarla değil</li>
+                <li>Koda gerek yok</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <span class="step-num">ADIM 2</span>
+            <h3>İçeriği girin</h3>
+            <ul>
+                <li>Dileği girin</li>
+                <li>Daha fazla resim</li>
+                <li>Efektleri seçin</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <span class="step-num">ADIM 3</span>
+            <h3>Bağlantı ve QR kodu oluşturun</h3>
+            <ul>
+                <li>Bağlantı web sitesi hazır</li>
+                <li>Güzel QR kodu</li>
+                <li>Birkaç saniye içinde gönder</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px;">
+            <h2 style="font-size: 32px; margin-bottom: 30px;">Yaşam duygusuyla bir hediye oluşturun.</h2>
+            <a href="index.html" class="cta-btn" style="background: transparent; border: 2px solid var(--text); color: #fff;">Oluşturmaya başla</a>
+        </div>
+    </section>
+
+    <footer style="padding: 50px; text-align: center; color: var(--gray); font-size: 14px;">
+        <p>Manifesto | Yardım | İletişim</p>
+        <p style="margin-top: 10px;">&copy; 2026 Sevgili Hediye. Tüm hakları saklıdır.</p>
+    </footer>
+
+</body>
+</html>
