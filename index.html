@@ -110,14 +110,15 @@
             animation: fadeInDown 1s ease;
         }
         .hero h1 {
-            font-size: clamp(56px, 14vw, 110px);
+            font-size: clamp(56px, 12vw, 110px);
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 80px;
+            margin: 0 auto 40px;
             background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -2px;
+            max-width: 900px;
         }
         [data-theme="light"] .hero h1, 
         [data-theme="light"] .smiley { 
@@ -157,19 +158,22 @@
             z-index: 10;
             letter-spacing: 1px;
             text-transform: uppercase;
+            position: relative;
+            margin-top: -50px; /* Mor çevrenin içine/altına çekmek için */
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(255,255,255,0.3); }
 
         /* GLOBE DECORATION */
         .globe-bottom {
             position: absolute;
-            bottom: -300px;
+            bottom: -350px;
             width: 800px;
             height: 800px;
             background: radial-gradient(circle, rgba(138,43,226,0.3) 0%, rgba(255,20,147,0.1) 40%, transparent 70%);
             border-radius: 50%;
             border-top: 2px solid var(--accent);
             z-index: 1;
+            pointer-events: none; /* Buton tıklamasını engellememesi için */
         }
 
         /* PRODUCTS SECTION */
@@ -342,9 +346,9 @@
         @media (max-width: 768px) {
             nav { padding: 15px 15px; }
             .logo { font-size: 18px; }
-            .hero { padding: 0 20px; width: 100%; overflow: hidden; justify-content: flex-start; padding-top: 15vh; text-align: center; }
-            .hero h1 { font-size: clamp(40px, 12vw, 60px); margin-bottom: 20px; } 
-            .cta-btn { margin-top: 150px; }
+            .hero { padding: 0 20px; width: 100%; overflow: hidden; justify-content: center; text-align: center; height: 100vh; }
+            .hero h1 { font-size: clamp(48px, 14vw, 72px); margin-bottom: 20px; } 
+            .cta-btn { margin-top: 40px; }
             .products-grid { grid-template-columns: 1fr; gap: 20px; padding: 0 20px 60px; }
             .card { padding: 20px; border-radius: 25px; }
             .card h3 { font-size: 18px; margin-bottom: 8px; height: auto; }
@@ -368,11 +372,14 @@
 
     <section class="hero">
         <canvas id="matrixCanvas"></canvas>
-        <div class="hero-badge">Şimdi bir gülücük hediye etme zamanı! 🤍</div>
-        <h1>Gülümse<br>Diye <span class="smiley">:)</span></h1>
+        <div style="z-index: 10; position: relative; display: flex; flex-direction: column; align-items: center;">
+            <div class="hero-badge">Şimdi bir gülücük hediye etme zamanı! 🤍</div>
+            <h1>Gülümse<br>Diye <span class="smiley">:)</span></h1>
+            <p style="margin-bottom: 20px;">Sevdiklerinizi dijital bir sürprizle şaşırtın.</p>
+        </div>
 
-        <a href="create.html" class="cta-btn">Ücretsiz oluştur</a>
         <div class="globe-bottom"></div>
+        <a href="create.html" class="cta-btn">Ücretsiz oluştur</a>
     </section>
 
     <section id="products">
@@ -585,7 +592,7 @@
             }
         }
 
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeUI(savedTheme);
     </script>
