@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lovebombing: Dijital Aşk Kapsülü | Sevgili Hediye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #ff1493;
+            --primary-light: #ff69b4;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --gray: #a0a0a0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--text); text-decoration: none; }
+        .nav-btns { display: flex; gap: 15px; }
+        .btn-small {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            text-decoration: none;
+        }
+        .btn-small:hover { background: rgba(255,255,255,0.15); }
+
+        /* PRODUCT HERO SECTION */
+        .product-hero {
+            padding: 150px 5% 100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .product-media {
+            position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(255, 20, 147, 0.15);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .product-media img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .product-media:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .product-info h1 {
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .price-tag {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary-light);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .price-tag span {
+            font-size: 18px;
+            color: var(--gray);
+            font-weight: 400;
+            text-decoration: line-through;
+        }
+
+        .product-desc {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+        .features-list li {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ddd;
+        }
+        .features-list li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 20px;
+            background: rgba(255,20,147,0.1);
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-primary {
+            padding: 18px 40px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.4s;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+        }
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.6);
+        }
+
+        .btn-secondary {
+            padding: 18px 30px;
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.4s;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
+        }
+
+        /* DEMO SECTION */
+        .demo-section {
+            padding: 50px 5% 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 50px;
+        }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* FEATURE DESIGNS GRID */
+        .feature-designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-box {
+            position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            transition: 0.4s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 50px rgba(255, 20, 147, 0.2);
+        }
+        .feature-content h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        .feature-content p {
+            color: #ddd;
+            font-size: 15px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* 1. Matrix Theme */
+        .matrix-box canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* 2. Scrapbook Theme */
+        .scrapbook-box {
+            background-color: #f4ecd8;
+            background-image: 
+                linear-gradient(#e4d5b7 1px, transparent 1px),
+                linear-gradient(90deg, #e4d5b7 1px, transparent 1px);
+            background-size: 20px 20px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.1);
+        }
+        .scrapbook-box .feature-content h3, 
+        .scrapbook-box .feature-content p {
+            color: #333;
+            text-shadow: none;
+            font-family: 'Caveat', cursive;
+        }
+        .scrapbook-box .feature-content h3 { font-size: 34px; font-weight: 600; }
+        .scrapbook-box .feature-content p { font-size: 24px; line-height: 1.1; font-weight: 600; }
+
+        .polaroid-stack {
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 100px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .polaroid {
+            position: absolute;
+            background: #fff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.15);
+            border: 1px solid #eaeaea;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .polaroid img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+        }
+        .tape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            width: 70px;
+            height: 25px;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            border-left: 2px dashed rgba(0,0,0,0.05);
+            border-right: 2px dashed rgba(0,0,0,0.05);
+        }
+        .heart-sticker {
+            position: absolute;
+            bottom: 5px;
+            right: 15px;
+            color: #ff1493;
+            font-size: 24px;
+            transform: rotate(15deg);
+        }
+        .p1 { transform: rotate(-8deg) translate(-30px, -10px); z-index: 2; }
+        .p2 { transform: rotate(12deg) translate(30px, 10px); z-index: 1; }
+        .scrapbook-box:hover .p1 { transform: rotate(-3deg) translate(-40px, -20px) scale(1.05); z-index: 3;}
+        .scrapbook-box:hover .p2 { transform: rotate(15deg) translate(40px, -5px) scale(1.05); z-index: 3;}
+
+        /* 3. GIF Theme (Cute Cats) */
+        .gif-box {
+            background: linear-gradient(45deg, #1a0b1c, #050505);
+        }
+        .gif-stack {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+        .floating-gif {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            animation: floatGif 4s ease-in-out infinite;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .g1 { top: 20%; left: 15%; animation-delay: 0s; --rot: -10deg; transform: rotate(var(--rot)); }
+        .g2 { top: 30%; right: 15%; animation-delay: 2s; --rot: 10deg; transform: rotate(var(--rot)); width: 140px; height: 140px; }
+        
+        @keyframes floatGif {
+            0% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+            50% { transform: translateY(-15px) rotate(var(--rot, 0deg)); }
+            100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+        }
+
+        /* 4. WhatsApp Theme */
+        .whatsapp-box {
+            background-color: #0b141a;
+            /* Simple dark green gradient to simulate WA background without needing external image */
+            background-image: linear-gradient(rgba(11,20,26,0.8), rgba(11,20,26,0.9)), repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+        }
+        .whatsapp-chat {
+            position: absolute;
+            top: 20px; right: 20px; left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 1;
+        }
+        .wa-bubble {
+            background-color: #005c4b;
+            padding: 4px;
+            border-radius: 12px 0 12px 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            max-width: 90%;
+            position: relative;
+        }
+        .wa-bubble::after {
+            content: '';
+            position: absolute;
+            top: 0; right: -8px;
+            border-top: 10px solid #005c4b;
+            border-right: 10px solid transparent;
+        }
+        .wa-preview-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+        .wa-link-info {
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            margin-top: 4px;
+            border-radius: 6px;
+            border-left: 4px solid #06cf9c;
+        }
+        .wa-title { font-size: 13px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        .wa-desc { font-size: 11px; color: #d1d7db; margin-bottom: 2px; }
+        .wa-url { font-size: 11px; color: #53bdeb; }
+        .wa-time { font-size: 10px; color: #8696a0; text-align: right; margin-top: 2px; padding-right: 4px; }
+        .wa-time span { color: #53bdeb; margin-left: 4px; font-weight: bold; }
+
+        /* FOOTER */
+        footer {
+            padding: 50px;
+            text-align: center;
+            color: var(--gray);
+            font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 992px) {
+            .product-hero {
+                grid-template-columns: 1fr;
+                padding-top: 120px;
+            }
+            .product-info h1 {
+                font-size: 48px;
+            }
+            .action-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">DG</a>
+        <div class="nav-btns">
+            <a href="index.html" class="btn-small">Ana Sayfa</a>
+            <a href="#" class="btn-small" style="background: var(--text); color: var(--bg);">Giriş Yap</a>
+        </div>
+    </header>
+
+    <section class="product-hero">
+        <div class="product-media">
+            <div class="product-badge">En Çok Satan 🔥</div>
+            <img src="resim/lovebombing.jpeg" alt="Lovebombing Dijital Hediye">
+        </div>
+        
+        <div class="product-info">
+            <h1>Lovebombing:<br>Unutulmaz Sürpriz</h1>
+            
+            <div class="price-tag">
+                549₺ <span>899₺</span>
+            </div>
+            
+            <p class="product-desc">
+                Sevgilinize veya değer verdiğiniz birine kendini dünyanın merkezindeymiş gibi hissettirecek dijital bir şölen! Sinematik Matrix girişi, kalp atışlarını hızlandıran müzikler ve en özel anılarınızın sergilendiği büyüleyici bir 3D Scrapbook deneyimi.
+            </p>
+            
+            <ul class="features-list">
+                <li>Özel şifreli giriş ekranı ve şaşırtıcı Matrix efekti</li>
+                <li>Müzikli ve interaktif parlayan 3D kalp animasyonu</li>
+                <li>Fotoğraflarınızla donatılmış 3D Scrapbook albümü</li>
+                <li>Mesajlarınız ve anılarınız için sınırsız alan</li>
+                <li>Sonsuza kadar geçerli özel bağlantı linki</li>
+            </ul>
+            
+            <div class="action-btns">
+                <a href="create.html" class="btn-primary">Hemen Oluştur 🚀</a>
+                <a href="lovebombing.html" class="btn-secondary">▶ Demosunu İncele</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2 class="section-title">Neden Lovebombing?</h2>
+        <div class="feature-designs-grid">
+            
+            <!-- 1. Matrix Design -->
+            <div class="feature-box matrix-box">
+                <canvas id="miniMatrix"></canvas>
+                <div class="feature-content">
+                    <h3>Sana Özel Şifreli Mesaj</h3>
+                    <p>Ekranda usulca süzülen harflerin arasına tamamen kendi belirlediğiniz kelimeleri ve gizli mesajları saklayarak ona unutulmaz bir karşılama hazırlayın.</p>
+                </div>
+            </div>
+
+            <!-- 2. Scrapbook Design -->
+            <div class="feature-box scrapbook-box">
+                <div class="polaroid-stack">
+                    <div class="polaroid p2">
+                        <div class="tape" style="transform: translateX(-50%) rotate(5deg); top: -12px;"></div>
+                        <img src="resim/resim2.jfif" alt="Anı 2">
+                    </div>
+                    <div class="polaroid p1">
+                        <div class="tape"></div>
+                        <img src="resim/resim1.jfif" alt="Anı 1">
+                        <div class="heart-sticker">💖</div>
+                    </div>
+                </div>
+                <div class="feature-content" style="z-index: 2;">
+                    <h3>Dijital Anı Defteri</h3>
+                    <p>En tatlı çizimleriniz ve anılarınız bu defterde ölümsüzleşiyor...</p>
+                </div>
+            </div>
+
+            <!-- 3. GIF / Animasyon Design -->
+            <div class="feature-box gif-box">
+                <div class="gif-stack">
+                    <img src="gif.cat/1gif.png" alt="Tatlı Kedi 1" class="floating-gif g1">
+                    <img src="gif.cat/2gif.png" alt="Tatlı Kedi 2" class="floating-gif g2">
+                </div>
+                <div class="feature-content" style="z-index: 2;">
+                    <h3>Sevimli GIF'ler</h3>
+                    <p>İçine ekleyebileceğiniz komik ve tatlı kedi GIF'leriyle onu çokça gülümsetecek eğlenceli detaylar hazırlayın.</p>
+                </div>
+            </div>
+
+            <!-- 4. WhatsApp Preview Design -->
+            <div class="feature-box whatsapp-box">
+                <div class="whatsapp-chat">
+                    <div class="wa-bubble">
+                        <img src="resim/resim3.jfif" alt="WhatsApp Preview" class="wa-preview-img">
+                        <div class="wa-link-info">
+                            <div class="wa-title">Sana Özel Bir Sürpriz! 🎁</div>
+                            <div class="wa-desc">Bu gizemli hediyeyi açmak için tıkla...</div>
+                            <div class="wa-url">gulumsediye.com</div>
+                        </div>
+                        <div class="wa-time">20:04 <span>✓✓</span></div>
+                    </div>
+                </div>
+                <div class="feature-content" style="z-index: 2;">
+                    <h3>Şık Mesaj Önizlemesi</h3>
+                    <p>WhatsApp üzerinden hediyenizin linkini yolladığınızda, hediyenin gizemini artıran şık bir önizleme görünür.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>Manifesto | Yardım | İletişim</p>
+        <p style="margin-top: 10px;">&copy; 2026 Sevgili Hediye. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        // Mini Matrix
+        const mCanvas = document.getElementById('miniMatrix');
+        const mCtx = mCanvas.getContext('2d');
+        let mWidth, mHeight, mCols;
+        const mDrops = [];
+        const mChars = 'SENİSEVİYORUM'.split('');
+
+        function initMiniMatrix() {
+            const box = mCanvas.parentElement;
+            mWidth = mCanvas.width = box.offsetWidth;
+            mHeight = mCanvas.height = box.offsetHeight;
+            mCols = Math.floor(mWidth / 16);
+            for(let i=0; i<mCols; i++) mDrops[i] = Math.random() * -100;
+        }
+        initMiniMatrix();
+
+        function drawMiniMatrix() {
+            mCtx.fillStyle = 'rgba(5, 5, 5, 0.15)';
+            mCtx.fillRect(0, 0, mWidth, mHeight);
+            mCtx.font = 'bold 16px Outfit, sans-serif';
+            
+            for (let i = 0; i < mDrops.length; i++) {
+                const text = mChars[Math.floor(Math.random() * mChars.length)];
+                mCtx.fillStyle = Math.random() > 0.8 ? '#ffffff' : '#ff1493';
+                mCtx.fillText(text, i * 16, mDrops[i] * 16);
+                if (mDrops[i] * 16 > mHeight && Math.random() > 0.95) mDrops[i] = 0;
+                mDrops[i]++;
+            }
+        }
+        setInterval(drawMiniMatrix, 60);
+        window.addEventListener('resize', initMiniMatrix);
+    </script>
+</body>
+</html>

@@ -71,6 +71,11 @@
         }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.08); }
 
+        /* CHIPS */
+        .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--gray); padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .chip:hover { background: rgba(255, 20, 147, 0.1); border-color: var(--primary); color: #fff; }
+
         /* UPLOAD BOX */
         .upload-input-wrapper {
             position: relative;
@@ -93,6 +98,15 @@
         .upload-content { text-align: center; }
         .upload-content span { font-size: 24px; display: block; margin-bottom: 5px; }
         .upload-content p { font-size: 12px; color: var(--gray); }
+
+        /* GIF SELECTOR */
+        .gif-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; max-height: 180px; overflow-y: auto; padding-right: 5px; }
+        .gif-selector img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; background: rgba(255,255,255,0.05); }
+        .gif-selector img:hover { transform: scale(1.05); }
+        .gif-selector img.selected { border-color: var(--primary); box-shadow: 0 0 15px rgba(255, 20, 147, 0.5); transform: scale(1.05); }
+        .gif-selector::-webkit-scrollbar { width: 6px; }
+        .gif-selector::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .gif-selector::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
         /* MEMORY CARD */
         .memory-card {
@@ -151,34 +165,47 @@
             <!-- STEP 1: GİRİŞ -->
             <div class="step active" id="step1">
                 <h2>Büyük Mesajını Yaz</h2>
-                <p class="desc">Sürprizin en başında dijital yağmur efektiyle görünecek olan ana mesajı belirle.</p>
+                <p class="desc">Açılışta akacak sürpriz mesajını belirle.</p>
                 <div class="form-group">
                     <label>Ekranda Akacak Mesaj</label>
                     <input type="text" id="matrixMessage" placeholder="Örn: İYİ Kİ VARSIN SEVGİLİM" required>
+                    <div class="quick-chips">
+                        <button type="button" class="chip" onclick="fillMessage('İYİ Kİ DOĞDUN SEVGİLİM')">İYİ Kİ DOĞDUN SEVGİLİM</button>
+                        <button type="button" class="chip" onclick="fillMessage('SENİ ÇOK SEVİYORUM')">SENİ ÇOK SEVİYORUM</button>
+                        <button type="button" class="chip" onclick="fillMessage('İYİ Kİ VARSIN SEVGİLİM')">İYİ Kİ VARSIN SEVGİLİM</button>
+                    </div>
                 </div>
             </div>
 
             <!-- STEP 2: ANA MEDYA -->
             <div class="step" id="step2">
-                <h2>Vurgu Anını Seç</h2>
-                <p class="desc">Mesajdan hemen sonra kalp animasyonu eşliğinde görünecek olan ana görseli veya videoyu yükle.</p>
+                <h2>Animasyonunu Seç</h2>
+                <p class="desc">Mesajdan sonra çıkacak tatlı animasyonu belirle.</p>
+
                 <div class="form-group">
-                    <label>Kapak Görseli / Video</label>
-                    <div class="upload-input-wrapper">
-                        <input type="file" id="mainMediaFile" accept="image/*,video/*" onchange="handlePreview(this)">
-                        <img class="upload-preview" id="mainMediaPreview">
-                        <div class="upload-content">
-                            <span>🎬</span>
-                            <p>Tıkla ve Dosya Seç</p>
-                        </div>
+                    <label>Bir Animasyon Seç</label>
+                    <div class="gif-selector">
+                        <img src="gif.cat/1gif.png" onclick="selectPredefinedGif('gif.cat/1gif.png', this)">
+                        <img src="gif.cat/2gif.png" onclick="selectPredefinedGif('gif.cat/2gif.png', this)">
+                        <img src="gif.cat/3gif.png" onclick="selectPredefinedGif('gif.cat/3gif.png', this)">
+                        <img src="gif.cat/4gif.png" onclick="selectPredefinedGif('gif.cat/4gif.png', this)">
+                        <img src="gif.cat/5gif.gif" onclick="selectPredefinedGif('gif.cat/5gif.gif', this)">
+                        <img src="gif.cat/6gif.gif" onclick="selectPredefinedGif('gif.cat/6gif.gif', this)">
+                        <img src="gif.cat/7gif.gif" onclick="selectPredefinedGif('gif.cat/7gif.gif', this)">
+                        <img src="gif.cat/8gif.gif" onclick="selectPredefinedGif('gif.cat/8gif.gif', this)">
+                        <img src="gif.cat/9gif.gif" onclick="selectPredefinedGif('gif.cat/9gif.gif', this)">
+                        <img src="gif.cat/10gif.gif" onclick="selectPredefinedGif('gif.cat/10gif.gif', this)">
+                        <img src="gif.cat/11gif.gif" onclick="selectPredefinedGif('gif.cat/11gif.gif', this)">
+                        <img src="gif.cat/12gif.jpeg" onclick="selectPredefinedGif('gif.cat/12gif.jpeg', this)">
                     </div>
+                    <input type="hidden" id="selectedPredefinedGif" value="">
                 </div>
             </div>
 
             <!-- STEP 3: ANILAR -->
             <div class="step" id="step3">
-                <h2>Anı Albümünü Oluştur</h2>
-                <p class="desc">Scrapbook sayfalarında yer alacak fotoğrafları yükle ve her birinin altına sana özel hikayesini yaz.</p>
+                <h2>Anılarını Ekle</h2>
+                <p class="desc">Defterde yer alacak fotoğraflarını ve notlarını ekle.</p>
                 
                 <div id="memoryContainer">
                     <!-- Kartlar buraya -->
@@ -189,8 +216,8 @@
 
             <!-- STEP 4: ÖNİZLEME -->
             <div class="step" id="step4">
-                <h2>Sürprizin Hazır! ✨</h2>
-                <p class="desc">Müşterine gidecek olan hediyenin taslağı aşağıdadır. Her şey doğru mu?</p>
+                <h2>Özeti Kontrol Et ✨</h2>
+                <p class="desc">Hediyenin özeti aşağıda. Her şey tamam mı?</p>
                 
                 <div class="preview-summary">
                     <div class="summary-item">
@@ -218,7 +245,7 @@
             <div class="step" id="successStep" style="text-align:center;">
                 <span style="font-size:60px;">🎁</span>
                 <h2 style="margin-top:15px;">Harika Görünüyor!</h2>
-                <p class="desc">Hediyen oluşturuldu. Aşağıdaki linki kopyalayıp sevdiğin kişiye gönderebilirsin.</p>
+                <p class="desc">Hediyen hazır. Aşağıdaki linki kopyalayıp hemen gönderebilirsin.</p>
                 <div class="form-group">
                     <input type="text" id="finalLink" readonly>
                 </div>
@@ -286,6 +313,12 @@
             }
         }
 
+        function selectPredefinedGif(url, imgElement) {
+            document.querySelectorAll('.gif-selector img').forEach(img => img.classList.remove('selected'));
+            imgElement.classList.add('selected');
+            document.getElementById('selectedPredefinedGif').value = url;
+        }
+
         function removeMemoryCard(id) {
             const card = document.getElementById(`memory-card-${id}`);
             if(card) card.remove();
@@ -315,6 +348,12 @@
             if (step === 1 && document.getElementById('matrixMessage').value.trim() === '') {
                 alert('Lütfen bir mesaj yazın.'); return false;
             }
+            if (step === 2) {
+                if (document.getElementById('selectedPredefinedGif').value === '') {
+                    alert('Lütfen listeden sevimli animasyonlardan birini seçin.'); 
+                    return false;
+                }
+            }
             if (step === 3) {
                 const files = document.querySelectorAll('.mem-file');
                 let hasFile = false;
@@ -339,6 +378,14 @@
 
         function renderSummary() {
             document.getElementById('prev-matrix').textContent = document.getElementById('matrixMessage').value;
+            
+            // Handle Step 2 preview
+            if (document.getElementById('selectedPredefinedGif').value !== '') {
+                document.getElementById('prev-media').innerHTML = '<span style="color:var(--primary-light)">Hazır Animasyon Seçildi</span>';
+            } else {
+                document.getElementById('prev-media').innerHTML = 'Seçim Yapılmadı';
+            }
+            
             const memContainer = document.getElementById('prev-memories');
             memContainer.innerHTML = '';
             
@@ -374,6 +421,10 @@
             copyText.select();
             document.execCommand("copy");
             alert("Link başarıyla kopyalandı! 💝");
+        }
+
+        function fillMessage(msg) {
+            document.getElementById('matrixMessage').value = msg;
         }
     </script>
 </body>
