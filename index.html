@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sevgili Hediye | Duygularını Dijitalleştir</title>
+    <title>Lovebombing: Sevgili Anı Defteri | Sevgili Hediye</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,6 +14,17 @@
             --text: #ffffff;
             --gray: #a0a0a0;
             --card-bg: rgba(255, 255, 255, 0.05);
+            --nav-bg: rgba(10, 10, 10, 0.8);
+            --input-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        [data-theme="light"] {
+            --bg: #f8f9fa;
+            --text: #1a1a1a;
+            --gray: #666666;
+            --card-bg: #ffffff;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --input-bg: #f1f3f5;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,33 +49,43 @@
         }
 
         /* HEADER */
-        header {
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            background: rgba(5,5,5,0.8);
-            backdrop-filter: blur(10px);
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--nav-bg); backdrop-filter: blur(10px); z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
+        [data-theme="light"] nav { border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        [data-theme="light"] .theme-toggle { border-color: rgba(0,0,0,0.1); }
+        .theme-toggle:hover { transform: scale(1.05); border-color: var(--primary); }
+
         .logo { font-size: 24px; font-weight: 800; color: var(--text); }
-        .nav-btns { display: flex; gap: 15px; }
-        .btn-small {
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; }
+        
+        .cta-mini {
             padding: 8px 20px;
             border-radius: 50px;
             font-size: 14px;
             font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05);
-            color: var(--text);
+            background: var(--text);
+            color: var(--bg);
             text-decoration: none;
         }
-        .btn-small:hover { background: rgba(255,255,255,0.15); }
 
         /* HERO SECTION */
         .hero {
@@ -92,17 +113,24 @@
             font-size: clamp(56px, 14vw, 110px);
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 80px; /* Mesafeyi artırdım */
+            margin-bottom: 80px;
             background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -2px;
         }
+        [data-theme="light"] .hero h1, 
+        [data-theme="light"] .smiley { 
+            background: linear-gradient(to bottom, #1a1a1a 50%, rgba(0,0,0,0.5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .smiley {
             display: inline-block;
             margin-left: 0.1em;
-            font-weight: 400; /* Metinden biraz daha ince, daha zarif */
-            transform: rotate(-5deg); /* Çok hafif, estetik bir "gülümseme" eğimi */
+            font-weight: 400;
+            transform: rotate(-5deg);
             background: linear-gradient(to bottom, #fff 50%, rgba(255,255,255,0.1));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -117,11 +145,11 @@
             letter-spacing: 0.5px;
         }
         .cta-btn {
-            padding: 15px 40px; /* Biraz küçülttüm */
+            padding: 15px 40px;
             background: var(--text);
             color: var(--bg);
             border-radius: 50px;
-            font-size: 16px; /* Yazı boyutunu 18'den 16'ya çektim */
+            font-size: 16px;
             font-weight: 800;
             text-decoration: none;
             transition: 0.4s;
@@ -176,17 +204,25 @@
             background-size: 100% 100%;
             position: relative;
         }
-        .card-img::after {
-            content: 'OK - 30K';
-            position: absolute;
-            top: 15px; right: 15px;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 12px;
+        .card-disabled { opacity: 0.8; cursor: not-allowed; border-style: dashed; border-color: rgba(255,255,255,0.1) !important; }
+        .card-disabled:hover { transform: none !important; }
+        .pulse-badge {
+            background: rgba(255,20,147,0.1);
+            color: var(--primary);
+            padding: 4px 10px;
             border-radius: 50px;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            animation: pulse 2s infinite;
         }
-        .card h3 { font-size: 24px; margin-bottom: 10px; }
-        .card p { color: var(--gray); font-size: 15px; margin-bottom: 25px; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,20,147,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255,20,147,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,20,147,0); }
+        }
         .card-btn {
             display: inline-flex;
             align-items: center;
@@ -202,26 +238,101 @@
             transition: 0.3s;
         }
         .card-btn:hover { background: var(--text); color: var(--bg); }
-
-        /* STEPS SECTION */
-        .steps {
-            background: #080808;
-            padding: 100px 10%;
+        .price-small { font-size: 20px; font-weight: 800; color: var(--primary-light); margin-bottom: 15px; }
+        .price-small span { font-size: 14px; color: var(--gray); text-decoration: line-through; font-weight: 400; margin-left: 8px; }
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ffffff;
+            color: #000000;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .step-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.02);
-        }
-        .step-num { color: var(--primary); font-size: 14px; font-weight: 700; margin-bottom: 10px; display: block; }
-        .step-card h3 { font-size: 28px; margin-bottom: 15px; }
-        .step-card ul { list-style: none; color: var(--gray); }
-        .step-card li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .step-card li::before { content: '●'; color: #00f2fe; font-size: 8px; }
 
-        /* ANIMATIONS */
+        /* FEATURE DESIGNS (Exact copy from product.html) */
+        .demo-section { padding: 40px 10% 100px; }
+        .demo-title { font-size: 40px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+        .section-subtitle { text-align: center; color: var(--gray); margin-bottom: 50px; }
+
+        [data-theme="light"] .demo-title { color: #1a1a1a; }
+
+        .feature-designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .feature-box {
+            position: relative;
+            height: 350px;
+            border-radius: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
+        }
+        .feature-box:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .feature-content { position: relative; z-index: 3; }
+        .feature-content h3 { font-size: 24px; margin-bottom: 10px; font-weight: 800; text-shadow: 0 2px 15px rgba(0,0,0,1); color: #ffffff !important; }
+        .feature-content p { font-size: 14px; color: #ffffff !important; line-height: 1.4; text-shadow: 0 2px 10px rgba(0,0,0,1); opacity: 0.9; }
+        
+        /* 1. Matrix */
+        .matrix-box { background: #000; }
+        #miniMatrix { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; z-index: 1; }
+        
+        /* 2. Scrapbook */
+        .scrapbook-box { background: linear-gradient(135deg, #fff5f5 0%, #f4ecd8 100%); position: relative; overflow: hidden; }
+        .scrapbook-box .feature-content h3, .scrapbook-box .feature-content p { color: #333 !important; text-shadow: none !important; }
+        .polaroid-stack { position: absolute; top: 20px; left: 0; right: 0; height: 180px; z-index: 2; display: flex; justify-content: center; align-items: center; }
+        .polaroid { position: absolute; background: #fff; padding: 8px 8px 25px 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #fff; transition: 0.4s; }
+        .polaroid img { width: 120px; height: 120px; object-fit: cover; }
+        .tape { position: absolute; background-color: rgba(255, 255, 255, 0.6); width: 60px; height: 20px; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); z-index: 3; }
+        .p1 { transform: rotate(-8deg) translate(-30px, -5px); z-index: 2; }
+        .p2 { transform: rotate(12deg) translate(30px, 10px); z-index: 1; }
+        
+        .floating-hearts { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        .heart-mini { position: absolute; color: var(--primary); opacity: 0.3; font-size: 14px; animation: floatHeart 3s infinite ease-in-out; }
+        @keyframes floatHeart {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { opacity: 0.4; }
+            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        }
+
+        /* 3. GIF Box */
+        .gif-box { background: linear-gradient(45deg, #1a0b1c, #050505); }
+        .gif-stack { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .floating-gif { position: absolute; width: 90px; height: 90px; border-radius: 15px; object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.5); animation: floatGif 4s ease-in-out infinite; border: 1px solid rgba(255,255,255,0.1); }
+        .g1 { top: 20%; left: 15%; animation-delay: 0s; --rot: -10deg; }
+        .g2 { top: 30%; right: 15%; animation-delay: 2s; --rot: 10deg; }
+        @keyframes floatGif {
+            0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-10px) rotate(var(--rot)); }
+        }
+        
+        /* 4. WhatsApp */
+        .whatsapp-box { background-color: #0b141a; }
+        .whatsapp-chat { position: absolute; top: 30px; right: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-end; z-index: 1; }
+        .wa-bubble { background-color: #005c4b; padding: 6px; border-radius: 12px 0 12px 12px; max-width: 85%; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .wa-bubble::after { content: ''; position: absolute; top: 0; right: -8px; border-top: 12px solid #005c4b; border-right: 12px solid transparent; }
+        .wa-preview-img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 4px; }
+        .wa-link-info { background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; border-left: 4px solid #06cf9c; position: relative; }
+        .wa-title { font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        .wa-desc { font-size: 10px; color: #d1d7db; line-height: 1.2; margin-bottom: 4px; }
+        .wa-footer { display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: #8696a0; }
+        .wa-url { color: #53bdeb; }
+        .wa-meta { display: flex; align-items: center; gap: 3px; }
+        .wa-ticks { color: #53bdeb; font-size: 12px; font-weight: bold; }
+
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -229,60 +340,31 @@
 
         /* MOBILE FIXES */
         @media (max-width: 768px) {
-            header { padding: 15px 15px; }
+            nav { padding: 15px 15px; }
             .logo { font-size: 18px; }
-            .nav-btns { gap: 6px; }
-            .btn-small { padding: 6px 10px; font-size: 11px; }
-
             .hero { padding: 0 20px; width: 100%; overflow: hidden; justify-content: flex-start; padding-top: 15vh; text-align: center; }
-            .hero-badge { margin-bottom: 50px; transform: translateY(0); } /* Aşağı çektim */
-            .hero h1 { 
-                font-size: clamp(48px, 15vw, 68px); 
-                margin-bottom: 30px; 
-                width: 100%; 
-                text-align: center;
-                transform: translateY(10px); /* Başlığı hafif aşağı aldım */
-            } 
-            .cta-btn { 
-                padding: 15px 35px; 
-                font-size: 15px; 
-                width: auto; 
-                min-width: 180px; 
-                margin-top: 170px; /* Butonu daha da aşağı, dairenin tam içine aldım */
-                z-index: 10;
-            }
-            
-            .globe-bottom { 
-                width: 160%; 
-                height: 400px; 
-                bottom: -80px; 
-                left: -30%; 
-                z-index: 1;
-            }
-
-            .products-grid { 
-                grid-template-columns: 1fr; 
-                padding: 0 30px 80px;
-                gap: 25px;
-            }
-            .card { padding: 30px; }
-            .section-title { padding: 100px 30px 40px; font-size: 32px; }
-
-            .steps { padding: 100px 30px; }
-            .step-card { padding: 40px; margin-bottom: 30px; }
-            .step-card h3 { font-size: 24px; }
+            .hero h1 { font-size: clamp(40px, 12vw, 60px); margin-bottom: 20px; } 
+            .cta-btn { margin-top: 150px; }
+            .products-grid { grid-template-columns: 1fr; gap: 20px; padding: 0 20px 60px; }
+            .card { padding: 20px; border-radius: 25px; }
+            .card h3 { font-size: 18px; margin-bottom: 8px; height: auto; }
+            .card-btn { padding: 12px 15px; font-size: 14px; border-radius: 12px; }
+            .card .price-small { font-size: 18px; margin-bottom: 12px; }
+            .demo-section { padding: 40px 15px 100px; }
+            .demo-title { font-size: 28px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <nav>
         <div class="logo">DG</div>
-        <div class="nav-btns">
-            <a href="#" class="btn-small">Yönetim</a>
-            <a href="#" class="btn-small" style="background: var(--text); color: var(--bg);">Giriş Yap</a>
+        <div class="nav-links">
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+                <span id="themeIcon">🌙</span> <span id="themeText">Karanlık</span>
+            </button>
         </div>
-    </header>
+    </nav>
 
     <section class="hero">
         <canvas id="matrixCanvas"></canvas>
@@ -296,76 +378,118 @@
     <section id="products">
         <h2 class="section-title">En Popüler Şablonlar</h2>
         <div class="products-grid">
-            <!-- ÜRÜNÜMÜZ -->
             <div class="card">
+                <div class="card-badge">Popüler 🔥</div>
                 <div class="card-img" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.jpeg');"></div>
-                <h3>Lovebombing: Unutulmaz Sürpriz</h3>
-                <p>Ona kendini dünyanın merkezindeymiş gibi hissettirin! Matrix girişi, parlayan kalp ve 3D dijital anı albümü ile çarpıcı bir dijital hediye deneyimi.</p>
+                <h3>Lovebombing: Sevgili Anı Defteri</h3>
+                <div class="price-small">549₺ <span>899₺</span></div>
                 <a href="create.html" class="card-btn">✨ Şimdi oluştur</a>
                 <a href="product.html" class="card-btn" style="margin-top: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.1);">↗ Ürünü Gör</a>
             </div>
 
-            <div class="card">
-                <div class="card-img" style="filter: grayscale(1); opacity: 0.5;"></div>
-                <h3>Yıldönümü Klasörü</h3>
-                <p>Yakında geliyor... İlişkinizin en özel anlarını saklayacağınız dijital bir kasa.</p>
-                <a href="#" class="card-btn" style="pointer-events: none; opacity: 0.3;">🔒 Yakında</a>
+            <div class="card card-disabled">
+                <div class="card-img" style="background: linear-gradient(45deg, #111, #222); display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div style="font-size: 40px; opacity: 0.2;">❤️</div>
+                    <div style="position: absolute; bottom: 10px; left: 10px;" class="pulse-badge">
+                        <span style="width: 6px; height: 6px; background: var(--primary); border-radius: 50%;"></span>
+                        Hazırlanıyor
+                    </div>
+                </div>
+                <h3>Yıldönümü Hediyesi</h3>
+                <div class="price-small" style="opacity: 0.5;">Çok yakında...</div>
+                <a href="#" class="card-btn" style="background: rgba(255,255,255,0.03); color: var(--gray); border: 1px solid rgba(255,255,255,0.05);">🔒 Yakında</a>
             </div>
         </div>
     </section>
 
-    <section class="steps">
-        <h2 style="font-size: 40px; margin-bottom: 50px; text-align: center;">Hediye oluşturmak için sadece 3 adım</h2>
+    <section class="demo-section">
+        <h2 class="demo-title">En Tatlı Anı Defteri</h2>
+        <p class="section-subtitle">Hediyeni unutulmaz kılan dijital dokunuşlar</p>
         
-        <div class="step-card">
-            <span class="step-num">ADIM 1</span>
-            <h3>Bir örnek seçin</h3>
-            <ul>
-                <li>Birçok konu mevcut</li>
-                <li>Sadece seç, tasarla değil</li>
-                <li>Koda gerek yok</li>
-            </ul>
+        <div class="feature-designs-grid">
+            <!-- 1. Matrix -->
+            <div class="feature-box matrix-box">
+                <canvas id="miniMatrix"></canvas>
+                <div class="feature-content">
+                    <h3>Matrix Girişi</h3>
+                    <p>Sana özel gizli mesajların süzüldüğü sinematik bir açılış.</p>
+                </div>
+            </div>
+
+            <!-- 2. Scrapbook -->
+            <div class="feature-box scrapbook-box">
+                <div class="floating-hearts">
+                    <span class="heart-mini" style="top: 20%; left: 10%;">❤️</span>
+                    <span class="heart-mini" style="top: 40%; left: 80%; animation-delay: 1s;">❤️</span>
+                    <span class="heart-mini" style="top: 70%; left: 20%; animation-delay: 0.5s;">❤️</span>
+                </div>
+                <div class="polaroid-stack">
+                    <div class="polaroid p2">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/resim2.jfif" alt="Anı 2">
+                    </div>
+                    <div class="polaroid p1">
+                        <div class="tape"></div>
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/resim1.jfif" alt="Anı 1">
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Dijital Anı Defteri</h3>
+                    <p>Fotoğrafların ve notlarınla hazırlanan 3D nostaljik albüm.</p>
+                </div>
+            </div>
+
+            <!-- 3. GIFler -->
+            <div class="feature-box gif-box">
+                <div class="gif-stack">
+                    <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png" alt="G1" class="floating-gif g1">
+                    <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/2gif.png" alt="G2" class="floating-gif g2">
+                </div>
+                <div class="feature-content">
+                    <h3>Sevimli GIF'ler</h3>
+                    <p>Onu çokça gülümsetecek eğlenceli ve tatlı detaylar hazırlayın.</p>
+                </div>
+            </div>
+
+            <!-- 4. WhatsApp -->
+            <div class="feature-box whatsapp-box">
+                <div class="whatsapp-chat">
+                    <div class="wa-bubble">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/resim3.jfif" alt="WA" class="wa-preview-img">
+                        <div class="wa-link-info">
+                            <div class="wa-title">Sana Özel Bir Sürpriz! 🎁</div>
+                            <div class="wa-desc">Bu gizemli hediyeyi açmak için tıkla...</div>
+                            <div class="wa-footer">
+                                <span class="wa-url">gulumsediye.com</span>
+                                <div class="wa-meta">
+                                    <span>14:45</span>
+                                    <span class="wa-ticks">✓✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Şık Önizleme</h3>
+                    <p>Paylaştığında merak uyandıran WhatsApp mesaj tasarımı.</p>
+                </div>
+            </div>
         </div>
 
-        <div class="step-card">
-            <span class="step-num">ADIM 2</span>
-            <h3>İçeriği girin</h3>
-            <ul>
-                <li>Dileği girin</li>
-                <li>Daha fazla resim</li>
-                <li>Efektleri seçin</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <span class="step-num">ADIM 3</span>
-            <h3>Bağlantı ve QR kodu oluşturun</h3>
-            <ul>
-                <li>Bağlantı web sitesi hazır</li>
-                <li>Güzel QR kodu</li>
-                <li>Birkaç saniye içinde gönder</li>
-            </ul>
-        </div>
-
-        <div style="text-align: center; margin-top: 60px;">
-            <h2 style="font-size: 32px; margin-bottom: 30px;">Yaşam duygusuyla bir hediye oluşturun.</h2>
-            <a href="lovebombing.html" class="cta-btn" style="background: transparent; border: 2px solid var(--text); color: #fff;">Oluşturmaya başla</a>
         </div>
     </section>
 
-    <footer style="padding: 50px; text-align: center; color: var(--gray); font-size: 14px;">
-        <p>Manifesto | Yardım | İletişim</p>
-        <p style="margin-top: 10px;">&copy; 2026 Sevgili Hediye. Tüm hakları saklıdır.</p>
+    <footer>
+        <p>&copy; 2026 Sevgili Hediye. Tüm hakları saklıdır.</p>
     </footer>
 
     <script>
+        const characters = 'GÜLÜMSEDİYE····*··'.split('');
+        
+        // MAIN HERO MATRIX
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
-
-        let width, height, columns;
+        let width, height, columns, drops;
         const fontSize = 11;
-        const characters = 'GÜLÜMSEDİYE····*··'.split('');
-        let drops = [];
 
         function initMatrix() {
             const hero = document.querySelector('.hero');
@@ -378,27 +502,92 @@
         function drawMatrix() {
             ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
             ctx.fillRect(0, 0, width, height);
-
             ctx.font = fontSize + 'px Outfit';
-            
             for (let i = 0; i < drops.length; i++) {
                 const text = characters[Math.floor(Math.random() * characters.length)];
-                
-                // Mix of primary pink and white for depth
                 ctx.fillStyle = Math.random() > 0.9 ? '#fff' : '#ff1493';
-                
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
 
-        initMatrix();
-        window.addEventListener('resize', initMatrix);
-        setInterval(drawMatrix, 50);
+        // MINI MATRIX (For Feature Box)
+        let miniDrops = [];
+        let mCanvas, mCtx;
+
+        function initMiniMatrix() {
+            mCanvas = document.getElementById('miniMatrix');
+            if(!mCanvas) return;
+            mCtx = mCanvas.getContext('2d');
+            mCanvas.width = mCanvas.parentElement.clientWidth;
+            mCanvas.height = mCanvas.parentElement.clientHeight;
+            const cols = Math.floor(mCanvas.width / 15);
+            miniDrops = Array(cols).fill(1);
+        }
+
+        let lastMiniDraw = 0;
+        const miniSpeed = 60; // Daha yüksek = Daha yavaş (60ms bekleme)
+
+        function drawMiniMatrix(timestamp) {
+            if(!mCanvas || !mCtx) return;
+            if (timestamp - lastMiniDraw < miniSpeed) return;
+            lastMiniDraw = timestamp;
+
+            mCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mCtx.fillStyle = '#ff1493';
+            mCtx.font = '15px monospace';
+            miniDrops.forEach((y, i) => {
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                mCtx.fillText(text, i * 15, y * 15);
+                if (y * 15 > mCanvas.height && Math.random() > 0.975) miniDrops[i] = 0;
+                miniDrops[i]++;
+            });
+        }
+
+        function animate(timestamp) {
+            drawMatrix();
+            drawMiniMatrix(timestamp);
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('load', () => {
+            initMatrix();
+            initMiniMatrix();
+            animate();
+        });
+
+        window.addEventListener('resize', () => {
+            initMatrix();
+            initMiniMatrix();
+        });
+
+        // THEME TOGGLE
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeUI(newTheme);
+        }
+
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (theme === 'light') {
+                icon.textContent = '☀️';
+                text.textContent = 'Aydınlık';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Karanlık';
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
     </script>
 </body>
 </html>
