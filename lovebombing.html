@@ -227,46 +227,70 @@ canvas{position:fixed;inset:0;z-index:1;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// SUPABASE CONNECTION (Hata korumalı)
-try {
-  const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_y2Txq-u11881-881881-881881"; // User's key
-  if (window.supabase) {
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// SUPABASE CONNECTION
+const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
+const SUPABASE_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+let CONFIG = {
+  matrixMessage: "YÜKLENİYOR...", 
+  phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
+  pages: []
+};
+
+async function loadGiftData() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const giftId = urlParams.get('id');
+
+  if (giftId && supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('id_custom', giftId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        CONFIG.matrixMessage = data.matrix_message || "MUTLU YILLAR";
+        CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
+        
+        // Transform memories to pages format
+        if (data.memories && Array.isArray(data.memories)) {
+          CONFIG.pages = data.memories.map((m, idx) => ({
+            photoFront: m.photo,
+            photoBack: m.photo, // For now use same photo for back or a default
+            message: m.note || `Anı #${idx + 1}`
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Veri yükleme hatası:", err);
+      // Fallback to defaults or show error
+      CONFIG.matrixMessage = "HATA OLUŞTU";
+    }
   }
-} catch (e) {
-  console.log("Supabase baglantisi su an beklemede.");
+  
+  // Start the experience after data is loaded
+  startExperience();
 }
 
-const CONFIG = {
-  matrixMessage: "HAPPY BIRTHDAY", 
-  phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
-  celebrationGif: "https://media.tenor.com/FeEEBfHmYM0AAAAC/happy-birthday-cat.gif", // Gitar çalan kedi
-  
-  pages: [
-    { 
-      photoFront: 'foto1.jpg', 
-      photoBack: 'foto2.jpg', 
-      message: 'Bizim Hikayemiz Burada Başlıyor 💝' 
-    },
-    { 
-      photoFront: 'foto3.jpg', 
-      photoBack: 'foto4.jpg', 
-      message: 'En Sevdiğim Anılarımızdan Biri ✨' 
-    },
-    { 
-      photoFront: 'foto1.jpg', 
-      photoBack: 'foto3.jpg', 
-      message: 'Seni Her Geçen Gün Daha Çok Seviyorum 💕' 
-    }
-  ]
-};
+function startExperience() {
+  matrixChars = CONFIG.matrixMessage.split('');
+  startMatrix();
+  startCountdown();
+}
+
+// Initial state - will be updated by loadGiftData
+let matrixChars = "GÜLÜMSEDİYE".split(''); 
+window.onload = loadGiftData;
+
 
 // --- MATRIX ---
 const mc = document.getElementById('matrixCanvas');
 const mctx = mc.getContext('2d');
-let matrixCols, matrixDrops;
-const matrixChars = CONFIG.matrixMessage.split('');
+let matrixInt;
 
 function initMatrix(){
   mc.width = window.innerWidth; mc.height = window.innerHeight;
@@ -287,8 +311,10 @@ function drawMatrix(){
     matrixDrops[i]++;
   }
 }
-initMatrix();
-let matrixInt = setInterval(drawMatrix, 50);
+function startMatrix() {
+  initMatrix();
+  matrixInt = setInterval(drawMatrix, 50);
+}
 
 // --- STARS ---
 const sc = document.getElementById('starsCanvas');
@@ -311,11 +337,14 @@ function drawStars(){
 // --- FLOW ---
 let count = 3;
 const cd = document.getElementById('countdown');
-const cdInt = setInterval(()=>{
-  count--;
-  if(count > 0) { cd.textContent = count; }
-  else { clearInterval(cdInt); goPhase2(); }
-}, 1000);
+let cdInt;
+function startCountdown() {
+  cdInt = setInterval(()=>{
+    count--;
+    if(count > 0) { cd.textContent = count; }
+    else { clearInterval(cdInt); goPhase2(); }
+  }, 1000);
+}
 
 function goPhase2(){
   document.getElementById('phase1').classList.add('hidden');

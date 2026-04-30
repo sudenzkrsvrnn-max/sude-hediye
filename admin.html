@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli | Gülümse Diye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #ff1493;
+            --primary-light: #ff69b4;
+            --text: #ffffff;
+            --gray: #a0a0a0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            padding: 40px;
+        }
+
+        /* LOGIN */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #loginOverlay h1 { font-size: 28px; font-weight: 800; color: var(--primary); }
+        #loginOverlay p { color: var(--gray); font-size: 14px; }
+
+        #adminPass {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            width: 280px;
+            text-align: center;
+            font-size: 18px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 4px;
+            outline: none;
+        }
+        #adminPass:focus { border-color: var(--primary); }
+
+        #loginBtn {
+            padding: 14px 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: 0.3s;
+        }
+        #loginBtn:hover { background: var(--primary-light); transform: translateY(-2px); }
+        #loginError { color: #ff4444; font-size: 13px; display: none; }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary-light); }
+        .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* REFRESH */
+        #refreshBtn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--gray);
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        #refreshBtn:hover { border-color: var(--primary); color: white; }
+
+        /* TABLE */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th {
+            background: rgba(255,255,255,0.03);
+            padding: 18px 20px;
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        td { padding: 18px 20px; border-top: 1px solid rgba(255,255,255,0.04); font-size: 14px; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .badge-id {
+            background: rgba(255,20,147,0.1);
+            color: var(--primary-light);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .btn-view {
+            padding: 8px 18px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .btn-view:hover { background: var(--primary-light); }
+
+        .date { color: var(--gray); font-size: 12px; }
+        .msg-cell { font-weight: 600; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        #statusMsg {
+            text-align: center;
+            padding: 50px;
+            color: var(--gray);
+            font-size: 15px;
+        }
+        .empty-icon { font-size: 48px; display: block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <h1>🎁 GÜLÜMSE DİYE</h1>
+    <p>Admin Paneli — Sadece yetkili erişim</p>
+    <input type="password" id="adminPass" placeholder="••••••••" autofocus>
+    <button id="loginBtn" onclick="checkPass()">Giriş Yap</button>
+    <span id="loginError">❌ Yanlış şifre!</span>
+</div>
+
+<!-- DASHBOARD -->
+<header>
+    <div class="logo">📊 Admin Dashboard</div>
+    <div style="display:flex; gap:15px; align-items:center;">
+        <button id="refreshBtn" onclick="loadSubmissions()">↻ Yenile</button>
+        <div class="stat-card">
+            <div class="stat-value" id="totalCount">—</div>
+            <div class="stat-label">Toplam Hediye</div>
+        </div>
+    </div>
+</header>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>ID</th>
+                <th>Açılış Mesajı</th>
+                <th>Anı Sayısı</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    <div id="statusMsg"><span class="empty-icon">⏳</span>Veriler yükleniyor...</div>
+</div>
+
+<script>
+    // ─── GİRİŞ ───────────────────────────────────────────────
+    const ADMIN_PASS = "admin123";
+
+    document.getElementById('adminPass').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkPass();
+    });
+
+    function checkPass() {
+        const val = document.getElementById('adminPass').value;
+        const errEl = document.getElementById('loginError');
+        if (val === ADMIN_PASS) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            initSupabaseAndLoad();
+        } else {
+            errEl.style.display = 'block';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('adminPass').focus();
+        }
+    }
+
+    // ─── SUPABASE ────────────────────────────────────────────
+    const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
+    let sb = null;
+
+    function initSupabaseAndLoad() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = function() {
+            sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            loadSubmissions();
+        };
+        script.onerror = function() {
+            document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">❌</span>Supabase yüklenemedi. İnternet bağlantısını kontrol et.';
+        };
+        document.head.appendChild(script);
+    }
+
+    // ─── VERİ ÇEKME ──────────────────────────────────────────
+    async function loadSubmissions() {
+        document.getElementById('statusMsg').style.display = 'block';
+        document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">⏳</span>Veriler yükleniyor...';
+        document.getElementById('tableBody').innerHTML = '';
+
+        if (!sb) return;
+
+        try {
+            const { data, error } = await sb
+                .from('submissions')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            renderTable(data || []);
+        } catch (err) {
+            document.getElementById('statusMsg').innerHTML = `<span class="empty-icon">❌</span>Hata: ${err.message}`;
+        }
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        const statusMsg = document.getElementById('statusMsg');
+
+        document.getElementById('totalCount').textContent = data.length;
+
+        if (data.length === 0) {
+            statusMsg.innerHTML = '<span class="empty-icon">📭</span>Henüz hiç başvuru yok.';
+            return;
+        }
+
+        statusMsg.style.display = 'none';
+        tbody.innerHTML = '';
+
+        data.forEach(item => {
+            const tr = document.createElement('tr');
+            const date = item.created_at
+                ? new Date(item.created_at).toLocaleString('tr-TR')
+                : '—';
+            const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
+
+            tr.innerHTML = `
+                <td class="date">${date}</td>
+                <td><span class="badge-id">#${item.id_custom || '—'}</span></td>
+                <td class="msg-cell">${item.matrix_message || '—'}</td>
+                <td>${memCount} fotoğraf</td>
+                <td>
+                    <a href="lovebombing.html?id=${item.id_custom}" target="_blank" class="btn-view">Görüntüle ↗</a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+</script>
+
+</body>
+</html>
