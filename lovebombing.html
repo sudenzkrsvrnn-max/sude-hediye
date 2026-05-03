@@ -126,173 +126,89 @@ canvas{position:fixed;inset:0;z-index:1;}
 @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* PHASE 5: HEART PHOTO WALL */
-#phase5 { background: transparent; overflow: hidden; }
+#phase5 { background: #000; overflow: hidden; }
 .heart-wall {
   position: relative; width: 100vw; height: 100vh;
   display: flex; align-items: center; justify-content: center;
 }
 .mini-photo {
-  position: absolute;
-  border: 4px solid #fff;
-  border-radius: 18px;
-  background-size: cover;
+  position: absolute; 
+  width: min(28vw, 140px); 
+  height: min(28vw, 140px);
+  border: 3px solid #fff; 
+  border-radius: 35px;
+  background-size: cover; 
   background-position: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-  opacity: 0;
-  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+  box-shadow: 0 0 25px rgba(255, 20, 147, 0.7), 0 0 50px rgba(255, 20, 147, 0.4);
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0; transform: scale(0);
+  z-index: 50;
 }
-.mini-photo::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0; height: 45%;
-  background: linear-gradient(to top, rgba(255,140,190, 0.9), transparent);
-  border-radius: 0 0 13px 13px;
-  pointer-events: none;
-  z-index: 1;
-}
-.mini-photo::after {
-  content: '🫶';
-  position: absolute;
-  bottom: 6px; left: 0; right: 0;
-  text-align: center;
-  font-size: 18px;
-  color: #fff;
-  pointer-events: none;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-  z-index: 2;
-}
-.mini-photo:hover { 
-  transform: scale(1.15) rotate(0deg) !important; 
-  z-index: 100 !important; 
-  box-shadow: 0 0 20px #fff, 0 0 40px rgba(255,20,147,0.8); 
-}
+.mini-photo:hover { transform: scale(1.2) rotate(5deg) !important; z-index: 100; box-shadow: 0 0 40px #fff; }
 
 #finalMessage {
   position: absolute;
-  bottom: 8%;
+  bottom: 12%;
   font-family: 'Dancing Script', cursive;
-  font-size: min(10vw, 42px); 
+  font-size: min(12vw, 56px); 
   color: #fff;
-  text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493, 0 0 30px #ff1493;
+  text-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
   opacity: 0;
   z-index: 60;
   text-align: center;
   width: 100%;
+  transition: all 1.5s ease;
 }
+
 #replayBtn { 
   position: absolute;
   bottom: 5%;
-  background: rgba(255,255,255,0.1); 
-  border: 1px solid rgba(255,255,255,0.2); 
+  background: rgba(0, 0, 0, 0.5); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
   color: #fff; 
-  padding: 8px 16px; 
-  border-radius: 20px; 
+  padding: 10px 24px; 
+  border-radius: 30px; 
   cursor: pointer; 
   z-index: 60;
-}
-
-
-/* ===== ROTATE SCREEN OVERLAY ===== */
-#rotateOverlay {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  transition: opacity 0.7s ease;
-}
-#rotateOverlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* The combined phone+arrow icon wrapper */
-.ro-icon-wrap {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Phone rect that tilts */
-.ro-phone {
-  animation: roTilt 2s ease-in-out infinite;
-  transform-origin: center center;
-}
-@keyframes roTilt {
-  0%   { transform: rotate(0deg); }
-  20%  { transform: rotate(0deg); }
-  55%  { transform: rotate(-90deg); }
-  80%  { transform: rotate(-90deg); }
-  100% { transform: rotate(0deg); }
-}
-
-/* Circular arrow that spins once per cycle */
-.ro-arc {
-  position: absolute;
-  inset: 0;
-  animation: roArcSpin 2s ease-in-out infinite;
-  transform-origin: center center;
-}
-@keyframes roArcSpin {
-  0%   { opacity: 0.3; transform: rotate(0deg); }
-  20%  { opacity: 1;   transform: rotate(0deg); }
-  55%  { opacity: 1;   transform: rotate(-90deg); }
-  80%  { opacity: 0.6; transform: rotate(-90deg); }
-  100% { opacity: 0.3; transform: rotate(0deg); }
-}
-
-/* Text */
-.ro-label {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
   font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  letter-spacing: 1.5px;
-  text-align: center;
-  animation: roBlink 2s ease-in-out infinite;
+  font-size: 14px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
 }
-@keyframes roBlink {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1; }
+#replayBtn:hover { background: rgba(255, 255, 255, 0.1); border-color: #fff; transform: scale(1.05); }
+
+.confetti {
+  position: fixed; width: 10px; height: 10px; z-index: 1000;
+  pointer-events: none; border-radius: 2px;
 }
 
-/* Hide content while portrait - only applies on mobile */
-@media (max-width: 1024px) {
-  body.portrait-mode > canvas,
-  body.portrait-mode > .phase {
-    visibility: hidden;
-    pointer-events: none;
-  }
+.bottom-line {
+  position: absolute;
+  bottom: 2%;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  box-shadow: 0 0 15px #fff;
+  opacity: 0.5;
+  z-index: 55;
 }
+
+.heart-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--primary);
+  filter: blur(120px);
+  border-radius: 50%;
+  opacity: 0.4;
+  z-index: 10;
+}
+
+
 </style>
 </head>
 <body>
-
-<!-- ROTATE OVERLAY -->
-<div id="rotateOverlay" class="hidden">
-  <div class="ro-icon-wrap">
-    <!-- SVG: phone body + circular rotation arrows -->
-    <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path class="ro-arc" d="M70 30 A30 30 0 0 0 30 30" stroke="#ff69b4" stroke-width="4" stroke-linecap="round"/>
-      <polygon class="ro-arc" points="26,30 34,30 30,36" fill="#ff69b4"/>
-      <path class="ro-arc" d="M30 70 A30 30 0 0 0 70 70" stroke="#ff69b4" stroke-width="4" stroke-linecap="round"/>
-      <polygon class="ro-arc" points="74,70 66,70 70,64" fill="#ff69b4"/>
-      <rect class="ro-phone" x="35" y="20" width="30" height="60" rx="4" stroke="#fff" stroke-width="3"/>
-      <line class="ro-phone" x1="42" y1="26" x2="58" y2="26" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-      <circle class="ro-phone" cx="50" cy="74" r="2" fill="#fff"/>
-    </svg>
-  </div>
-  <div class="ro-label">LÜTFEN TELEFONU YAN ÇEVİRİN</div>
-  <p class="ro-text" style="font-size: 14px; color: #ccc; max-width: 80%; text-align: center; line-height: 1.5; margin-top: 15px;">En iyi deneyim için telefonunuzu yatay tutun veya masaüstü bilgisayar kullanın.</p>
-  <button style="background: transparent; border: 1px solid #ff69b4; color: #ff69b4; padding: 8px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; text-transform: uppercase; margin-top: 20px;" onclick="forceStart()">Atla (Önerilmez)</button>
-</div>
 
 <canvas id="matrixCanvas"></canvas>
 <canvas id="starsCanvas" style="display:none;"></canvas>
@@ -331,56 +247,30 @@ canvas{position:fixed;inset:0;z-index:1;}
       </div>
       <div class="instruction">Sayfaları çevirmek için tıkla veya kaydır 📖</div>
     </div>
+    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Sürprizi Gör ❤️</button>
   </div>
 </div>
 
 <!-- PHASE 5 -->
 <div class="phase hidden" id="phase5">
   <div class="heart-wall" id="heartWall"></div>
+  <div class="heart-glow"></div>
   <h2 id="finalMessage">Seni Çok Seviyorum! ✨</h2>
+  <div class="bottom-line"></div>
   <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
 </div>
 
-<!-- CRITICAL: forceStart standalone - must work even if main script fails -->
-<script>
-window.forceStart = function() {
-  var o = document.getElementById('rotateOverlay');
-  if (o) { o.style.display = 'none'; o.classList.add('hidden'); }
-  document.body.classList.remove('portrait-mode');
-  window._skipPressed = true;
-  if (typeof window._doStart === 'function') window._doStart();
-};
-</script>
-
-<!-- LIBS (async = don't block main script) -->
-<script async src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// forceStart MUST be defined first — before anything that might throw
-window.forceStart = function() {
-  try {
-    var overlay = document.getElementById('rotateOverlay');
-    if (overlay) { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
-    document.body.classList.remove('portrait-mode');
-    if (window.CONFIG) window.CONFIG._go = true;
-    if (window._startExperience) window._startExperience();
-    else window._pendingStart = true;
-  } catch(e) { console.error('forceStart error:', e); }
-};
 // SUPABASE CONNECTION
 const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
 const SUPABASE_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
-let supabase = null;
-try {
-  supabase = (window.supabase && window.supabase.createClient)
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-    : null;
-} catch(e) {
-  console.warn('Supabase başlatılamadı, offline modda çalışılıyor:', e.message);
-}
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-let CONFIG = window.CONFIG = {
+let CONFIG = {
   matrixMessage: "YÜKLENİYOR...", 
   phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
   pages: []
@@ -390,13 +280,31 @@ async function loadGiftData() {
   const urlParams = new URLSearchParams(window.location.search);
   const giftId = urlParams.get('id');
 
+  let started = false;
+  const safeStart = () => {
+    if (!started) {
+      started = true;
+      startExperience();
+    }
+  };
+
+  // Safety timeout to ensure experience starts even if Supabase hangs
+  const timeoutId = setTimeout(() => {
+    console.warn("Veri yükleme zaman aşımına uğradı, varsayılanlarla devam ediliyor...");
+    safeStart();
+  }, 3000);
+
   if (giftId && supabase) {
     try {
-      const { data, error } = await supabase
-        .from('submissions')
-        .select('*')
-        .eq('id_custom', giftId)
-        .single();
+      // Use Promise.race to handle Supabase timeout
+      const { data, error } = await Promise.race([
+        supabase
+          .from('submissions')
+          .select('*')
+          .eq('id_custom', giftId)
+          .single(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2500))
+      ]);
 
       if (error) throw error;
 
@@ -404,11 +312,10 @@ async function loadGiftData() {
         CONFIG.matrixMessage = data.matrix_message || "MUTLU YILLAR";
         CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
         
-        // Transform memories to pages format
         if (data.memories && Array.isArray(data.memories)) {
           CONFIG.pages = data.memories.map((m, idx) => ({
             photoFront: m.photo,
-            photoBack: m.photo, // For now use same photo for back or a default
+            photoBack: m.photo,
             message: m.note || `Anı #${idx + 1}`
           }));
         }
@@ -418,117 +325,82 @@ async function loadGiftData() {
       CONFIG.matrixMessage = "HATA OLUŞTU";
     }
   }
-
-  // Fallback if no pages were loaded
-  if (!CONFIG.pages || CONFIG.pages.length === 0) {
-    CONFIG.pages = [
-      { photoFront: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto1.jpg', photoBack: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto1.jpg', message: 'İlk anımız...' },
-      { photoFront: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto2.jpg', photoBack: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto2.jpg', message: 'Gülüşün...' },
-      { photoFront: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto3.jpg', photoBack: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto3.jpg', message: 'Beraberken her şey güzel' },
-      { photoFront: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto4.jpg', photoBack: 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto4.jpg', message: 'Seni çok seviyorum!' }
-    ];
-  }
   
-  CONFIG._loaded = true;
-  if (!CONFIG._started) {
-    tryStartExperience();
-  }
+  clearTimeout(timeoutId);
+  safeStart();
 }
 
-function isTouchDevice() {
-  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-}
 
-function forceStart() {
-  const overlay = document.getElementById('rotateOverlay');
-  overlay.classList.add('hidden');
-  CONFIG._go = true;
-  tryStartExperience();
-}
-
-function checkOrientation() {
-  const overlay = document.getElementById('rotateOverlay');
-  
-  if (!isTouchDevice()) {
-    overlay.classList.add('hidden');
-    document.body.classList.remove('portrait-mode');
-    CONFIG._go = true;
-    tryStartExperience();
-    return;
-  }
-
-  const isLandscape = window.innerWidth > window.innerHeight;
-  if (isLandscape || CONFIG._go) {
-    overlay.classList.add('hidden');
-    document.body.classList.remove('portrait-mode');
-    tryStartExperience();
-  } else {
-    if (!CONFIG._started) {
-      overlay.classList.remove('hidden');
-      document.body.classList.add('portrait-mode');
-    }
-  }
-}
-
-function tryStartExperience() {
-  const isLandscape = window.innerWidth > window.innerHeight;
-  if (CONFIG._loaded && (isLandscape || CONFIG._go || !isTouchDevice()) && !CONFIG._started) {
-    CONFIG._started = true;
-    startExperience();
-  }
-}
-
-window._startExperience = function startExperience() {
-  matrixChars = (window.CONFIG && window.CONFIG.matrixMessage)
-    ? window.CONFIG.matrixMessage.split('') : "GULUMSEDİYE".split('');
+function startExperience() {
+  matrixChars = CONFIG.matrixMessage.split('');
   startMatrix();
   startCountdown();
-};
-function startExperience() { window._startExperience(); }
-window._doStart = startExperience;
+}
 
 // Initial state
-let matrixChars = "GÜLÜMSEDİYE".split('');
+let matrixChars = "GÜLÜMSEDİYE".split(''); 
+
+// Start the loading process immediately
+loadGiftData().catch(err => {
+  console.error("Başlatma hatası:", err);
+  startExperience(); // Fallback to start even if loading fails
+});
+
+window.addEventListener('resize', () => { 
+  if(typeof initMatrix === 'function') initMatrix(); 
+  if(typeof initStars === 'function') initStars(); 
+});
 
 
 // --- MATRIX ---
-const mc = document.getElementById('matrixCanvas');
-const mctx = mc.getContext('2d');
 let matrixInt;
-
 function initMatrix(){
+  const mc = document.getElementById('matrixCanvas');
+  if(!mc) return;
   mc.width = window.innerWidth; mc.height = window.innerHeight;
   const fontSize = 16;
-  matrixCols = Math.floor(mc.width / fontSize);
-  matrixDrops = Array(matrixCols).fill(1);
-}
-function drawMatrix(){
-  mctx.fillStyle = 'rgba(10,10,26,0.1)';
-  mctx.fillRect(0,0,mc.width,mc.height);
-  const fontSize = 16;
-  mctx.font = `900 ${fontSize}px Rajdhani`;
-  for(let i=0; i<matrixDrops.length; i++){
-    const ch = matrixChars[Math.floor(Math.random()*matrixChars.length)];
-    mctx.fillStyle = Math.random() > 0.8 ? '#fff' : '#ff1493';
-    mctx.fillText(ch, i*fontSize, matrixDrops[i]*fontSize);
-    if(matrixDrops[i]*fontSize > mc.height && Math.random() > 0.975) matrixDrops[i] = 0;
-    matrixDrops[i]++;
-  }
+  const matrixCols = Math.floor(mc.width / fontSize);
+  const matrixDrops = Array(matrixCols).fill(1);
+  return {mc, fontSize, matrixCols, matrixDrops};
 }
 function startMatrix() {
-  initMatrix();
-  matrixInt = setInterval(drawMatrix, 50);
+  const mData = initMatrix();
+  if(!mData) return;
+  const {mc, fontSize, matrixCols, matrixDrops} = mData;
+  const mctx = mc.getContext('2d');
+  
+  matrixInt = setInterval(() => {
+    mctx.fillStyle = 'rgba(10,10,26,0.1)';
+    mctx.fillRect(0,0,mc.width,mc.height);
+    mctx.font = `900 ${fontSize}px Rajdhani`;
+    for(let i=0; i<matrixDrops.length; i++){
+      const ch = matrixChars[Math.floor(Math.random()*matrixChars.length)];
+      mctx.fillStyle = Math.random() > 0.8 ? '#fff' : '#ff1493';
+      mctx.fillText(ch, i*fontSize, matrixDrops[i]*fontSize);
+      if(matrixDrops[i]*fontSize > mc.height && Math.random() > 0.975) matrixDrops[i] = 0;
+      matrixDrops[i]++;
+    }
+  }, 50);
 }
 
 // --- STARS ---
-const sc = document.getElementById('starsCanvas');
-const sctx = sc.getContext('2d');
 let stars = [];
 function initStars(){
+  const sc = document.getElementById('starsCanvas');
+  if(!sc) return;
   sc.width = window.innerWidth; sc.height = window.innerHeight;
-  stars = Array.from({length:200}, ()=>({x:Math.random()*sc.width, y:Math.random()*sc.height, r:Math.random()*1.5, a:Math.random(), s:Math.random()*0.02}));
+  stars = Array.from({length:150}, ()=>({
+    x:Math.random()*sc.width, 
+    y:Math.random()*sc.height, 
+    r:Math.random()*2, 
+    a:Math.random(), 
+    s:Math.random()*0.01 + 0.005
+  }));
 }
 function drawStars(){
+  const sc = document.getElementById('starsCanvas');
+  if(!sc) return;
+  const sctx = sc.getContext('2d');
   sctx.clearRect(0,0,sc.width,sc.height);
   stars.forEach(s=>{
     s.a += s.s; if(s.a>1||s.a<0) s.s*=-1;
@@ -540,15 +412,21 @@ function drawStars(){
 
 // --- FLOW ---
 let count = 3;
-const cd = document.getElementById('countdown');
 let cdInt;
 function startCountdown() {
+  const cd = document.getElementById('countdown');
   cdInt = setInterval(()=>{
     count--;
-    if(count > 0) { cd.textContent = count; }
-    else { clearInterval(cdInt); goPhase2(); }
+    if(cd) {
+      if(count > 0) { cd.textContent = count; }
+      else { clearInterval(cdInt); goPhase2(); }
+    } else if(count <= 0) {
+      clearInterval(cdInt);
+      goPhase2();
+    }
   }, 1000);
 }
+
 
 function goPhase2(){
   document.getElementById('phase1').classList.add('hidden');
@@ -610,14 +488,17 @@ function goPhase2(){
 
 function goPhase4(){
   document.getElementById('phase2').classList.add('hidden');
-  clearInterval(matrixInt);
-  mc.style.display = 'none';
-  sc.style.display = 'block';
+  if(matrixInt) clearInterval(matrixInt);
+  const mc = document.getElementById('matrixCanvas');
+  const sc = document.getElementById('starsCanvas');
+  if(mc) mc.style.display = 'none';
+  if(sc) sc.style.display = 'block';
   initStars(); drawStars();
   document.getElementById('phase4').classList.remove('hidden');
   buildBook();
   launchConfetti();
 }
+
 
 function goPhase5(){
   document.getElementById('phase4').classList.add('hidden');
@@ -625,116 +506,45 @@ function goPhase5(){
   buildHeartWall();
 }
 
-function spawnFloatingEmojis() {
-  const emojis = ['❤️', '✨', '💖'];
-  setInterval(() => {
-    const el = document.createElement('div');
-    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-    el.style.position = 'absolute';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.top = '110vh';
-    el.style.fontSize = (Math.random() * 15 + 15) + 'px';
-    el.style.opacity = '0.7';
-    el.style.zIndex = Math.random() > 0.5 ? '25' : '5';
-    el.style.pointerEvents = 'none';
-    el.style.filter = 'drop-shadow(0 0 5px rgba(255,255,255,0.5))';
-    el.style.transition = 'transform 8s linear, top 8s linear, opacity 8s ease-in-out';
-    document.getElementById('phase5').appendChild(el);
-
-    setTimeout(() => {
-      el.style.top = '-10vh';
-      el.style.transform = `translateX(${(Math.random() - 0.5) * 200}px) rotate(${Math.random() * 360}deg)`;
-      el.style.opacity = '0';
-    }, 50);
-
-    setTimeout(() => el.remove(), 8000);
-  }, 300);
-}
-
 function buildHeartWall(){
   const wall = document.getElementById('heartWall');
-  wall.innerHTML = '';
+  wall.innerHTML = ''; 
+  const photos = ['foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg'];
+  
+  // Heart formula - TIGHTER AND BETTER DEFINED
+  const points = [];
+  const step = 0.15; // Denser photos
+  for(let t=0; t<Math.PI*2; t+=step){
+    let x = 16 * Math.pow(Math.sin(t), 3);
+    let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+    points.push({x: x*14, y: y*14}); // Slightly smaller scale for compactness
+  }
 
-  const photos = CONFIG.pages && CONFIG.pages.length > 0
-    ? CONFIG.pages.map(p => p.photoFront)
-    : ['https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto1.jpg'];
-
-  const W = window.innerWidth;
-  const H = window.innerHeight;
-
-  // Maximize size while fitting in screen perfectly
-  let pw = W * 0.23;
-  if (pw > 160) pw = 160; 
-  if (pw < 80) pw = 80;
-  const ph = pw * 1.15;
-  const s = pw / 1.3; 
-
-  // Big blurry pink glow background aura
-  const glowBg = document.createElement('div');
-  glowBg.style.cssText = `
-    position: absolute;
-    width: ${pw * 4.5}px; height: ${ph * 4.5}px;
-    background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,20,147,0.3) 40%, transparent 70%);
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    filter: blur(40px);
-    z-index: 1;
-    pointer-events: none;
-  `;
-  wall.appendChild(glowBg);
-
-  // Exact coordinates matching the TikTok filter heart ring layout
-  const ringPoints = [
-    { x: 0,    y: 0.2,  rot: -3,  z: 9 },  // 0: Center photo
-    { x: 0,    y: -0.7, rot: 5,   z: 10 }, // 1: Cleft
-    { x: -0.8, y: -1.2, rot: -15, z: 20 }, // 2: Inner Top L
-    { x: 0.8,  y: -1.2, rot: 15,  z: 20 }, // 3: Inner Top R
-    { x: -1.6, y: -0.9, rot: -25, z: 19 }, // 4: Outer Top L
-    { x: 1.6,  y: -0.9, rot: 25,  z: 19 }, // 5: Outer Top R
-    { x: -1.9, y: 0.0,  rot: -10, z: 18 }, // 6: Mid L
-    { x: 1.9,  y: 0.0,  rot: 10,  z: 18 }, // 7: Mid R
-    { x: -1.5, y: 0.8,  rot: 5,   z: 17 }, // 8: Lower Mid L
-    { x: 1.5,  y: 0.8,  rot: -5,  z: 17 }, // 9: Lower Mid R
-    { x: -0.8, y: 1.4,  rot: 15,  z: 16 }, // 10: Bot L
-    { x: 0.8,  y: 1.4,  rot: -15, z: 16 }, // 11: Bot R
-    { x: 0,    y: 2.0,  rot: 0,   z: 15 }  // 12: Bottom Tip
-  ];
-
-  ringPoints.forEach((p, i) => {
+  points.forEach((p, i) => {
     setTimeout(() => {
       const div = document.createElement('div');
       div.className = 'mini-photo';
-      div.style.width  = pw + 'px';
-      div.style.height = ph + 'px';
-      div.style.zIndex = p.z;
-      div.style.backgroundImage = `url('${photos[i % photos.length]}')`;
+      div.style.backgroundImage = `url('${photos[Math.floor(Math.random()*photos.length)]}')`;
+      
+      // Random rotation for natural feel
+      const rot = Math.random() * 20 - 10;
+      const scale = 0.95 + Math.random() * 0.1;
 
-      const ox = (Math.random() - 0.5) * 8;
-      const oy = (Math.random() - 0.5) * 8;
-
-      // Center vertically slightly higher to account for heart bottom tip
-      const centerY = H/2 - (ph * 0.2); 
-      div.style.left = (W/2 + p.x * s - pw/2 + ox) + 'px';
-      div.style.top  = (centerY + p.y * s - ph/2 + oy) + 'px';
-      div.style.transform = `rotate(${p.rot}deg) scale(0)`;
+      div.style.left = `calc(50% + ${p.x}px - 70px)`;
+      div.style.top = `calc(50% + ${p.y}px - 70px)`;
+      div.style.transform = `rotate(${rot}deg) scale(${scale})`;
+      div.style.opacity = '1';
       wall.appendChild(div);
-
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        div.style.opacity   = '1';
-        div.style.transform = `rotate(${p.rot}deg) scale(1)`;
-      }));
-
-      if(i === ringPoints.length - 1) {
+      
+      if(i === points.length - 1){
         setTimeout(() => {
           const finalMsg = document.getElementById('finalMessage');
-          finalMsg.style.opacity    = '1';
-          finalMsg.style.transition = 'opacity 2s, transform 2s';
-          finalMsg.style.transform  = 'translateY(-10px)';
+          finalMsg.style.opacity = '1';
+          finalMsg.style.transform = 'translateY(-10px)';
           launchConfetti();
-          spawnFloatingEmojis();
-        }, 1200);
+        }, 1000);
       }
-    }, i * 180);
+    }, i * 50);
   });
 }
 
@@ -814,22 +624,6 @@ function buildBook(){
     </div>
     <div class="page-side page-back cover-back"></div>
   `;
-  
-  backCover.onclick = () => {
-    const isFlipped = backCover.classList.toggle('flipped');
-    if (isFlipped) {
-      backCover.style.zIndex = CONFIG.pages.length + 3;
-      msgText.textContent = "Kitap kapandı... 💖";
-      // Auto transition to phase 5
-      setTimeout(() => {
-        goPhase5();
-      }, 1500);
-    } else {
-      setTimeout(() => { backCover.style.zIndex = 0; }, 300);
-      msgText.textContent = "Seni Seviyorum!";
-    }
-  };
-  
   book.appendChild(backCover);
 }
 
@@ -850,11 +644,7 @@ function launchConfetti(){
   }
 }
 
-// Auto-start: load data then start
-window.addEventListener('resize', () => { initMatrix(); initStars(); checkOrientation(); });
-window.addEventListener('orientationchange', () => { setTimeout(checkOrientation, 300); });
-loadGiftData(); 
-checkOrientation(); // Also check initially
+window.addEventListener('resize', () => { initMatrix(); initStars(); });
 </script>
 </body>
 </html>
