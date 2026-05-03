@@ -694,9 +694,8 @@ function buildHeartWall() {
   // Nudge heart upward so "Seni Seviyorum" text fits below
   const verticalShift = -H * 0.07;
 
-  // Sample points along the heart outline
-  // step=0.42 gives ~15 points with nice overlap
-  const step = 0.42;
+  // step=0.22 gives ~29 points — denser, more filled heart
+  const step = 0.22;
   const heartPoints = [];
   for (let t = 0; t < Math.PI * 2; t += step) {
     const x = 16 * Math.pow(Math.sin(t), 3);
