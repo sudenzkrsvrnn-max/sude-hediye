@@ -124,20 +124,20 @@ canvas{position:fixed;inset:0;z-index:1;}
 
 .cover-front { 
   background-image: url('https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/kapak.jpg'); 
-  background-size: cover; 
+  background-size: 100% 100%; 
   background-position: center;
   display: flex; align-items: center; justify-content: center; 
   color: white; border-left: 10px solid rgba(0,0,0,0.2); 
 }
 .cover-back { 
   background-image: url('https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/kapak.jpg'); 
-  background-size: cover; 
+  background-size: 100% 100%; 
   background-position: center;
   border-right: 10px solid rgba(0,0,0,0.2); 
 }
 
-.page-img { width: 100%; height: 75%; object-fit: cover; border-bottom: 5px solid #eee; }
-.page-content { height: 25%; padding: 15px; display: flex; align-items: center; justify-content: center; text-align: center; color: #333; font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; }
+.page-img { width: 100%; height: 100%; object-fit: cover; }
+.page-content { position: absolute; bottom: 0; width: 100%; padding: 10px; display: flex; align-items: center; justify-content: center; text-align: center; color: #333; font-family: 'Playfair Display', serif; font-size: 14px; font-style: italic; background: rgba(255,255,255,0.75); backdrop-filter: blur(4px); }
 
 .instruction { position: absolute; bottom: -50px; width: 100%; text-align: center; font-size: 14px; opacity: 0.7; animation: blink 2s infinite; }
 @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
@@ -492,6 +492,20 @@ function goPhase2() {
   const msg = document.getElementById('bigMessage');
   const heart = document.getElementById('bigHeart');
   const btn = document.querySelector('#phase2 .continue-btn');
+  const video = document.getElementById('phase2Video');
+  const gif = document.getElementById('phase2Gif');
+  
+  // Show media immediately
+  if (CONFIG.phase2File.endsWith('.mp4')) {
+    video.src = CONFIG.phase2File;
+    video.style.display = 'block';
+    video.style.opacity = '1';
+  } else {
+    gif.src = CONFIG.phase2File;
+    gif.style.display = 'block';
+    gif.style.opacity = '1';
+  }
+
   const words = CONFIG.matrixMessage.split(' ');
   let wordIdx = 0;
 
@@ -504,27 +518,15 @@ function goPhase2() {
         msg.style.opacity = '0';
         msg.style.transform = 'scale(1.5)';
         wordIdx++;
-        setTimeout(showNextWord, 600);
-      }, 1200);
+        setTimeout(showNextWord, 400);
+      }, 800);
     } else {
       heart.classList.add('heart-active');
       setTimeout(() => {
         heart.classList.remove('heart-active');
         heart.style.display = 'none';
-        
-        const video = document.getElementById('phase2Video');
-        const gif = document.getElementById('phase2Gif');
-        if (CONFIG.phase2File.endsWith('.mp4')) {
-          video.src = CONFIG.phase2File;
-          video.style.display = 'block';
-          video.style.opacity = '1';
-        } else {
-          gif.src = CONFIG.phase2File;
-          gif.style.display = 'block';
-          gif.style.opacity = '1';
-        }
-        setTimeout(() => { if(btn) btn.style.display = 'block'; }, 2000);
-      }, 2500);
+        if(btn) btn.style.display = 'block';
+      }, 2000);
     }
   }
   showNextWord();
@@ -594,7 +596,7 @@ function buildBook() {
         page.style.zIndex = i + 2;
         if (i === CONFIG.pages.length - 1) {
           msgText.textContent = "Kitap Bitti... ❤️";
-          setTimeout(goPhase5, 1500);
+          setTimeout(goPhase5, 2500); // Increased delay for better feel
         } else {
           msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Anılarımız 💝";
         }
