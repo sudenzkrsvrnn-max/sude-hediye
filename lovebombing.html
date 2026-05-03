@@ -69,27 +69,23 @@ canvas{position:fixed;inset:0;z-index:1;}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
 
 /* SCRAPBOOK (PHASE 4) */
-#phase4 { justify-content: center; }
-#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; transition: all 0.5s ease; }
+#phase4 { justify-content: center; overflow-y: auto; padding: 20px 0; }
+#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; transition: all 0.5s ease; gap: 15px; }
 
 @media (orientation: landscape) {
-  #phase4Inner {
-    flex-direction: row-reverse;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-    padding: 20px;
-  }
-  #msgBox {
-    margin-bottom: 0;
-    width: 280px;
+  #phase4 { padding: 10px 0; }
+  #phase4Inner { gap: 10px; }
+  #msgBox { width: min(90vw, 500px); margin-bottom: 0; }
+  :root {
+    --book-w: min(60vw, 450px);
+    --book-h: min(65vh, 320px);
   }
 }
 
 /* Message box over scrapbook */
 #msgBox{
-  width: min(85vw, 340px); background:rgba(255,255,255,0.95); border-radius:20px;
-  padding:15px 20px; margin-bottom:20px;
+  width: min(85vw, 340px); background:rgba(255,255,255,0.95); border-radius:30px;
+  padding:10px 20px;
   box-shadow:0 8px 32px rgba(255,20,147,0.3);
   position:relative; z-index: 100;
 }
@@ -308,7 +304,6 @@ canvas{position:fixed;inset:0;z-index:1;}
       </div>
       <div class="instruction">Sayfaları çevirmek için tıkla veya kaydır 📖</div>
     </div>
-    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Sürprizi Gör ❤️</button>
   </div>
 </div>
 
@@ -590,14 +585,19 @@ function buildBook() {
       </div>
       <div class="page-side page-back">
         <img src="${p.photoBack}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">💕</p></div>
+        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"></div>
       </div>
     `;
     page.onclick = () => {
       const isFlipped = page.classList.toggle('flipped');
       if(isFlipped){
         page.style.zIndex = i + 2;
-        msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Son sayfa... ❤️";
+        if (i === CONFIG.pages.length - 1) {
+          msgText.textContent = "Kitap Bitti... ❤️";
+          setTimeout(goPhase5, 1500);
+        } else {
+          msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Anılarımız 💝";
+        }
       } else {
         setTimeout(() => { page.style.zIndex = CONFIG.pages.length - i; }, 300);
         msgText.textContent = p.message || "Anılarımız 💝";
