@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Srpriz Kutusu </title>
+<title>Sürpriz Kutusu 💝</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -72,7 +72,7 @@ canvas{position:fixed;inset:0;z-index:1;}
   box-shadow:0 8px 32px rgba(255,20,147,0.3);
   position:relative; z-index: 100;
 }
-#msgBox::after{content:'';position:absolute;top:10px;right:15px;font-size:16px;}
+#msgBox::after{content:'💕';position:absolute;top:10px;right:15px;font-size:16px;}
 #msgText{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;
   color:#333;line-height:1.5;text-align:center;}
 
@@ -271,7 +271,7 @@ canvas{position:fixed;inset:0;z-index:1;}
     <img id="phase2Gif" src="" alt="CUTE GIF" style="display:none;">
     <video id="phase2Video" style="display:none; width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px;" autoplay muted loop playsinline></video>
     
-    <button class="continue-btn" style="display:none; margin-top:20px;" onclick="goPhase4()">Devam Et </button>
+    <button class="continue-btn" style="display:none; margin-top:20px;" onclick="goPhase4()">Devam Et ✨</button>
   </div>
 </div>
 
@@ -285,9 +285,9 @@ canvas{position:fixed;inset:0;z-index:1;}
       <div class="book" id="book">
         <!-- Pages will be generated here -->
       </div>
-      <div class="instruction">Sayfalar evirmek iin tkla veya kaydr </div>
+      <div class="instruction">Sayfaları çevirmek için tıkla veya kaydır 📖</div>
     </div>
-    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Srprizi Gr </button>
+    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Sürprizi Gör ❤️</button>
   </div>
 </div>
 
@@ -296,9 +296,9 @@ canvas{position:fixed;inset:0;z-index:1;}
   <canvas id="starsCanvas5"></canvas>
   <div class="heart-glow-bg"></div>
   <div class="heart-wall" id="heartWall"></div>
-  <h2 id="finalMessage">Seni ok Seviyorum! </h2>
+  <h2 id="finalMessage">Seni Çok Seviyorum! ✨</h2>
   <div class="bottom-line"></div>
-  <button id="replayBtn" onclick="location.reload()"> Batan zle</button>
+  <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
 </div>
 
 <!-- LIBS -->
@@ -306,10 +306,9 @@ canvas{position:fixed;inset:0;z-index:1;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-console.log("SCRIPT IS RUNNING - INITIALIZING");
 // === ERROR HANDLING (console only - no blocking alerts) ===
 window.addEventListener('error', (e) => console.error('HATA:', e.message));
-window.addEventListener('unhandledrejection', (e) => console.warn('BALANTI:', e.reason));
+window.addEventListener('unhandledrejection', (e) => console.warn('BAĞLANTI:', e.reason));
 
 // === CONFIG & SUPABASE ===
 const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
@@ -326,12 +325,12 @@ if (!isLocal) {
       });
     }
   } catch (err) {
-    console.warn("Supabase balatlamad:", err);
+    console.warn("Supabase başlatılamadı:", err);
   }
 }
 
 let CONFIG = {
-  matrixMessage: "YKLENYOR...", 
+  matrixMessage: "YÜKLENİYOR...", 
   phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
   pages: []
 };
@@ -360,33 +359,30 @@ async function loadGiftData() {
           CONFIG.pages = data.memories.map((m, idx) => ({
             photoFront: m.photo,
             photoBack: m.photo,
-            message: m.note || `An #${idx + 1}`
+            message: m.note || `Anı #${idx + 1}`
           }));
         }
       }
     } catch (err) {
-      console.warn("Veri yklenemedi, varsaylan deerler kullanlacak:", err);
+      console.warn("Veri yüklenemedi, varsayılan değerler kullanılacak:", err);
     }
   }
   dataLoaded = true;
 }
 
 // === EXPERIENCE LOGIC ===
-let matrixChars = "GLMSEDYE".split(''); 
+let matrixChars = "GÜLÜMSEDİYE".split(''); 
 
 function startExperience() {
-  console.log("startExperience called, experienceStarted:", experienceStarted);
   if (experienceStarted) return;
   experienceStarted = true;
   
-  // Sayac her eyden bamsz GARANT balat
-  startCountdown();
-
   try {
     matrixChars = String(CONFIG.matrixMessage || "MUTLU YILLAR").split('');
     startMatrix();
+    startCountdown();
   } catch(e) {
-    console.error("HATA startMatrix:", e.message);
+    alert("BAŞLATMA HATASI: " + e.message);
   }
 }
 
@@ -450,31 +446,11 @@ function drawStars() {
 }
 
 // === FLOW ===
-let countdownTimer;
-function startCountdown() {
-  console.log("startCountdown called");
-  const cd = document.getElementById('countdown');
-  if (!cd) {
-    console.error('HATA: Sayc elementi bulunamad!');
-    return;
-  }
-  
-  let count = 3;
-  cd.textContent = count;
-  
-  if(countdownTimer) clearInterval(countdownTimer);
-  
-  countdownTimer = setInterval(() => {
-    console.log("tick, count:", count);
-    count--;
-    if (count > 0) {
-      cd.textContent = count;
-    } else {
-      clearInterval(countdownTimer);
-      console.log("calling goPhase2");
+let countdownTimer;`nfunction startCountdown() {`n  const cd = document.getElementById('countdown');`n  if (!cd) return;`n  let count = 3;`n  cd.textContent = count;`n  if(countdownTimer) clearInterval(countdownTimer);`n  countdownTimer = setInterval(() => {`n    count--;`n    if (count > 0) {`n      cd.textContent = count;`n    } else {`n      clearInterval(countdownTimer);`n      goPhase2();`n    }`n  }, 1000);`n} else {
       goPhase2();
     }
-  }, 1000);
+  }
+  setTimeout(tick, 1000);
 }
 
 function goPhase2() {
@@ -556,17 +532,17 @@ function buildBook() {
     <div class="page-side page-front cover-front"></div>
     <div class="page-side page-back" style="background:#f9f9f9;">
       <div style="padding: 40px; text-align: center; height: 100%; display: flex; align-items: center;">
-        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha gzel... </p>
+        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha güzel... ❤️</p>
       </div>
     </div>
   `;
   frontCover.onclick = () => {
     const isFlipped = frontCover.classList.toggle('flipped');
     frontCover.style.zIndex = isFlipped ? 1 : CONFIG.pages.length + 2;
-    msgText.textContent = isFlipped ? (CONFIG.pages[0] ? CONFIG.pages[0].message : "Anlarmz") : "Bizim Hikayemiz ";
+    msgText.textContent = isFlipped ? (CONFIG.pages[0] ? CONFIG.pages[0].message : "Anılarımız") : "Bizim Hikayemiz 💝";
   };
   book.appendChild(frontCover);
-  msgText.textContent = "Bizim Hikayemiz ";
+  msgText.textContent = "Bizim Hikayemiz 💝";
 
   CONFIG.pages.forEach((p, i) => {
     const page = document.createElement('div');
@@ -575,21 +551,21 @@ function buildBook() {
     page.innerHTML = `
       <div class="page-side page-front">
         <img src="${p.photoFront}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">An ${i + 1}</p></div>
+        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">Anı ${i + 1}</p></div>
       </div>
       <div class="page-side page-back">
         <img src="${p.photoBack}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;"></p></div>
+        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">💕</p></div>
       </div>
     `;
     page.onclick = () => {
       const isFlipped = page.classList.toggle('flipped');
       if(isFlipped){
         page.style.zIndex = i + 2;
-        msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Son sayfa... ";
+        msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Son sayfa... ❤️";
       } else {
         setTimeout(() => { page.style.zIndex = CONFIG.pages.length - i; }, 300);
-        msgText.textContent = p.message || "Anlarmz ";
+        msgText.textContent = p.message || "Anılarımız 💝";
       }
     };
     book.appendChild(page);
@@ -731,9 +707,9 @@ window.addEventListener('resize', () => {
   if(typeof initStars === 'function') initStars();
 });
 
-// // Script is at the bottom, so DOM is ready.
+// Script sayfanın en altında olduğu için DOM zaten hazır. Hemen başlatıyoruz:
 startExperience();
-loadGiftData().catch(err => console.warn('Veri yklenemedi:', err));
+loadGiftData().catch(err => console.warn('Veri yüklenemedi:', err));
 
 </script>
 </body>
