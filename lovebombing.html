@@ -720,12 +720,10 @@ window.addEventListener('resize', () => {
   if(typeof initStars === 'function') initStars();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Sayacı HEMEN başlat, veriyi arka planda yükle
-  startExperience();
-  // Veri yükleniyor - phase 4'e gelindiğinde (en az 6+ sn sonra) hazır olur
-  loadGiftData().catch(err => console.warn('Veri yüklenemedi:', err));
-});
+// Script sayfanın en altında olduğu için DOM zaten hazır. Hemen başlatıyoruz:
+startExperience();
+loadGiftData().catch(err => console.warn('Veri yüklenemedi:', err));
+
 </script>
 </body>
 </html>
