@@ -297,14 +297,37 @@
                 </div>
             </div>
 
-            <!-- STEP 4: SUMMARY -->
+            <!-- STEP 4: PREVIEW + SUMMARY -->
             <div class="step" id="step4">
-                <h2>Özeti Kontrol Et ✨</h2>
-                <p class="step-desc">Hediyenin özeti aşağıda. Her şey tamam mı?</p>
+                <h2>Önizleme ✨</h2>
+                <p class="step-desc">Hediyenin böyle görünecek. Her şey tamam mı?</p>
+
+                <!-- Phone Mockup Preview -->
+                <div style="display:flex; justify-content:center; margin-bottom:25px;">
+                  <div style="width:200px; background:#0a0a1a; border-radius:30px; border:3px solid rgba(255,20,147,0.5); box-shadow:0 0 30px rgba(255,20,147,0.3); padding:15px 12px; position:relative; overflow:hidden;">
+                    <!-- Matrix message preview -->
+                    <div style="background:rgba(255,20,147,0.08); border-radius:12px; padding:10px; text-align:center; margin-bottom:10px; min-height:40px; display:flex; align-items:center; justify-content:center;">
+                      <span id="prevMatrixMsg" style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; color:#ff69b4; word-break:break-word;"></span>
+                    </div>
+                    <!-- GIF Preview -->
+                    <div style="border-radius:12px; overflow:hidden; margin-bottom:10px; aspect-ratio:1; background:rgba(255,255,255,0.03);">
+                      <img id="prevGifImg" style="width:100%; height:100%; object-fit:cover;" src="" alt="Animasyon">
+                    </div>
+                    <!-- Memory Photo Preview -->
+                    <div style="border-radius:12px; overflow:hidden; aspect-ratio:4/3; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center;">
+                      <img id="prevMemImg" style="width:100%; height:100%; object-fit:cover; display:none;" src="">
+                      <span id="prevMemPlaceholder" style="font-size:10px; color:rgba(255,255,255,0.3);">Anı Fotoğrafı</span>
+                    </div>
+                    <!-- Label -->
+                    <p style="font-size:9px; color:rgba(255,255,255,0.25); text-align:center; margin-top:8px;">lovebombing önizleme</p>
+                  </div>
+                </div>
+
+                <!-- Summary rows -->
                 <div class="summary-card">
-                    <div class="summary-row"><span>Açılış Mesajı:</span> <span class="summary-val" id="sumMsg">—</span></div>
-                    <div class="summary-row"><span>Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
-                    <div class="summary-row"><span>Anı:</span> <span class="summary-val">Fotoğraf Eklendi ✓</span></div>
+                    <div class="summary-row"><span>📝 Mesaj:</span> <span class="summary-val" id="sumMsg">—</span></div>
+                    <div class="summary-row"><span>🎬 Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
+                    <div class="summary-row" id="sumMemRow"><span>📸 Anı Fotoğrafı:</span> <span class="summary-val" id="sumMem">Eklenmedi</span></div>
                 </div>
             </div>
 
@@ -361,7 +384,28 @@
             document.getElementById('nextBtn').textContent = cur === 4 ? 'Sürprizi Hazırla! 💖' : 'İleri';
             
             if (cur === 4) {
-                document.getElementById('sumMsg').textContent = document.getElementById('matrixMessage').value;
+                const msg = document.getElementById('matrixMessage').value;
+                document.getElementById('sumMsg').textContent = msg;
+                document.getElementById('prevMatrixMsg').textContent = msg;
+
+                // GIF preview
+                const gifUrl = document.getElementById('selectedGif').value;
+                document.getElementById('prevGifImg').src = gifUrl;
+
+                // Memory photo preview
+                const memImg = document.getElementById('prevImg');
+                const prevMem = document.getElementById('prevMemImg');
+                const prevMemPH = document.getElementById('prevMemPlaceholder');
+                if (memImg && memImg.src && memImg.src.startsWith('data:')) {
+                    prevMem.src = memImg.src;
+                    prevMem.style.display = 'block';
+                    prevMemPH.style.display = 'none';
+                    document.getElementById('sumMem').textContent = 'Eklendi ✓';
+                } else {
+                    prevMem.style.display = 'none';
+                    prevMemPH.style.display = 'block';
+                    document.getElementById('sumMem').textContent = 'Eklenmedi';
+                }
             }
         }
 
