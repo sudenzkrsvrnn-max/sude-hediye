@@ -679,34 +679,37 @@ function buildHeartWall() {
     ? CONFIG.pages.map(p => p.photoFront)
     : FALLBACK_PHOTOS;
 
-  // === HEART OUTLINE DESIGN (like reference image 2) ===
+  // === HEART OUTLINE DESIGN ===
   const W = window.innerWidth;
   const H = window.innerHeight;
 
-  // Card size: large enough to overlap nicely
-  const cardSize = Math.min(W * 0.24, 110);
-  // Scale: heart should fill ~85% of screen width
-  const heartScale = (W * 0.42) / 16;
+  // Use the SMALLER dimension to scale — heart must fit on screen
+  const targetHeartSize = Math.min(W * 0.82, H * 0.62);
+  // Heart formula: x ranges -16 to +16 (width = 32 units)
+  const heartScale = targetHeartSize / 32;
 
-  // Vertical center offset: nudge heart upward so text fits below
-  const verticalShift = -H * 0.06;
+  // Card size: large enough to clearly overlap adjacent cards
+  const cardSize = Math.min(W * 0.23, targetHeartSize * 0.24, 105);
 
-  // Sample points along the heart parametric outline
-  // Fewer samples = more overlap = cleaner look (like image 2)
-  const step = 0.42; // ~15 points around the heart
+  // Nudge heart upward so "Seni Seviyorum" text fits below
+  const verticalShift = -H * 0.07;
+
+  // Sample points along the heart outline
+  // step=0.42 gives ~15 points with nice overlap
+  const step = 0.42;
   const heartPoints = [];
   for (let t = 0; t < Math.PI * 2; t += step) {
     const x = 16 * Math.pow(Math.sin(t), 3);
+    // Standard formula: y = 13cos - 5cos2 - 2cos3 - cos4
     const rawY = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-    const y = -rawY; // flip: point at bottom, bumps at top
+    const y = -rawY; // flip so heart points down
     heartPoints.push({
       x: x * heartScale,
       y: y * heartScale + verticalShift,
-      t // keep t for size variation
+      t
     });
   }
 
-  // Sort by t to animate in a drawing order (clockwise from top)
   heartPoints.forEach((p, i) => {
     setTimeout(() => {
       const div = document.createElement('div');
@@ -714,20 +717,17 @@ function buildHeartWall() {
       const photo = allPhotos[i % allPhotos.length];
       div.style.backgroundImage = `url('${photo}')`;
 
-      // Slightly vary card size for depth — points near top bumps are bigger
-      const sizeVariation = 0.9 + 0.2 * Math.abs(Math.sin(p.t * 1.5));
-      const cs = Math.round(cardSize * sizeVariation);
+      // Slight size variation by position (bumps slightly bigger)
+      const sizeVar = 0.88 + 0.22 * Math.abs(Math.sin(p.t));
+      const cs = Math.round(cardSize * sizeVar);
 
       div.style.width = cs + 'px';
       div.style.height = cs + 'px';
       div.style.borderRadius = Math.round(cs * 0.22) + 'px';
 
-      // Slight rotation toward center for natural look
-      const rot = (Math.random() - 0.5) * 18;
+      const rot = (Math.random() - 0.5) * 16;
       div.style.left = `calc(50% + ${p.x}px - ${cs/2}px)`;
       div.style.top  = `calc(50% + ${p.y}px - ${cs/2}px)`;
-
-      // z-index: later points (bottom) render on top
       div.style.zIndex = 50 + i;
 
       wall.appendChild(div);
@@ -750,7 +750,6 @@ function buildHeartWall() {
     }, i * 80);
   });
 }
-
 
 
 function launchConfetti() {
