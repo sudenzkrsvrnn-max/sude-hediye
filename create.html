@@ -385,57 +385,47 @@
                 <button type="button" class="add-mem-btn" id="addMemBtn" onclick="addMemoryCard()">+ Yeni Anı Ekle</button>
             </div>
 
-            <!-- STEP 4: PREVIEW + SUMMARY -->
+            <!-- STEP 4: DEMO + SUMMARY -->
             <div class="step" id="step4">
                 <h2>Önizleme ✨</h2>
-                <p class="step-desc">Hediyenin böyle görünecek. Her şey tamam mı?</p>
+                <p class="step-desc">Hediyen kaydediliyor, demo linkin hazırlanıyor...</p>
 
-                <!-- Phone Mockup Preview -->
-                <div style="display:flex; justify-content:center; margin-bottom:25px;">
-                  <div style="width:200px; background:#0a0a1a; border-radius:30px; border:3px solid rgba(255,20,147,0.5); box-shadow:0 0 30px rgba(255,20,147,0.3); padding:15px 12px; position:relative; overflow:hidden;">
-                    <!-- Matrix message preview -->
-                    <div style="background:rgba(255,20,147,0.08); border-radius:12px; padding:10px; text-align:center; margin-bottom:10px; min-height:40px; display:flex; align-items:center; justify-content:center;">
-                      <span id="prevMatrixMsg" style="font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; color:#ff69b4; word-break:break-word;"></span>
+                <!-- Demo Link Area -->
+                <div id="demoArea" style="margin: 25px 0; text-align: center;">
+                    <!-- Spinner while saving -->
+                    <div id="demoSpinner" style="padding:30px; color:rgba(255,255,255,0.4); font-size:14px;">
+                        <div style="margin-bottom:10px; font-size:28px;">⏳</div>
+                        Kaydediliyor...
                     </div>
-                    <!-- GIF Preview -->
-                    <div style="border-radius:12px; overflow:hidden; margin-bottom:10px; aspect-ratio:1; background:rgba(255,255,255,0.03);">
-                      <img id="prevGifImg" style="width:100%; height:100%; object-fit:cover;" src="" alt="Animasyon">
+                    <!-- Demo link (shown after save) -->
+                    <div id="demoReady" style="display:none;">
+                        <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,100,0,0.12); border:1px dashed rgba(255,100,0,0.4); border-radius:8px; padding:5px 14px; margin-bottom:12px;">
+                            <span style="font-size:12px; color:rgba(255,150,50,0.9); letter-spacing:2px; font-weight:800; text-transform:uppercase;">⚠️ ÖRNEKİR — Satın alındıktan sonra görünüm değişir</span>
+                        </div>
+                        <a id="demoLink" href="#" target="_blank" style="
+                            display: flex; align-items: center; justify-content: center; gap: 10px;
+                            width: 100%; padding: 18px 20px; margin-bottom: 10px;
+                            background: linear-gradient(135deg, rgba(255,20,147,0.15), rgba(138,43,226,0.15));
+                            border: 2px solid rgba(255,20,147,0.4);
+                            border-radius: 15px; color: var(--primary-light);
+                            font-size: 16px; font-weight: 800; font-family: inherit;
+                            text-decoration: none; transition: 0.3s;
+                            box-shadow: 0 0 25px rgba(255,20,147,0.15);
+                        ">
+                            👁️ Demo'yu İncele
+                        </a>
+                        <p style="font-size:11px; color:rgba(255,255,255,0.25);">Kendi doldurduğun mesaj, GIF ve fotoğraflarla görünür.</p>
                     </div>
-                    <!-- Memory Photo Preview -->
-                    <div style="border-radius:12px; overflow:hidden; aspect-ratio:4/3; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center;">
-                      <img id="prevMemImg" style="width:100%; height:100%; object-fit:cover; display:none;" src="">
-                      <span id="prevMemPlaceholder" style="font-size:10px; color:rgba(255,255,255,0.3);">Anı Fotoğrafı</span>
+                    <div id="demoError" style="display:none; color:rgba(255,100,100,0.7); font-size:13px; padding:10px;">
+                        ⚠️ Bağlantı hatası. İleri tuşuna tekrar basın.
                     </div>
-                    <!-- Label -->
-                    <p style="font-size:9px; color:rgba(255,255,255,0.25); text-align:center; margin-top:8px;">lovebombing önizleme</p>
-                  </div>
                 </div>
 
                 <!-- Summary rows -->
                 <div class="summary-card">
                     <div class="summary-row"><span>📝 Mesaj:</span> <span class="summary-val" id="sumMsg">—</span></div>
-                    <div class="summary-row"><span>🎬 Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
+                    <div class="summary-row"><span>🎞️ Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
                     <div class="summary-row" id="sumMemRow"><span>📸 Anı Fotoğrafı:</span> <span class="summary-val" id="sumMem">Eklenmedi</span></div>
-                </div>
-
-                <!-- Demo Preview Link -->
-                <div style="margin-top: 20px; text-align: center;">
-                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,20,147,0.08); border:1px dashed rgba(255,20,147,0.3); border-radius:8px; padding:4px 12px; margin-bottom:10px;">
-                        <span style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px; font-weight:700; text-transform:uppercase;">⚠️ Örnek Ürün</span>
-                    </div>
-                    <a href="lovebombing.html" target="_blank" style="
-                        display: flex; align-items: center; justify-content: center; gap: 10px;
-                        width: 100%; padding: 15px 20px;
-                        background: rgba(255,20,147,0.08);
-                        border: 1.5px solid rgba(255,20,147,0.3);
-                        border-radius: 15px; color: var(--primary-light);
-                        font-size: 15px; font-weight: 700; font-family: inherit;
-                        text-decoration: none; transition: 0.3s;
-                        box-shadow: 0 0 20px rgba(255,20,147,0.08);
-                    " onmouseover="this.style.background='rgba(255,20,147,0.15)'" onmouseout="this.style.background='rgba(255,20,147,0.08)'">
-                        👁️ Demo Ürünü İncele
-                    </a>
-                    <p style="font-size:11px; color:rgba(255,255,255,0.2); margin-top:8px;">Bu örnek görselleri içerir, seçimleriniz değişecektir.</p>
                 </div>
             </div>
 
@@ -480,52 +470,37 @@
         const total = 4;
 
         function move(n) {
+            // Entering step 4: auto-save draft first
+            if (cur === 3 && n === 1) {
+                saveDraft();
+            }
             if (cur === 4 && n === 1) {
                 finalize();
                 return;
             }
-            
             document.getElementById('step' + cur).classList.remove('active');
             cur += n;
             document.getElementById('step' + cur).classList.add('active');
-            
             updateUI();
         }
 
         function updateUI() {
-            // Progress dots
             const dots = document.querySelectorAll('.progress-step');
             dots.forEach((d, i) => {
                 if (i < cur) d.classList.add('active');
                 else d.classList.remove('active');
             });
             document.getElementById('progressLine').style.width = ((cur - 1) / (total - 1)) * 100 + '%';
-
-            // Buttons
             document.getElementById('prevBtn').style.display = cur > 1 ? 'block' : 'none';
-            document.getElementById('nextBtn').textContent = cur === 4 ? 'Sürprizi Hazırla! 💖' : 'İleri';
-            
+            document.getElementById('nextBtn').textContent = cur === 4 ? 'Siparişi Tamamla! 💖' : 'İleri';
+
             if (cur === 4) {
-                const msg = document.getElementById('matrixMessage').value;
-                document.getElementById('sumMsg').textContent = msg;
-                document.getElementById('prevMatrixMsg').textContent = msg;
-
-                // GIF preview
-                const gifUrl = document.getElementById('selectedGif').value;
-                document.getElementById('prevGifImg').src = gifUrl;
-
-                // Memory photo preview
-                const memImg = document.getElementById('prevImg');
-                const prevMem = document.getElementById('prevMemImg');
-                const prevMemPH = document.getElementById('prevMemPlaceholder');
-                if (memImg && memImg.src && memImg.src.startsWith('data:')) {
-                    prevMem.src = memImg.src;
-                    prevMem.style.display = 'block';
-                    prevMemPH.style.display = 'none';
-                    document.getElementById('sumMem').textContent = 'Eklendi ✓';
+                document.getElementById('sumMsg').textContent = document.getElementById('matrixMessage').value;
+                // Check memory count
+                const firstImg = document.querySelector('.mem-img');
+                if (firstImg && firstImg.src && firstImg.src.startsWith('data:')) {
+                    document.getElementById('sumMem').textContent = memCardCount + ' fotoğraf eklendi ✓';
                 } else {
-                    prevMem.style.display = 'none';
-                    prevMemPH.style.display = 'block';
                     document.getElementById('sumMem').textContent = 'Eklenmedi';
                 }
             }
@@ -624,6 +599,57 @@
                     res(canvas.toDataURL('image/jpeg', 0.6));
                 };
             });
+        }
+
+        // === DRAFT SAVE (when entering step 4) ===
+        let draftId = null;
+        let draftSaved = false;
+
+        async function saveDraft() {
+            if (draftSaved) return; // already saved
+            document.getElementById('demoSpinner').style.display = 'block';
+            document.getElementById('demoReady').style.display = 'none';
+            document.getElementById('demoError').style.display = 'none';
+
+            try {
+                const id = Math.floor(Math.random() * 900000) + 100000;
+                draftId = id;
+                const mems = [];
+
+                const cards = document.querySelectorAll('.memory-card');
+                for (const card of cards) {
+                    const img = card.querySelector('.mem-img');
+                    const note = card.querySelector('.mem-note');
+                    const noteVal = note ? note.value.trim() : '';
+                    if (img && img.src && img.src.startsWith('data:image')) {
+                        const lowRes = await compress(img.src);
+                        mems.push({ photo: lowRes, note: noteVal });
+                    } else if (noteVal) {
+                        mems.push({ photo: null, note: noteVal });
+                    }
+                }
+
+                const { error } = await sb.from('submissions').insert([{
+                    id_custom: id.toString(),
+                    matrix_message: document.getElementById('matrixMessage').value,
+                    gif_url: document.getElementById('selectedGif').value,
+                    memories: mems,
+                    customer_info: 'Demo - Onay Bekleniyor'
+                }]);
+
+                if (error) throw error;
+
+                draftSaved = true;
+                const demoUrl = window.location.origin + '/lovebombing.html?id=' + id + '&demo=true';
+                document.getElementById('demoLink').href = demoUrl;
+                document.getElementById('demoSpinner').style.display = 'none';
+                document.getElementById('demoReady').style.display = 'block';
+
+            } catch (err) {
+                console.error('Draft save error:', err);
+                document.getElementById('demoSpinner').style.display = 'none';
+                document.getElementById('demoError').style.display = 'block';
+            }
         }
 
         async function finalize() {
