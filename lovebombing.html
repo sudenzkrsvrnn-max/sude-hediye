@@ -646,7 +646,7 @@ function buildHeartWall() {
   const wall = document.getElementById('heartWall');
   wall.innerHTML = '';
 
-  // Stars for phase5 canvas
+  // Stars background
   const sc5 = document.getElementById('starsCanvas5');
   if (sc5) {
     sc5.width = window.innerWidth;
@@ -679,54 +679,61 @@ function buildHeartWall() {
     ? CONFIG.pages.map(p => p.photoFront)
     : FALLBACK_PHOTOS;
 
-  // --- Clean Grid-Based Heart Shape ---
-  const isMobile = window.innerWidth < 600;
-  const cardSize = isMobile ? Math.min(window.innerWidth * 0.18, 75) : Math.min(window.innerWidth * 0.1, 90);
-  const gap = cardSize + (isMobile ? 6 : 10); // spacing between card centers
+  // === HEART OUTLINE DESIGN (like reference image 2) ===
+  const W = window.innerWidth;
+  const H = window.innerHeight;
 
-  // Grid resolution: scan rows/cols and test if inside heart
-  function isInsideHeart(nx, ny) {
-    // nx, ny are normalized coords from roughly -1.2 to 1.2
-    // Classic heart formula: (x^2 + y^2 - 1)^3 - x^2*y^3 <= 0
-    return Math.pow(nx*nx + ny*ny - 1, 3) - nx*nx*ny*ny*ny <= 0;
-  }
+  // Card size: large enough to overlap nicely
+  const cardSize = Math.min(W * 0.24, 110);
+  // Scale: heart should fill ~85% of screen width
+  const heartScale = (W * 0.42) / 16;
 
+  // Vertical center offset: nudge heart upward so text fits below
+  const verticalShift = -H * 0.06;
+
+  // Sample points along the heart parametric outline
+  // Fewer samples = more overlap = cleaner look (like image 2)
+  const step = 0.42; // ~15 points around the heart
   const heartPoints = [];
-  const cols = isMobile ? 8 : 10;
-  const rows = isMobile ? 8 : 10;
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      // Map col/row to normalized heart space [-1.2, 1.2]
-      const nx = ((col / (cols - 1)) * 2.4) - 1.2;
-      const ny = ((row / (rows - 1)) * 2.4) - 1.2;
-      // Heart is upside-down by default, flip y
-      if (isInsideHeart(nx, -ny + 0.2)) {
-        heartPoints.push({
-          x: (col - (cols - 1) / 2) * gap,
-          y: (row - (rows - 1) / 2) * gap
-        });
-      }
-    }
+  for (let t = 0; t < Math.PI * 2; t += step) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const rawY = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+    const y = -rawY; // flip: point at bottom, bumps at top
+    heartPoints.push({
+      x: x * heartScale,
+      y: y * heartScale + verticalShift,
+      t // keep t for size variation
+    });
   }
 
+  // Sort by t to animate in a drawing order (clockwise from top)
   heartPoints.forEach((p, i) => {
     setTimeout(() => {
       const div = document.createElement('div');
       div.className = 'mini-photo';
       const photo = allPhotos[i % allPhotos.length];
       div.style.backgroundImage = `url('${photo}')`;
-      div.style.width = cardSize + 'px';
-      div.style.height = cardSize + 'px';
-      div.style.borderRadius = Math.round(cardSize * 0.2) + 'px';
-      // Subtle random rotation only (no random scale to keep shape clean)
-      const rot = (Math.random() - 0.5) * 10;
-      div.style.left = `calc(50% + ${p.x}px - ${cardSize/2}px)`;
-      div.style.top  = `calc(50% + ${p.y}px - ${cardSize/2}px)`;
+
+      // Slightly vary card size for depth — points near top bumps are bigger
+      const sizeVariation = 0.9 + 0.2 * Math.abs(Math.sin(p.t * 1.5));
+      const cs = Math.round(cardSize * sizeVariation);
+
+      div.style.width = cs + 'px';
+      div.style.height = cs + 'px';
+      div.style.borderRadius = Math.round(cs * 0.22) + 'px';
+
+      // Slight rotation toward center for natural look
+      const rot = (Math.random() - 0.5) * 18;
+      div.style.left = `calc(50% + ${p.x}px - ${cs/2}px)`;
+      div.style.top  = `calc(50% + ${p.y}px - ${cs/2}px)`;
+
+      // z-index: later points (bottom) render on top
+      div.style.zIndex = 50 + i;
+
       wall.appendChild(div);
 
       requestAnimationFrame(() => {
-        div.style.transform = `rotate(${rot}deg) scale(1)`;
+        div.style.transform = `rotate(${rot}deg)`;
         div.classList.add('visible');
       });
 
@@ -740,10 +747,9 @@ function buildHeartWall() {
           launchConfetti();
         }, 1000);
       }
-    }, i * 60);
+    }, i * 80);
   });
 }
-
 
 
 
