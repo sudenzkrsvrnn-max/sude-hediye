@@ -383,13 +383,23 @@ async function loadGiftData() {
       if (error) throw error;
 
       if (data) {
-        CONFIG.matrixMessage = data.matrix_message ? String(data.matrix_message) : "MUTLU YILLAR";
+        CONFIG.matrixMessage = data.matrix_message ? String(data.matrix_message) : "SENİ SEVİYORUM";
         CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
-        if (data.memories && Array.isArray(data.memories)) {
-          CONFIG.pages = data.memories.map((m, idx) => ({
-            photoFront: m.photo,
-            photoBack: m.photo,
-            message: m.note || `Anı #${idx + 1}`
+
+        // memories can come back as JSON string or parsed array — handle both
+        let mems = data.memories;
+        if (typeof mems === 'string') {
+          try { mems = JSON.parse(mems); } catch(e) { mems = []; }
+        }
+        if (!Array.isArray(mems)) mems = [];
+
+        console.log('Yüklenen anılar:', mems.length, 'adet');
+
+        if (mems.length > 0) {
+          CONFIG.pages = mems.map((m, idx) => ({
+            photoFront: m.photo || null,
+            photoBack:  m.photo || null,
+            message:    m.note  || `Anı #${idx + 1}`
           }));
         }
       }
@@ -598,12 +608,19 @@ function buildBook() {
     page.style.zIndex = CONFIG.pages.length - i;
     page.innerHTML = `
       <div class="page-side page-front">
-        <img src="${p.photoFront}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">Anı ${i + 1}</p></div>
+        ${p.photoFront
+          ? `<img src="${p.photoFront}" class="page-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="page-img" style="display:none; background:linear-gradient(135deg,#ffe0f0,#fff0f8); align-items:center; justify-content:center; font-size:50px;">💕</div>`
+          : `<div class="page-img" style="background:linear-gradient(135deg,#ffe0f0,#fff0f8); display:flex; align-items:center; justify-content:center; font-size:50px;">💕</div>`
+        }
+        <div class="page-content">${p.message || `Anı ${i + 1}`}</div>
       </div>
       <div class="page-side page-back">
-        <img src="${p.photoBack}" class="page-img">
-        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"></div>
+        ${p.photoBack
+          ? `<img src="${p.photoBack}" class="page-img">`
+          : `<div class="page-img" style="background:linear-gradient(135deg,#fff0f8,#ffe0f0); display:flex; align-items:center; justify-content:center; font-size:50px;">💕</div>`
+        }
+        <div class="page-content" style="background:#fff; border-top:1px solid #eee;">💕</div>
       </div>
     `;
     page.onclick = () => {
