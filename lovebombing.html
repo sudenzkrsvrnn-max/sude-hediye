@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -15,6 +15,13 @@
   --book-h: min(110vw, 450px);
 }
 
+@media (orientation: landscape) {
+  :root {
+    --book-w: min(60vw, 500px);
+    --book-h: min(80vh, 350px);
+  }
+}
+
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);overflow:hidden;font-family:'Rajdhani',sans-serif;color:var(--text);height:100vh;width:100vw;touch-action:none;}
 
@@ -26,8 +33,8 @@ body{background:var(--bg);overflow:hidden;font-family:'Rajdhani',sans-serif;colo
 canvas{position:fixed;inset:0;z-index:1;}
 
 /* COUNTDOWN */
-#countdown{font-size:min(45vw,250px);font-weight:900;color:red;
-  text-shadow:0 0 60px rgba(255,0,0,0.8);animation:pulse 0.9s ease-in-out infinite;z-index:20;}
+#countdown{font-size:min(45vw,250px);font-weight:900;color:var(--primary);
+  text-shadow:0 0 60px rgba(255,20,147,0.8);animation:pulse 0.9s ease-in-out infinite;z-index:20;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 
 /* PHASE 2 GIF & TEXT */
@@ -62,8 +69,22 @@ canvas{position:fixed;inset:0;z-index:1;}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
 
 /* SCRAPBOOK (PHASE 4) */
-#phase4 { justify-content: flex-start; padding-top: 20px; }
-#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; }
+#phase4 { justify-content: center; }
+#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; transition: all 0.5s ease; }
+
+@media (orientation: landscape) {
+  #phase4Inner {
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+  }
+  #msgBox {
+    margin-bottom: 0;
+    width: 280px;
+  }
+}
 
 /* Message box over scrapbook */
 #msgBox{
@@ -330,9 +351,13 @@ if (!isLocal) {
 }
 
 let CONFIG = {
-  matrixMessage: "YÜKLENİYOR...", 
+  matrixMessage: "SENİ SEVİYORUM", 
   phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
-  pages: []
+  pages: [
+    { photoFront: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=1000', photoBack: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=1000', message: "Seninle her an paha biçilemez... ❤️" },
+    { photoFront: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&q=80&w=1000', photoBack: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&q=80&w=1000', message: "Gözlerindeki ışık yolumu aydınlatıyor. ✨" },
+    { photoFront: 'https://images.unsplash.com/photo-1516589174184-c6848b671446?auto=format&fit=crop&q=80&w=1000', photoBack: 'https://images.unsplash.com/photo-1516589174184-c6848b671446?auto=format&fit=crop&q=80&w=1000', message: "Birlikte daha nice anılara... 💝" }
+  ]
 };
 
 // === DATA LOADING ===
@@ -445,12 +470,22 @@ function drawStars() {
   requestAnimationFrame(drawStars);
 }
 
-// === FLOW ===
-let countdownTimer;`nfunction startCountdown() {`n  const cd = document.getElementById('countdown');`n  if (!cd) return;`n  let count = 3;`n  cd.textContent = count;`n  if(countdownTimer) clearInterval(countdownTimer);`n  countdownTimer = setInterval(() => {`n    count--;`n    if (count > 0) {`n      cd.textContent = count;`n    } else {`n      clearInterval(countdownTimer);`n      goPhase2();`n    }`n  }, 1000);`n} else {
+let countdownTimer;
+function startCountdown() {
+  const cd = document.getElementById('countdown');
+  if (!cd) return;
+  let count = 3;
+  cd.textContent = count;
+  if(countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    count--;
+    if (count > 0) {
+      cd.textContent = count;
+    } else {
+      clearInterval(countdownTimer);
       goPhase2();
     }
-  }
-  setTimeout(tick, 1000);
+  }, 1000);
 }
 
 function goPhase2() {
