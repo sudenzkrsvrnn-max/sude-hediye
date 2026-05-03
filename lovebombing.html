@@ -668,7 +668,6 @@ function buildHeartWall() {
     drawStars5();
   }
 
-  // Build heart positions - use Supabase storage as fallback (local files don't exist on Vercel)
   const FALLBACK_PHOTOS = [
     'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto1.jpg',
     'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto2.jpg',
@@ -680,31 +679,38 @@ function buildHeartWall() {
     ? CONFIG.pages.map(p => p.photoFront)
     : FALLBACK_PHOTOS;
 
-  // Determine card size based on screen
-  const cardSize = Math.min(window.innerWidth * 0.22, 120);
-  const scale = Math.min(window.innerWidth, window.innerHeight) * 0.028;
+  // --- Clean Grid-Based Heart Shape ---
+  const isMobile = window.innerWidth < 600;
+  const cardSize = isMobile ? Math.min(window.innerWidth * 0.18, 75) : Math.min(window.innerWidth * 0.1, 90);
+  const gap = cardSize + (isMobile ? 6 : 10); // spacing between card centers
 
-  // Heart parametric points
-  const heartPoints = [];
-  const step = 0.32;
-  for (let t = 0; t < Math.PI * 2; t += step) {
-    const x = 16 * Math.pow(Math.sin(t), 3);
-    const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-    heartPoints.push({ x: x * scale, y: y * scale });
+  // Grid resolution: scan rows/cols and test if inside heart
+  function isInsideHeart(nx, ny) {
+    // nx, ny are normalized coords from roughly -1.2 to 1.2
+    // Classic heart formula: (x^2 + y^2 - 1)^3 - x^2*y^3 <= 0
+    return Math.pow(nx*nx + ny*ny - 1, 3) - nx*nx*ny*ny*ny <= 0;
   }
 
-  // Add center cluster points
-  const centerPoints = [
-    {x: 0, y: 0},
-    {x: -scale * 3, y: -scale * 1},
-    {x: scale * 3, y: -scale * 1},
-    {x: 0, y: -scale * 2.5},
-    {x: -scale * 1.5, y: scale * 2},
-    {x: scale * 1.5, y: scale * 2},
-  ];
-  const allPoints = [...heartPoints, ...centerPoints];
+  const heartPoints = [];
+  const cols = isMobile ? 8 : 10;
+  const rows = isMobile ? 8 : 10;
 
-  allPoints.forEach((p, i) => {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      // Map col/row to normalized heart space [-1.2, 1.2]
+      const nx = ((col / (cols - 1)) * 2.4) - 1.2;
+      const ny = ((row / (rows - 1)) * 2.4) - 1.2;
+      // Heart is upside-down by default, flip y
+      if (isInsideHeart(nx, -ny + 0.2)) {
+        heartPoints.push({
+          x: (col - (cols - 1) / 2) * gap,
+          y: (row - (rows - 1) / 2) * gap
+        });
+      }
+    }
+  }
+
+  heartPoints.forEach((p, i) => {
     setTimeout(() => {
       const div = document.createElement('div');
       div.className = 'mini-photo';
@@ -712,20 +718,19 @@ function buildHeartWall() {
       div.style.backgroundImage = `url('${photo}')`;
       div.style.width = cardSize + 'px';
       div.style.height = cardSize + 'px';
-      div.style.borderRadius = Math.round(cardSize * 0.24) + 'px';
-      const rot = (Math.random() - 0.5) * 22;
-      const sc = 0.92 + Math.random() * 0.16;
+      div.style.borderRadius = Math.round(cardSize * 0.2) + 'px';
+      // Subtle random rotation only (no random scale to keep shape clean)
+      const rot = (Math.random() - 0.5) * 10;
       div.style.left = `calc(50% + ${p.x}px - ${cardSize/2}px)`;
       div.style.top  = `calc(50% + ${p.y}px - ${cardSize/2}px)`;
       wall.appendChild(div);
 
-      // Animate in
       requestAnimationFrame(() => {
-        div.style.transform = `rotate(${rot}deg) scale(${sc})`;
+        div.style.transform = `rotate(${rot}deg) scale(1)`;
         div.classList.add('visible');
       });
 
-      if (i === allPoints.length - 1) {
+      if (i === heartPoints.length - 1) {
         setTimeout(() => {
           const finalMsg = document.getElementById('finalMessage');
           if (finalMsg) {
@@ -733,11 +738,14 @@ function buildHeartWall() {
             finalMsg.style.transform = 'translateY(-8px)';
           }
           launchConfetti();
-        }, 1200);
+        }, 1000);
       }
-    }, i * 80);
+    }, i * 60);
   });
 }
+
+
+
 
 function launchConfetti() {
   if (typeof document === 'undefined') return;
