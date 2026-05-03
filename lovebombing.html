@@ -495,16 +495,9 @@ function goPhase2() {
   const video = document.getElementById('phase2Video');
   const gif = document.getElementById('phase2Gif');
   
-  // Show media immediately
-  if (CONFIG.phase2File.endsWith('.mp4')) {
-    video.src = CONFIG.phase2File;
-    video.style.display = 'block';
-    video.style.opacity = '1';
-  } else {
-    gif.src = CONFIG.phase2File;
-    gif.style.display = 'block';
-    gif.style.opacity = '1';
-  }
+  // Reset media visibility
+  video.style.display = 'none';
+  gif.style.display = 'none';
 
   const words = CONFIG.matrixMessage.split(' ');
   let wordIdx = 0;
@@ -521,11 +514,24 @@ function goPhase2() {
         setTimeout(showNextWord, 400);
       }, 800);
     } else {
+      // Step 2: Show Pink Heart
       heart.classList.add('heart-active');
       setTimeout(() => {
+        // Step 3: Hide Heart and Show GIF/Video
         heart.classList.remove('heart-active');
         heart.style.display = 'none';
-        if(btn) btn.style.display = 'block';
+        
+        if (CONFIG.phase2File.endsWith('.mp4')) {
+          video.src = CONFIG.phase2File;
+          video.style.display = 'block';
+          video.style.opacity = '1';
+        } else {
+          gif.src = CONFIG.phase2File;
+          gif.style.display = 'block';
+          gif.style.opacity = '1';
+        }
+        
+        setTimeout(() => { if(btn) btn.style.display = 'block'; }, 1500);
       }, 2000);
     }
   }
