@@ -611,8 +611,7 @@ function buildBook() {
       if(isFlipped){
         page.style.zIndex = i + 2;
         if (i === CONFIG.pages.length - 1) {
-          msgText.textContent = "Kitap Bitti... ❤️";
-          setTimeout(goPhase5, 2500); // Increased delay for better feel
+          msgText.textContent = "Kapatmak için son kez dokun... ❤️";
         } else {
           msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Anılarımız 💝";
         }
@@ -628,11 +627,23 @@ function buildBook() {
   backCover.className = 'page';
   backCover.style.zIndex = 0;
   backCover.innerHTML = `
-    <div class="page-side page-front" style="background:#f9f9f9; display: flex; align-items: center; justify-content: center;">
+    <div class="page-side page-front" style="background:#fafafa; display: flex; align-items: center; justify-content: center;">
        <p style="font-family:'Dancing Script'; font-size: 24px; color: #ff1493;">Seni Seviyorum!</p>
     </div>
     <div class="page-side page-back cover-back"></div>
   `;
+  backCover.onclick = () => {
+    msgText.textContent = "Sonsuza Dek... ❤️";
+    // Flip all pages back to close the book
+    const allPages = book.querySelectorAll('.page');
+    allPages.forEach((p, idx) => {
+      setTimeout(() => {
+        p.classList.remove('flipped');
+        p.style.zIndex = CONFIG.pages.length + 2 - idx;
+      }, idx * 50);
+    });
+    setTimeout(goPhase5, 1500);
+  };
   book.appendChild(backCover);
 }
 
