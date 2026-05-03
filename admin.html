@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Paneli | GÃ¼lÃ¼mse Diye</title>
+    <title>Admin Paneli | Gülümse Diye</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -137,25 +137,25 @@
 
 <!-- LOGIN OVERLAY -->
 <div id="loginOverlay">
-    <h1>ğŸ GÃœLÃœMSE DÄ°YE</h1>
-    <p>Admin Paneli â€” Sadece yetkili eriÅŸim</p>
-    <input type="password" id="adminPass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autofocus>
-    <button id="loginBtn" onclick="checkPass()">GiriÅŸ Yap</button>
-    <span id="loginError">âŒ YanlÄ±ÅŸ ÅŸifre!</span>
+    <h1>💝 GÜLÜMSE DİYE</h1>
+    <p>Admin Paneli — Sadece yetkili erişim</p>
+    <input type="password" id="adminPass" placeholder="••••••••" autofocus>
+    <button id="loginBtn" onclick="checkPass()">Giriş Yap</button>
+    <span id="loginError">❌ Yanlış şifre!</span>
 </div>
 
 <!-- DASHBOARD -->
 <header>
-    <div class="logo">ğŸ“Š Admin Dashboard</div>
+    <div class="logo">📊 Admin Dashboard</div>
     <div style="display:flex; gap:15px; align-items:center;">
-        <button id="refreshBtn" onclick="loadSubmissions()">â†» Yenile</button>
+        <button id="refreshBtn" onclick="loadSubmissions()">↻ Yenile</button>
         <div class="stat-card">
-            <div class="stat-value" id="totalCount">â€”</div>
+            <div class="stat-value" id="totalCount">—</div>
             <div class="stat-label">Toplam Hediye</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" id="activeCount">â€”</div>
-            <div class="stat-label">Aktif SipariÅŸ</div>
+            <div class="stat-value" id="activeCount">—</div>
+            <div class="stat-label">Aktif Sipariş</div>
         </div>
     </div>
 </header>
@@ -167,15 +167,15 @@
                 <th>Tarih</th>
                 <th>ID</th>
                 <th>Durum</th>
-                <th>AÃ§Ä±lÄ±ÅŸ MesajÄ±</th>
-                <th>AnÄ±</th>
-                <th>MÃ¼ÅŸteri Linki</th>
-                <th>Ä°ÅŸlem</th>
+                <th>Açılış Mesajı</th>
+                <th>Anı</th>
+                <th>Müşteri Linki</th>
+                <th>İşlem</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
-    <div id="statusMsg"><span class="empty-icon">â³</span>Veriler yÃ¼kleniyor...</div>
+    <div id="statusMsg"><span class="empty-icon">⏳</span>Veriler yükleniyor...</div>
 </div>
 
 <script>
@@ -210,14 +210,14 @@
             loadSubmissions();
         };
         script.onerror = () => {
-            document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">âŒ</span>Supabase yÃ¼klenemedi.';
+            document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">❌</span>Supabase yüklenemedi.';
         };
         document.head.appendChild(script);
     }
 
     async function loadSubmissions() {
         document.getElementById('statusMsg').style.display = 'block';
-        document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">â³</span>Veriler yÃ¼kleniyor...';
+        document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">⏳</span>Veriler yükleniyor...';
         document.getElementById('tableBody').innerHTML = '';
         if (!sb) return;
         try {
@@ -228,7 +228,7 @@
             if (error) throw error;
             renderTable(data || []);
         } catch (err) {
-            document.getElementById('statusMsg').innerHTML = `<span class="empty-icon">âŒ</span>Hata: ${err.message}`;
+            document.getElementById('statusMsg').innerHTML = `<span class="empty-icon">❌</span>Hata: ${err.message}`;
         }
     }
 
@@ -240,7 +240,7 @@
         document.getElementById('activeCount').textContent = activeOrders.length;
 
         if (data.length === 0) {
-            document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">ğŸ“­</span>HenÃ¼z hiÃ§ baÅŸvuru yok.';
+            document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">🔭</span>Henüz hiç başvuru yok.';
             return;
         }
 
@@ -251,29 +251,29 @@
             const tr = document.createElement('tr');
             const date = item.created_at
                 ? new Date(item.created_at).toLocaleString('tr-TR')
-                : 'â€”';
+                : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
             const giftUrl = `${BASE_URL}/lovebombing.html?id=${item.id_custom}`;
 
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
             const statusBadge = isDemo
-                ? `<span class="badge-demo">â³ Demo</span>`
-                : `<span class="badge-active">âœ… Aktif</span>`;
+                ? `<span class="badge-demo">⏳ Demo</span>`
+                : `<span class="badge-active">✅ Aktif</span>`;
 
             tr.innerHTML = `
                 <td class="date">${date}</td>
-                <td><span class="badge-id">#${item.id_custom || 'â€”'}</span></td>
+                <td><span class="badge-id">#${item.id_custom || '—'}</span></td>
                 <td>${statusBadge}</td>
-                <td class="msg-cell" title="${item.matrix_message || ''}">${item.matrix_message || 'â€”'}</td>
-                <td>${memCount} ğŸ“¸</td>
+                <td class="msg-cell" title="${item.matrix_message || ''}">${item.matrix_message || '—'}</td>
+                <td>${memCount} 📸</td>
                 <td>
                     <div class="link-box">
                         <span class="link-text" title="${giftUrl}">${giftUrl}</span>
-                        <button class="copy-btn" onclick="copyLink(this, '${giftUrl}')">ğŸ“‹ Kopyala</button>
+                        <button class="copy-btn" onclick="copyLink(this, '${giftUrl}')">📋 Kopyala</button>
                     </div>
                 </td>
                 <td>
-                    <a href="${giftUrl}" target="_blank" class="btn-view">GÃ¶rÃ¼ntÃ¼le â†—</a>
+                    <a href="${giftUrl}" target="_blank" class="btn-view">Görüntüle ↗</a>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -282,10 +282,10 @@
 
     function copyLink(btn, url) {
         navigator.clipboard.writeText(url).then(() => {
-            btn.textContent = 'âœ… KopyalandÄ±';
+            btn.textContent = '✅ Kopyalandı';
             btn.classList.add('copied');
             setTimeout(() => {
-                btn.textContent = 'ğŸ“‹ Kopyala';
+                btn.textContent = '📋 Kopyala';
                 btn.classList.remove('copied');
             }, 2000);
         }).catch(() => {
@@ -296,10 +296,10 @@
             ta.select();
             document.execCommand('copy');
             document.body.removeChild(ta);
-            btn.textContent = 'âœ… KopyalandÄ±';
+            btn.textContent = '✅ Kopyalandı';
             btn.classList.add('copied');
             setTimeout(() => {
-                btn.textContent = 'ğŸ“‹ Kopyala';
+                btn.textContent = '📋 Kopyala';
                 btn.classList.remove('copied');
             }, 2000);
         });
