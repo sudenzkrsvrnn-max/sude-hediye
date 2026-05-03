@@ -306,6 +306,7 @@ canvas{position:fixed;inset:0;z-index:1;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+console.log("SCRIPT IS RUNNING - INITIALIZING");
 // === ERROR HANDLING (console only - no blocking alerts) ===
 window.addEventListener('error', (e) => console.error('HATA:', e.message));
 window.addEventListener('unhandledrejection', (e) => console.warn('BAĞLANTI:', e.reason));
@@ -374,15 +375,18 @@ async function loadGiftData() {
 let matrixChars = "GÜLÜMSEDİYE".split(''); 
 
 function startExperience() {
+  console.log("startExperience called, experienceStarted:", experienceStarted);
   if (experienceStarted) return;
   experienceStarted = true;
   
+  // Sayacı her şeyden bağımsız GARANTİ başlat
+  startCountdown();
+
   try {
     matrixChars = String(CONFIG.matrixMessage || "MUTLU YILLAR").split('');
     startMatrix();
-    startCountdown();
   } catch(e) {
-    alert("BAŞLATMA HATASI: " + e.message);
+    console.error("HATA startMatrix:", e.message);
   }
 }
 
@@ -446,24 +450,31 @@ function drawStars() {
 }
 
 // === FLOW ===
-let count = 3;
+let countdownTimer;
 function startCountdown() {
+  console.log("startCountdown called");
   const cd = document.getElementById('countdown');
   if (!cd) {
-    alert('HATA: Sayıcı elementi bulunamadı!');
+    console.error('HATA: Sayıcı elementi bulunamadı!');
     return;
   }
   
-  function tick() {
+  let count = 3;
+  cd.textContent = count;
+  
+  if(countdownTimer) clearInterval(countdownTimer);
+  
+  countdownTimer = setInterval(() => {
+    console.log("tick, count:", count);
     count--;
     if (count > 0) {
       cd.textContent = count;
-      setTimeout(tick, 1000);
     } else {
+      clearInterval(countdownTimer);
+      console.log("calling goPhase2");
       goPhase2();
     }
-  }
-  setTimeout(tick, 1000);
+  }, 1000);
 }
 
 function goPhase2() {
