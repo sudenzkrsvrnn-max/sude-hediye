@@ -327,6 +327,35 @@ canvas{position:fixed;inset:0;z-index:1;}
   <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
 </div>
 
+<!-- ÖRNEKTİR WATERMARK (only shown when ?demo=true) -->
+<div id="demoWatermark" style="
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+">
+  <!-- Diagonal repeating text -->
+  <div style="
+    position: absolute; inset: -100%;
+    display: flex; flex-wrap: wrap; align-content: flex-start;
+    transform: rotate(-35deg);
+    gap: 40px 20px;
+    opacity: 0.18;
+  ">
+    <!-- 80 repetitions of ÖRNEKTİR -->
+    <script>document.write(Array(80).fill('<span style="display:inline-block;white-space:nowrap;font-family:Arial,sans-serif;font-size:22px;font-weight:900;color:#ff69b4;letter-spacing:4px;padding:20px;">ÖRNEKTİR</span>').join(''));</script>
+  </div>
+  <!-- Top banner -->
+  <div style="
+    position: absolute; top: 0; left: 0; right: 0;
+    background: rgba(255, 20, 147, 0.85);
+    color: white; font-family: Arial, sans-serif;
+    font-size: 13px; font-weight: 900; letter-spacing: 3px;
+    text-align: center; padding: 10px;
+    text-transform: uppercase;
+  ">⚠️ Bu bir demo önizlemesidir — ÖRNEKTİR — Satın aldıktan sonra filigran kalkar ⚠️</div>
+</div>
+
 <!-- LIBS -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -795,7 +824,12 @@ window.addEventListener('resize', () => {
   if(typeof initStars === 'function') initStars();
 });
 
-// Script sayfanın en altında olduğu için DOM zaten hazır. Hemen başlatıyoruz:
+// Demo watermark
+if (new URLSearchParams(window.location.search).get('demo') === 'true') {
+  const wm = document.getElementById('demoWatermark');
+  if (wm) wm.style.display = 'block';
+}
+
 startExperience();
 loadGiftData().catch(err => console.warn('Veri yüklenemedi:', err));
 
