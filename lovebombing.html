@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -315,13 +315,13 @@ window.addEventListener('unhandledrejection', (e) => console.warn('BALANTI:', e.
 const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
 const SUPABASE_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
 
-let supabase = null;
+let supabaseClient = null;
 const isLocal = window.location.protocol === 'file:';
 
 if (!isLocal) {
   try {
     if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: { persistSession: false } 
       });
     }
@@ -344,10 +344,10 @@ async function loadGiftData() {
   const urlParams = new URLSearchParams(window.location.search);
   const giftId = urlParams.get('id');
 
-  if (giftId && supabase) {
+  if (giftId && supabaseClient) {
     try {
       const { data, error } = await Promise.race([
-        supabase.from('submissions').select('*').eq('id_custom', giftId).single(),
+        supabaseClient.from('submissions').select('*').eq('id_custom', giftId).single(),
         new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2500))
       ]);
 
@@ -738,5 +738,6 @@ loadGiftData().catch(err => console.warn('Veri yklenemedi:', err));
 </script>
 </body>
 </html>
+
 
 
