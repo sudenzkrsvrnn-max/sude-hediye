@@ -195,7 +195,54 @@
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; }
         .summary-val { font-weight: 700; color: var(--primary-light); }
 
-        /* Locked Link */
+        /* Memory Cards - Multi */
+        .memory-list { display: flex; flex-direction: column; gap: 15px; }
+        .memory-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            transition: 0.3s;
+            animation: slideUp 0.3s ease forwards;
+        }
+        .memory-card:hover { border-color: rgba(255,20,147,0.25); }
+        .mem-num {
+            font-size: 11px; font-weight: 700; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .delete-mem {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,0,0,0.1); border: none;
+            color: rgba(255,100,100,0.7); border-radius: 8px;
+            width: 28px; height: 28px; cursor: pointer;
+            font-size: 14px; display: flex; align-items: center;
+            justify-content: center; transition: 0.2s;
+        }
+        .delete-mem:hover { background: rgba(255,0,0,0.2); color: #ff6666; }
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .upload-area:hover { border-color: var(--primary); background: rgba(255,20,147,0.04); }
+        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; display: none; margin-bottom: 10px; }
+        .add-mem-btn {
+            width: 100%; padding: 15px;
+            background: rgba(255,20,147,0.08);
+            border: 2px dashed rgba(255,20,147,0.3);
+            border-radius: 15px; color: var(--primary);
+            font-size: 15px; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: 0.3s; margin-top: 5px;
+        }
+        .add-mem-btn:hover { background: rgba(255,20,147,0.15); border-color: var(--primary); }
+        .mem-count { font-size: 12px; color: var(--gray); text-align: right; margin-top: -10px; margin-bottom: 5px; }
         .locked-link-wrap {
             position: relative;
             margin: 20px 0;
@@ -327,23 +374,15 @@
                 <input type="hidden" id="selectedGif" value="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png">
             </div>
 
-            <!-- STEP 3: MEMORIES -->
+            <!-- STEP 3: MEMORIES (MULTI) -->
             <div class="step" id="step3">
                 <h2>Anılarını Ekle</h2>
-                <p class="step-desc">Defterde yer alacak fotoğraflarını ve notlarını ekle.</p>
-                <div class="memory-card">
-                    <div class="upload-area">
-                        <img id="prevImg" class="upload-preview">
-                        <div id="uploadTxt">
-                            <p>Fotoğraf Seç</p>
-                        </div>
-                        <input type="file" accept="image/*" onchange="handleFile(this)">
-                    </div>
-                    <div class="form-group" style="margin-top:20px;">
-                        <label>BU ANININ HİKAYESİ</label>
-                        <textarea id="memNote" rows="3" placeholder="Örn: Buradaki gülüşün kalbimi eritiyor ❤️"></textarea>
-                    </div>
+                <p class="step-desc">Defterde yer alacak fotoğraflarını ve notlarını ekle. Birden fazla anı ekleyebilirsin.</p>
+                <p class="mem-count"><span id="memCountTxt">1</span> / 5 anı</p>
+                <div class="memory-list" id="memoryList">
+                    <!-- First card is always shown -->
                 </div>
+                <button type="button" class="add-mem-btn" id="addMemBtn" onclick="addMemoryCard()">+ Yeni Anı Ekle</button>
             </div>
 
             <!-- STEP 4: PREVIEW + SUMMARY -->
@@ -480,14 +519,71 @@
             document.getElementById('selectedGif').value = url;
         }
 
-        function handleFile(input) {
+        // === MULTI-MEMORY SYSTEM ===
+        let memCardCount = 0;
+
+        function addMemoryCard() {
+            const list = document.getElementById('memoryList');
+            if (memCardCount >= 5) return;
+
+            const idx = memCardCount;
+            memCardCount++;
+            updateMemCount();
+
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.idx = idx;
+            card.innerHTML = `
+                <p class="mem-num">📸 Anı ${memCardCount}</p>
+                ${memCardCount > 1 ? `<button type="button" class="delete-mem" onclick="removeMemCard(this)" title="Sil">✕</button>` : ''}
+                <div class="upload-area">
+                    <img class="upload-preview mem-img">
+                    <div class="upload-txt" style="color:var(--gray); font-size:14px;">
+                        <p>📷 Fotoğraf Seç</p>
+                        <p style="font-size:11px; margin-top:5px; color:rgba(255,255,255,0.3);">İsteğe bağlı</p>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleMemFile(this)">
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label>BU ANININ HİKAYESİ</label>
+                    <textarea class="mem-note" rows="2" placeholder="Örn: Buradaki gülüşün kalbimi eritiyor ❤️"></textarea>
+                </div>
+            `;
+            list.appendChild(card);
+
+            if (memCardCount >= 5) {
+                document.getElementById('addMemBtn').style.display = 'none';
+            }
+        }
+
+        function removeMemCard(btn) {
+            const card = btn.closest('.memory-card');
+            card.remove();
+            memCardCount--;
+            updateMemCount();
+            document.getElementById('addMemBtn').style.display = 'block';
+            // Renumber remaining cards
+            document.querySelectorAll('.memory-card').forEach((c, i) => {
+                const num = c.querySelector('.mem-num');
+                if (num) num.textContent = `📸 Anı ${i + 1}`;
+            });
+        }
+
+        function updateMemCount() {
+            const el = document.getElementById('memCountTxt');
+            if (el) el.textContent = memCardCount;
+        }
+
+        function handleMemFile(input) {
             if (input.files && input.files[0]) {
                 const r = new FileReader();
                 r.onload = e => {
-                    const img = document.getElementById('prevImg');
+                    const card = input.closest('.memory-card');
+                    const img = card.querySelector('.mem-img');
+                    const txt = card.querySelector('.upload-txt');
                     img.src = e.target.result;
                     img.style.display = 'block';
-                    document.getElementById('uploadTxt').style.display = 'none';
+                    if (txt) txt.style.display = 'none';
                 };
                 r.readAsDataURL(input.files[0]);
             }
@@ -518,11 +614,19 @@
             try {
                 const id = Math.floor(Math.random() * 900000) + 100000;
                 const mems = [];
-                const imgData = document.getElementById('prevImg').src;
-                
-                if(imgData && imgData.startsWith('data:image')) {
-                    const lowRes = await compress(imgData);
-                    mems.push({ photo: lowRes, note: document.getElementById('memNote').value });
+
+                // Collect ALL memory cards
+                const cards = document.querySelectorAll('.memory-card');
+                for (const card of cards) {
+                    const img = card.querySelector('.mem-img');
+                    const note = card.querySelector('.mem-note');
+                    const noteVal = note ? note.value.trim() : '';
+                    if (img && img.src && img.src.startsWith('data:image')) {
+                        const lowRes = await compress(img.src);
+                        mems.push({ photo: lowRes, note: noteVal });
+                    } else if (noteVal) {
+                        mems.push({ photo: null, note: noteVal });
+                    }
                 }
 
                 const { error } = await sb.from('submissions').insert([{
@@ -539,7 +643,6 @@
                 const giftUrl = window.location.origin + "/lovebombing.html?id=" + id;
                 document.getElementById('finalLink').value = giftUrl;
 
-                // Build WhatsApp pre-filled message
                 const waMsg = encodeURIComponent(
                   "Merhaba! 💝 Gülümse Diye'de bir lovebombing hediyesi oluşturdum.\n" +
                   "Siparişimi tamamlamak istiyorum, lütfen linki aktive edin.\n" +
@@ -547,7 +650,6 @@
                 );
                 document.getElementById('waBtn').href = "https://wa.me/905312454307?text=" + waMsg;
 
-                // Show success step
                 document.getElementById('step4').classList.remove('active');
                 document.getElementById('step5').classList.add('active');
                 document.getElementById('navContainer').style.display = 'none';
@@ -565,6 +667,9 @@
             document.execCommand('copy');
             alert("Kopyalandı! ✨");
         }
+
+        // Initialize first memory card on load
+        document.addEventListener('DOMContentLoaded', () => { addMemoryCard(); });
     </script>
 </body>
 </html>
