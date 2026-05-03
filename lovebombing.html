@@ -633,16 +633,11 @@ function buildBook() {
     <div class="page-side page-back cover-back"></div>
   `;
   backCover.onclick = () => {
+    if (backCover.classList.contains('flipped')) return;
+    backCover.classList.add('flipped');
+    backCover.style.zIndex = CONFIG.pages.length + 5;
     msgText.textContent = "Sonsuza Dek... ❤️";
-    // Flip all pages back to close the book
-    const allPages = book.querySelectorAll('.page');
-    allPages.forEach((p, idx) => {
-      setTimeout(() => {
-        p.classList.remove('flipped');
-        p.style.zIndex = CONFIG.pages.length + 2 - idx;
-      }, idx * 50);
-    });
-    setTimeout(goPhase5, 1500);
+    setTimeout(goPhase5, 1800);
   };
   book.appendChild(backCover);
 }
