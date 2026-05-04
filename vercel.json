@@ -1,13 +1,5 @@
 {
   "version": 2,
   "buildCommand": "npm install",
-  "outputDirectory": "sude-hediye-main",
-  "functions": {
-    "api/og-image.js": {
-      "runtime": "@vercel/node@3"
-    },
-    "api/preview.js": {
-      "runtime": "@vercel/node@3"
-    }
-  }
+  "outputDirectory": "sude-hediye-main"
 }
