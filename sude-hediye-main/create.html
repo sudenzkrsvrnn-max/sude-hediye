@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hediye Oluştur | Gülümse Diye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --primary: #ff1493;
+            --primary-light: #ff69b4;
+            --accent: #8a2be2;
+            --text: #ffffff;
+            --gray: #a0a0a0;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+
+        .glow {
+            position: fixed;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255, 20, 147, 0.15) 0%, transparent 70%);
+            border-radius: 50%; top: -200px; right: -200px; z-index: -1;
+        }
+
+        header { padding: 40px 0; text-align: center; width: 100%; }
+        .logo { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: #fff; text-decoration: none; }
+
+        .wizard-container {
+            width: min(94%, 600px);
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 30px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 0 10px;
+        }
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 2px; background: rgba(255,255,255,0.1);
+            z-index: 1; transform: translateY(-50%);
+        }
+        .progress-line {
+            position: absolute;
+            top: 50%; left: 0; height: 2px;
+            background: var(--primary);
+            z-index: 2; transform: translateY(-50%);
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+        .progress-step {
+            width: 35px; height: 35px;
+            background: #1a1a1a;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+            z-index: 3; transition: 0.3s;
+            color: var(--gray);
+        }
+        .progress-step.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.4);
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: slideUp 0.5s ease forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .step-desc { color: var(--gray); margin-bottom: 30px; font-size: 15px; }
+
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); background: rgba(255,255,255,0.05); }
+
+        .suggestions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .suggestion-pill {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--gray);
+        }
+        .suggestion-pill:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* GIF Grid */
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .gif-item {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .gif-item:hover { transform: scale(1.05); }
+        .gif-item.selected { border-color: var(--primary); box-shadow: 0 0 15px rgba(255, 20, 147, 0.3); }
+        .gif-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Memory Cards */
+        .memory-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .upload-area:hover { border-color: var(--primary); background: rgba(255,255,255,0.03); }
+        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-preview { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; display: none; margin-top: -30px; margin-bottom: 20px; }
+
+        /* Navigation */
+        .nav-btns { display: flex; gap: 15px; margin-top: 30px; }
+        .btn {
+            padding: 18px 30px;
+            border-radius: 15px;
+            border: none;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+        .btn-next { background: var(--primary); color: white; flex: 2; }
+        .btn-prev { background: rgba(255,255,255,0.05); color: var(--gray); flex: 1; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Summary Step */
+        .summary-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; }
+        .summary-val { font-weight: 700; color: var(--primary-light); }
+
+        /* Memory Cards - Multi */
+        .memory-list { display: flex; flex-direction: column; gap: 15px; }
+        .memory-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            transition: 0.3s;
+            animation: slideUp 0.3s ease forwards;
+        }
+        .memory-card:hover { border-color: rgba(255,20,147,0.25); }
+        .mem-num {
+            font-size: 11px; font-weight: 700; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .delete-mem {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,0,0,0.1); border: none;
+            color: rgba(255,100,100,0.7); border-radius: 8px;
+            width: 28px; height: 28px; cursor: pointer;
+            font-size: 14px; display: flex; align-items: center;
+            justify-content: center; transition: 0.2s;
+        }
+        .delete-mem:hover { background: rgba(255,0,0,0.2); color: #ff6666; }
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .upload-area:hover { border-color: var(--primary); background: rgba(255,20,147,0.04); }
+        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; display: none; margin-bottom: 10px; }
+        .add-mem-btn {
+            width: 100%; padding: 15px;
+            background: rgba(255,20,147,0.08);
+            border: 2px dashed rgba(255,20,147,0.3);
+            border-radius: 15px; color: var(--primary);
+            font-size: 15px; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: 0.3s; margin-top: 5px;
+        }
+        .add-mem-btn:hover { background: rgba(255,20,147,0.15); border-color: var(--primary); }
+        .mem-count { font-size: 12px; color: var(--gray); text-align: right; margin-top: -10px; margin-bottom: 5px; }
+        .locked-link-wrap {
+            position: relative;
+            margin: 20px 0;
+        }
+        .locked-link-wrap input {
+            filter: blur(5px);
+            pointer-events: none;
+            user-select: none;
+            border: 2px solid rgba(255,20,147,0.4);
+        }
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(5,5,5,0.7);
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 1px;
+            backdrop-filter: blur(2px);
+        }
+        .lock-overlay span { font-size: 18px; }
+
+        .wa-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(37,211,102,0.35);
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+        .wa-btn:hover { transform: translateY(-3px); box-shadow: 0 0 45px rgba(37,211,102,0.55); }
+        .wa-btn svg { flex-shrink: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="glow"></div>
+
+    <header>
+        <a href="index.html" class="logo">GÜLÜMSE DİYE</a>
+    </header>
+
+    <div class="wizard-container">
+        <!-- Progress -->
+        <div class="progress-bar">
+            <div class="progress-line" id="progressLine"></div>
+            <div class="progress-step active">1</div>
+            <div class="progress-step">2</div>
+            <div class="progress-step">3</div>
+            <div class="progress-step">4</div>
+        </div>
+
+        <form id="giftForm">
+            <!-- STEP 1: MESSAGE -->
+            <div class="step active" id="step1">
+                <h2>Büyük Mesajını Yaz</h2>
+                <p class="step-desc">Açılışta akacak sürpriz mesajını belirle.</p>
+                <div class="form-group">
+                    <label>EKRANDA AKACAK MESAJ</label>
+                    <input type="text" id="matrixMessage" placeholder="Örn: İYİ Kİ VARSIN SEVGİLİM" value="GÜLÜMSEDİYE">
+                    <div class="suggestions">
+                        <div class="suggestion-pill" onclick="fillMsg('İYİ Kİ DOĞDUN SEVGİLİM')">İYİ Kİ DOĞDUN SEVGİLİM</div>
+                        <div class="suggestion-pill" onclick="fillMsg('SENİ ÇOK SEVİYORUM')">SENİ ÇOK SEVİYORUM</div>
+                        <div class="suggestion-pill" onclick="fillMsg('İYİ Kİ VARSIN SEVGİLİM')">İYİ Kİ VARSIN SEVGİLİM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: ANIMATION -->
+            <div class="step" id="step2">
+                <h2>Animasyonunu Seç</h2>
+                <p class="step-desc">Mesajdan sonra çıkacak tatlı animasyonu belirle.</p>
+                <div class="gif-grid">
+                    <div class="gif-item selected" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/2gif.png')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/2gif.png">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/3gif.png')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/3gif.png">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/4gif.png')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/4gif.png">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/5gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/5gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/6gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/6gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/7gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/7gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/8gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/8gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/9gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/9gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/10gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/10gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/11gif.gif')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/11gif.gif">
+                    </div>
+                    <div class="gif-item" onclick="selectGif(this, 'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/12gif.jpeg')">
+                        <img src="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/12gif.jpeg">
+                    </div>
+                </div>
+                <input type="hidden" id="selectedGif" value="https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png">
+            </div>
+
+            <!-- STEP 3: MEMORIES (MULTI) -->
+            <div class="step" id="step3">
+                <h2>Anılarını Ekle</h2>
+                <p class="step-desc">Defterde yer alacak fotoğraflarını ve notlarını ekle. Birden fazla anı ekleyebilirsin.</p>
+                <p class="mem-count"><span id="memCountTxt">1</span> / 5 anı</p>
+                <div class="memory-list" id="memoryList">
+                    <!-- First card is always shown -->
+                </div>
+                <button type="button" class="add-mem-btn" id="addMemBtn" onclick="addMemoryCard()">+ Yeni Anı Ekle</button>
+            </div>
+
+            <!-- STEP 4: DEMO + SUMMARY -->
+            <div class="step" id="step4">
+                <h2>Önizleme ✨</h2>
+                <p class="step-desc">Hediyen kaydediliyor, demo linkin hazırlanıyor...</p>
+
+                <!-- Demo Link Area -->
+                <div id="demoArea" style="margin: 25px 0; text-align: center;">
+                    <!-- Spinner while saving -->
+                    <div id="demoSpinner" style="padding:30px; color:rgba(255,255,255,0.4); font-size:14px;">
+                        <div style="margin-bottom:10px; font-size:28px;">⏳</div>
+                        Kaydediliyor...
+                    </div>
+                    <!-- Demo link (shown after save) -->
+                    <div id="demoReady" style="display:none;">
+                        <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,100,0,0.12); border:1px dashed rgba(255,100,0,0.4); border-radius:8px; padding:5px 14px; margin-bottom:12px;">
+                            <span style="font-size:12px; color:rgba(255,150,50,0.9); letter-spacing:2px; font-weight:800; text-transform:uppercase;">⚠️ ÖRNEKİR — Satın alındıktan sonra görünüm değişir</span>
+                        </div>
+                        <a id="demoLink" href="#" target="_blank" style="
+                            display: flex; align-items: center; justify-content: center; gap: 10px;
+                            width: 100%; padding: 18px 20px; margin-bottom: 10px;
+                            background: linear-gradient(135deg, rgba(255,20,147,0.15), rgba(138,43,226,0.15));
+                            border: 2px solid rgba(255,20,147,0.4);
+                            border-radius: 15px; color: var(--primary-light);
+                            font-size: 16px; font-weight: 800; font-family: inherit;
+                            text-decoration: none; transition: 0.3s;
+                            box-shadow: 0 0 25px rgba(255,20,147,0.15);
+                        ">
+                            👁️ Demo'yu İncele
+                        </a>
+                        <p style="font-size:11px; color:rgba(255,255,255,0.25);">Kendi doldurduğun mesaj, GIF ve fotoğraflarla görünür.</p>
+                    </div>
+                    <div id="demoError" style="display:none; color:rgba(255,100,100,0.7); font-size:13px; padding:10px;">
+                        ⚠️ Bağlantı hatası. İleri tuşuna tekrar basın.
+                    </div>
+                </div>
+
+                <!-- Summary rows -->
+                <div class="summary-card">
+                    <div class="summary-row"><span>📝 Mesaj:</span> <span class="summary-val" id="sumMsg">—</span></div>
+                    <div class="summary-row"><span>🎞️ Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
+                    <div class="summary-row" id="sumMemRow"><span>📸 Anı Fotoğrafı:</span> <span class="summary-val" id="sumMem">Eklenmedi</span></div>
+                </div>
+            </div>
+
+            <!-- FINAL STEP: SUCCESS -->
+            <div class="step success-step" id="step5">
+                <span style="font-size:60px; display:block; margin-bottom:15px;">💝</span>
+                <h2>Harika Görünüyor!</h2>
+                <p style="color:var(--gray); margin-bottom:20px; font-size:15px;">Hediyenin linki hazır!<br>Göndermek için siparişini tamamla.</p>
+
+                <!-- Blurred / Locked Link -->
+                <div class="locked-link-wrap">
+                    <input type="text" id="finalLink" readonly placeholder="lovebombing.html?id=XXXXXX">
+                    <div class="lock-overlay">
+                        <span>🔒</span> LİNKİ AÇMAK İÇİN SİPARİŞ VER
+                    </div>
+                </div>
+
+                <!-- WhatsApp CTA -->
+                <a id="waBtn" class="wa-btn" href="#" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Sipariş Ver &amp; Linki Al
+                </a>
+
+                <p style="font-size:11px; color:rgba(255,255,255,0.2); margin-top:16px;">Siparişini WhatsApp üzerinden tamamladıktan sonra<br>sana özel linkin iletilecektir.</p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-btns" id="navContainer">
+                <button type="button" class="btn btn-prev" id="prevBtn" onclick="move(-1)" style="display:none;">Geri</button>
+                <button type="button" class="btn btn-next" id="nextBtn" onclick="move(1)">İleri</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const S_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
+        const S_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
+        const sb = window.supabase.createClient(S_URL, S_KEY);
+
+        let cur = 1;
+        const total = 4;
+
+        function move(n) {
+            // Entering step 4: auto-save draft first
+            if (cur === 3 && n === 1) {
+                saveDraft();
+            }
+            if (cur === 4 && n === 1) {
+                finalize();
+                return;
+            }
+            document.getElementById('step' + cur).classList.remove('active');
+            cur += n;
+            document.getElementById('step' + cur).classList.add('active');
+            updateUI();
+        }
+
+        function updateUI() {
+            const dots = document.querySelectorAll('.progress-step');
+            dots.forEach((d, i) => {
+                if (i < cur) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+            document.getElementById('progressLine').style.width = ((cur - 1) / (total - 1)) * 100 + '%';
+            document.getElementById('prevBtn').style.display = cur > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').textContent = cur === 4 ? 'Siparişi Tamamla! 💖' : 'İleri';
+
+            if (cur === 4) {
+                document.getElementById('sumMsg').textContent = document.getElementById('matrixMessage').value;
+                // Check memory count
+                const firstImg = document.querySelector('.mem-img');
+                if (firstImg && firstImg.src && firstImg.src.startsWith('data:')) {
+                    document.getElementById('sumMem').textContent = memCardCount + ' fotoğraf eklendi ✓';
+                } else {
+                    document.getElementById('sumMem').textContent = 'Eklenmedi';
+                }
+            }
+        }
+
+        function fillMsg(m) { document.getElementById('matrixMessage').value = m; }
+
+        function selectGif(el, url) {
+            document.querySelectorAll('.gif-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selectedGif').value = url;
+        }
+
+        // === MULTI-MEMORY SYSTEM ===
+        let memCardCount = 0;
+
+        function addMemoryCard() {
+            const list = document.getElementById('memoryList');
+            if (memCardCount >= 5) return;
+
+            const idx = memCardCount;
+            memCardCount++;
+            updateMemCount();
+
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.idx = idx;
+            card.innerHTML = `
+                <p class="mem-num">📸 Anı ${memCardCount}</p>
+                ${memCardCount > 1 ? `<button type="button" class="delete-mem" onclick="removeMemCard(this)" title="Sil">✕</button>` : ''}
+                <div class="upload-area">
+                    <img class="upload-preview mem-img">
+                    <div class="upload-txt" style="color:var(--gray); font-size:14px;">
+                        <p>📷 Fotoğraf Seç</p>
+                        <p style="font-size:11px; margin-top:5px; color:rgba(255,255,255,0.3);">İsteğe bağlı</p>
+                    </div>
+                    <input type="file" accept="image/*" onchange="handleMemFile(this)">
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label>BU ANININ HİKAYESİ</label>
+                    <textarea class="mem-note" rows="2" placeholder="Örn: Buradaki gülüşün kalbimi eritiyor ❤️"></textarea>
+                </div>
+            `;
+            list.appendChild(card);
+
+            if (memCardCount >= 5) {
+                document.getElementById('addMemBtn').style.display = 'none';
+            }
+        }
+
+        function removeMemCard(btn) {
+            const card = btn.closest('.memory-card');
+            card.remove();
+            memCardCount--;
+            updateMemCount();
+            document.getElementById('addMemBtn').style.display = 'block';
+            // Renumber remaining cards
+            document.querySelectorAll('.memory-card').forEach((c, i) => {
+                const num = c.querySelector('.mem-num');
+                if (num) num.textContent = `📸 Anı ${i + 1}`;
+            });
+        }
+
+        function updateMemCount() {
+            const el = document.getElementById('memCountTxt');
+            if (el) el.textContent = memCardCount;
+        }
+
+        function handleMemFile(input) {
+            if (input.files && input.files[0]) {
+                const r = new FileReader();
+                r.onload = e => {
+                    const card = input.closest('.memory-card');
+                    const img = card.querySelector('.mem-img');
+                    const txt = card.querySelector('.upload-txt');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    if (txt) txt.style.display = 'none';
+                };
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function compress(b64) {
+            return new Promise((res) => {
+                const img = new Image();
+                img.src = b64;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX = 700;
+                    let w = img.width, h = img.height;
+                    if (w > h) { if (w > MAX) { h *= MAX/w; w = MAX; } }
+                    else { if (h > MAX) { w *= MAX/h; h = MAX; } }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    res(canvas.toDataURL('image/jpeg', 0.6));
+                };
+            });
+        }
+
+        // === DRAFT SAVE (when entering step 4) ===
+        let draftId = null;
+        let draftSaved = false;
+
+        async function saveDraft() {
+            if (draftSaved) return; // already saved
+            document.getElementById('demoSpinner').style.display = 'block';
+            document.getElementById('demoReady').style.display = 'none';
+            document.getElementById('demoError').style.display = 'none';
+
+            try {
+                const id = Math.floor(Math.random() * 900000) + 100000;
+                draftId = id;
+                const mems = [];
+
+                const cards = document.querySelectorAll('.memory-card');
+                for (const card of cards) {
+                    const img = card.querySelector('.mem-img');
+                    const note = card.querySelector('.mem-note');
+                    const noteVal = note ? note.value.trim() : '';
+                    if (img && img.src && img.src.startsWith('data:image')) {
+                        const lowRes = await compress(img.src);
+                        mems.push({ photo: lowRes, note: noteVal });
+                    } else if (noteVal) {
+                        mems.push({ photo: null, note: noteVal });
+                    }
+                }
+
+                const { error } = await sb.from('submissions').insert([{
+                    id_custom: id.toString(),
+                    matrix_message: document.getElementById('matrixMessage').value,
+                    gif_url: document.getElementById('selectedGif').value,
+                    memories: mems,
+                    customer_info: 'Demo - Onay Bekleniyor'
+                }]);
+
+                if (error) throw error;
+
+                draftSaved = true;
+                const demoUrl = window.location.origin + '/lovebombing.html?id=' + id + '&demo=true';
+                document.getElementById('demoLink').href = demoUrl;
+                document.getElementById('demoSpinner').style.display = 'none';
+                document.getElementById('demoReady').style.display = 'block';
+
+            } catch (err) {
+                console.error('Draft save error:', err);
+                document.getElementById('demoSpinner').style.display = 'none';
+                document.getElementById('demoError').style.display = 'block';
+            }
+        }
+
+        async function finalize() {
+            const btn = document.getElementById('nextBtn');
+            btn.disabled = true;
+            btn.textContent = 'Kaydediliyor...';
+
+            try {
+                const id = Math.floor(Math.random() * 900000) + 100000;
+                const mems = [];
+
+                // Collect ALL memory cards
+                const cards = document.querySelectorAll('.memory-card');
+                for (const card of cards) {
+                    const img = card.querySelector('.mem-img');
+                    const note = card.querySelector('.mem-note');
+                    const noteVal = note ? note.value.trim() : '';
+                    if (img && img.src && img.src.startsWith('data:image')) {
+                        const lowRes = await compress(img.src);
+                        mems.push({ photo: lowRes, note: noteVal });
+                    } else if (noteVal) {
+                        mems.push({ photo: null, note: noteVal });
+                    }
+                }
+
+                const { error } = await sb.from('submissions').insert([{
+                    id_custom: id.toString(),
+                    matrix_message: document.getElementById('matrixMessage').value,
+                    gif_url: document.getElementById('selectedGif').value,
+                    memories: mems,
+                    customer_info: 'Yeni Hediye'
+                }]);
+
+                if(error) throw error;
+
+                // Build the gift URL and WhatsApp message
+                const giftUrl = window.location.origin + "/lovebombing.html?id=" + id;
+                document.getElementById('finalLink').value = giftUrl;
+
+                const waMsg = encodeURIComponent(
+                  "Merhaba! 💝 Gülümse Diye'de bir lovebombing hediyesi oluşturdum.\n" +
+                  "Siparişimi tamamlamak istiyorum, lütfen linki aktive edin.\n" +
+                  "Hediye ID: " + id
+                );
+                document.getElementById('waBtn').href = "https://wa.me/905312454307?text=" + waMsg;
+
+                document.getElementById('step4').classList.remove('active');
+                document.getElementById('step5').classList.add('active');
+                document.getElementById('navContainer').style.display = 'none';
+
+            } catch (err) {
+                alert("Hata: " + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Tekrar Dene';
+            }
+        }
+
+        function copyResult() {
+            const el = document.getElementById('finalLink');
+            el.select();
+            document.execCommand('copy');
+            alert("Kopyalandı! ✨");
+        }
+
+        // Initialize first memory card on load
+        document.addEventListener('DOMContentLoaded', () => { addMemoryCard(); });
+    </script>
+</body>
+</html>
