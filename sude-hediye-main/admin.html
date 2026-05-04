@@ -180,9 +180,10 @@
 
 <script>
     const ADMIN_PASS = "admin123";
-    const BASE_URL = window.location.protocol === 'file:' 
-        ? "https://sudenzkrsvrnn-max.github.io/sude-hediye" 
-        : window.location.origin + window.location.pathname.replace(/\/[^\/]+$/, '');
+    // API functions are on Vercel, not GitHub Pages
+    const BASE_URL = window.location.protocol === 'file:' || window.location.hostname.includes('github.io')
+        ? "https://sude-hediye.vercel.app"
+        : window.location.origin;
 
     document.getElementById('adminPass').addEventListener('keydown', e => {
         if (e.key === 'Enter') checkPass();
@@ -255,7 +256,7 @@
                 ? new Date(item.created_at).toLocaleString('tr-TR')
                 : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
-            const giftUrl = `${BASE_URL}/preview.html?id=${item.id_custom}`;
+            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}`;
 
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
             const statusBadge = isDemo
