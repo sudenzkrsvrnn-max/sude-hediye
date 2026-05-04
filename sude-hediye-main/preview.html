@@ -232,7 +232,12 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const giftId = urlParams.get('id') || 'demo';
-        const targetUrl = window.location.origin + '/lovebombing.html?id=' + giftId;
+        
+        const currentFolder = window.location.protocol === 'file:' 
+            ? "https://sudenzkrsvrnn-max.github.io/sude-hediye"
+            : window.location.origin + window.location.pathname.replace(/\/[^\/]+$/, '');
+            
+        const targetUrl = currentFolder + '/lovebombing.html?id=' + giftId;
 
         // Set buttons
         document.getElementById('open-link').href = targetUrl;

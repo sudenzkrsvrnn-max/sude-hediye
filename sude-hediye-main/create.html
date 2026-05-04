@@ -686,7 +686,10 @@
                 if(error) throw error;
 
                 // Build the gift URL and WhatsApp message
-                const giftUrl = window.location.origin + "/lovebombing.html?id=" + id;
+                const currentFolder = window.location.protocol === 'file:' 
+                    ? "https://sudenzkrsvrnn-max.github.io/sude-hediye"
+                    : window.location.origin + window.location.pathname.replace(/\/[^\/]+$/, '');
+                const giftUrl = currentFolder + "/lovebombing.html?id=" + id;
                 document.getElementById('finalLink').value = giftUrl;
 
                 const waMsg = encodeURIComponent(
