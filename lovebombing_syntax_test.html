@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Srpriz Kutusu </title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #ff1493;
+  --primary-light: #ff69b4;
+  --bg: #0a0a1a;
+  --text: #ffffff;
+  --book-w: min(85vw, 340px);
+  --book-h: min(110vw, 450px);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);overflow:hidden;font-family:'Rajdhani',sans-serif;color:var(--text);height:100vh;width:100vw;touch-action:none;}
+
+/* PHASES */
+.phase{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease;z-index:10;pointer-events:all;}
+.phase.hidden{opacity:0;pointer-events:none;z-index:1;}
+
+/* CANVAS LAYERS */
+canvas{position:fixed;inset:0;z-index:1;}
+
+/* COUNTDOWN */
+#countdown{font-size:min(45vw,250px);font-weight:900;color:red;
+  text-shadow:0 0 60px rgba(255,0,0,0.8);animation:pulse 0.9s ease-in-out infinite;z-index:20;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+
+/* PHASE 2 GIF & TEXT */
+#phase2Content { text-align: center; z-index: 20; display: flex; flex-direction: column; align-items: center; }
+#phase2Gif { width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px; }
+#bigMessage{ font-size: min(15vw, 80px); font-weight: 900; color: var(--primary); text-shadow: 0 0 30px var(--primary); margin-bottom: 30px; transition: all 0.5s ease; }
+
+/* HEART ANIMATION */
+#bigHeart {
+  width: min(40vw, 220px); height: min(40vw, 220px);
+  display: none; opacity: 0; transform: scale(0);
+  filter: drop-shadow(0 0 30px var(--primary));
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px var(--primary)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 50px var(--primary-light)); }
+}
+.heart-active { display: block !important; opacity: 1 !important; transform: scale(1) !important; animation: heartBeat 0.8s infinite; }
+
+/* BUTTONS */
+.continue-btn{
+  padding:18px 50px;background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  border:none;border-radius:50px;color:#fff;font-size:20px;font-weight:700;
+  letter-spacing:2px;cursor:pointer;box-shadow:0 0 30px rgba(255,20,147,0.6);
+  transition:all 0.3s ease;
+}
+.continue-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(255,20,147,0.9);}
+
+/* PHASE 3 */
+#catGif3 { width: min(70vw, 300px); filter: drop-shadow(0 0 30px rgba(255,105,180,0.5)); animation: float 3s ease-in-out infinite; }
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+
+/* SCRAPBOOK (PHASE 4) */
+#phase4 { justify-content: flex-start; padding-top: 20px; }
+#phase4Inner { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+/* Message box over scrapbook */
+#msgBox{
+  width: min(85vw, 340px); background:rgba(255,255,255,0.95); border-radius:20px;
+  padding:15px 20px; margin-bottom:20px;
+  box-shadow:0 8px 32px rgba(255,20,147,0.3);
+  position:relative; z-index: 100;
+}
+#msgBox::after{content:'';position:absolute;top:10px;right:15px;font-size:16px;}
+#msgText{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;
+  color:#333;line-height:1.5;text-align:center;}
+
+#scrapbook-container {
+  width: var(--book-w); height: var(--book-h);
+  perspective: 1500px; position: relative;
+}
+
+.book {
+  width: 100%; height: 100%; position: relative;
+  transform-style: preserve-3d; transition: transform 0.5s;
+}
+
+.page {
+  position: absolute; width: 100%; height: 100%;
+  top: 0; left: 0; transform-origin: left center;
+  transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  cursor: pointer;
+}
+
+.page-side {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; display: flex; flex-direction: column;
+  border-radius: 5px 15px 15px 5px; overflow: hidden;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.1), 5px 5px 20px rgba(0,0,0,0.4);
+}
+
+.page-front { z-index: 2; background: #fff; }
+.page-back { transform: rotateY(-180deg); background: #fdfdfd; z-index: 1; border-radius: 15px 5px 5px 15px; }
+
+.flipped { transform: rotateY(-160deg); }
+
+.cover-front { 
+  background-image: url('https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/kapak.jpg'); 
+  background-size: cover; 
+  background-position: center;
+  display: flex; align-items: center; justify-content: center; 
+  color: white; border-left: 10px solid rgba(0,0,0,0.2); 
+}
+.cover-back { 
+  background-image: url('https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/kapak.jpg'); 
+  background-size: cover; 
+  background-position: center;
+  border-right: 10px solid rgba(0,0,0,0.2); 
+}
+
+.page-img { width: 100%; height: 75%; object-fit: cover; border-bottom: 5px solid #eee; }
+.page-content { height: 25%; padding: 15px; display: flex; align-items: center; justify-content: center; text-align: center; color: #333; font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; }
+
+.instruction { position: absolute; bottom: -50px; width: 100%; text-align: center; font-size: 14px; opacity: 0.7; animation: blink 2s infinite; }
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* PHASE 5: HEART PHOTO WALL */
+#phase5 {
+  background: #000;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
+
+#starsCanvas5 {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.heart-wall {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.heart-glow-bg {
+  position: absolute;
+  width: min(70vw, 480px);
+  height: min(70vw, 480px);
+  background: radial-gradient(ellipse, rgba(255,20,147,0.55) 0%, rgba(180,0,100,0.25) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: 5;
+  pointer-events: none;
+  transform: translateY(5%);
+}
+
+.mini-photo {
+  position: absolute;
+  width: min(22vw, 120px);
+  height: min(22vw, 120px);
+  border: 3.5px solid #fff;
+  border-radius: 28px;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 0 0 3px rgba(255,105,180,0.6),
+    0 0 18px rgba(255,20,147,0.9),
+    0 0 40px rgba(255,20,147,0.5),
+    0 0 70px rgba(255,20,147,0.2);
+  opacity: 0;
+  transform: scale(0) rotate(0deg);
+  transition: transform 0.6s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.5s ease, box-shadow 0.3s ease;
+  z-index: 50;
+  cursor: pointer;
+  background-color: #1a0010;
+}
+
+.mini-photo.visible {
+  opacity: 1;
+}
+
+.mini-photo:hover {
+  transform: scale(1.25) rotate(5deg) !important;
+  z-index: 200;
+  box-shadow:
+    0 0 0 4px #fff,
+    0 0 30px rgba(255,255,255,0.9),
+    0 0 60px rgba(255,20,147,0.8);
+}
+
+#finalMessage {
+  position: absolute;
+  bottom: 11%;
+  font-family: 'Dancing Script', cursive;
+  font-size: min(10vw, 52px);
+  color: #fff;
+  text-shadow: 0 0 12px var(--primary), 0 0 28px var(--primary), 0 0 60px rgba(255,20,147,0.5);
+  opacity: 0;
+  z-index: 60;
+  text-align: center;
+  width: 100%;
+  transition: all 1.5s ease;
+  letter-spacing: 1px;
+}
+
+#replayBtn {
+  position: absolute;
+  bottom: 4%;
+  background: rgba(20, 0, 12, 0.65);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff;
+  padding: 10px 26px;
+  border-radius: 30px;
+  cursor: pointer;
+  z-index: 60;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+#replayBtn:hover { background: rgba(255,20,147,0.2); border-color: #ff69b4; transform: scale(1.06); }
+
+.confetti {
+  position: fixed; width: 10px; height: 10px; z-index: 1000;
+  pointer-events: none; border-radius: 2px;
+}
+
+.bottom-line {
+  position: absolute;
+  bottom: 3%;
+  width: 55%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  box-shadow: 0 0 12px rgba(255,255,255,0.6);
+  opacity: 0.6;
+  z-index: 55;
+}
+
+
+</style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+<canvas id="starsCanvas" style="display:none;"></canvas>
+
+<!-- PHASE 1 -->
+<div class="phase" id="phase1">
+  <div id="countdown">3</div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase hidden" id="phase2">
+  <div id="phase2Content">
+    <div id="bigMessage"></div>
+    <div id="bigHeart">
+      <svg viewBox="0 0 100 100" fill="var(--primary)">
+        <path d="M50 88.9L42.8 82.4C17.1 59.1 0 43.6 0 24.6C0 9.1 12.1 0 27.5 0C36.2 0 44.5 4.1 50 10.5C55.5 4.1 63.8 0 72.5 0C87.9 0 100 9.1 100 24.6C100 43.6 82.9 59.1 57.2 82.5L50 88.9Z" />
+      </svg>
+    </div>
+    <!-- VIDEO OR GIF SUPPORT -->
+    <img id="phase2Gif" src="" alt="CUTE GIF" style="display:none;">
+    <video id="phase2Video" style="display:none; width: min(80vw, 350px); border-radius: 20px; box-shadow: 0 0 40px rgba(255,20,147,0.5); margin-bottom: 20px;" autoplay muted loop playsinline></video>
+    
+    <button class="continue-btn" style="display:none; margin-top:20px;" onclick="goPhase4()">Devam Et </button>
+  </div>
+</div>
+
+<!-- PHASE 3 REMOVED - DIRECT TO 4 -->
+
+<!-- PHASE 4 -->
+<div class="phase hidden" id="phase4">
+  <div id="phase4Inner">
+    <div id="msgBox"><p id="msgText"></p></div>
+    <div id="scrapbook-container">
+      <div class="book" id="book">
+        <!-- Pages will be generated here -->
+      </div>
+      <div class="instruction">Sayfalar evirmek iin tkla veya kaydr </div>
+    </div>
+    <button class="continue-btn" style="margin-top: 60px; font-size: 16px; padding: 12px 30px;" onclick="goPhase5()">Son Srprizi Gr </button>
+  </div>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase hidden" id="phase5">
+  <canvas id="starsCanvas5"></canvas>
+  <div class="heart-glow-bg"></div>
+  <div class="heart-wall" id="heartWall"></div>
+  <h2 id="finalMessage">Seni ok Seviyorum! </h2>
+  <div class="bottom-line"></div>
+  <button id="replayBtn" onclick="location.reload()"> Batan zle</button>
+</div>
+
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>window.addEventListener("error", function(e) { document.body.innerHTML += "<h1 style='color:yellow; z-index:9999; position:absolute; top:50px;'>SYNTAX ERROR: " + e.message + " at " + e.lineno + ":" + e.colno + "</h1>"; });</script>
+
+<script>
+console.log("SCRIPT IS RUNNING - INITIALIZING");
+// === ERROR HANDLING (console only - no blocking alerts) ===
+window.addEventListener('error', (e) => console.error('HATA:', e.message));
+window.addEventListener('unhandledrejection', (e) => console.warn('BALANTI:', e.reason));
+
+// === CONFIG & SUPABASE ===
+const SUPABASE_URL = "https://ymkfyaurdgfvdhkkpqam.supabase.co";
+const SUPABASE_KEY = "sb_publishable_y2Txq9nCopsoNAR8aSKL3g_hjuCT8n_";
+
+let supabaseClient = null;
+const isLocal = window.location.protocol === 'file:';
+
+if (!isLocal) {
+  try {
+    if (window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: { persistSession: false } 
+      });
+    }
+  } catch (err) {
+    console.warn("Supabase balatlamad:", err);
+  }
+}
+
+let CONFIG = {
+  matrixMessage: "YKLENYOR...", 
+  phase2File: "https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/lovebombing.mp4", 
+  pages: []
+};
+
+// === DATA LOADING ===
+let dataLoaded = false;
+let experienceStarted = false;
+
+async function loadGiftData() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const giftId = urlParams.get('id');
+
+  if (giftId && supabaseClient) {
+    try {
+      const { data, error } = await Promise.race([
+        supabaseClient.from('submissions').select('*').eq('id_custom', giftId).single(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 2500))
+      ]);
+
+      if (error) throw error;
+
+      if (data) {
+        CONFIG.matrixMessage = data.matrix_message ? String(data.matrix_message) : "MUTLU YILLAR";
+        CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
+        if (data.memories && Array.isArray(data.memories)) {
+          CONFIG.pages = data.memories.map((m, idx) => ({
+            photoFront: m.photo,
+            photoBack: m.photo,
+            message: m.note || `An #${idx + 1}`
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Veri yklenemedi, varsaylan deerler kullanlacak:", err);
+    }
+  }
+  dataLoaded = true;
+}
+
+// === EXPERIENCE LOGIC ===
+let matrixChars = "GLMSEDYE".split(''); 
+
+function startExperience() {
+  console.log("startExperience called, experienceStarted:", experienceStarted);
+  if (experienceStarted) return;
+  experienceStarted = true;
+  
+  // Sayac her eyden bamsz GARANT balat
+  startCountdown();
+
+  try {
+    matrixChars = String(CONFIG.matrixMessage || "MUTLU YILLAR").split('');
+    startMatrix();
+  } catch(e) {
+    console.error("HATA startMatrix:", e.message);
+  }
+}
+
+// === MATRIX ===
+let matrixInt;
+function initMatrix() {
+  const mc = document.getElementById('matrixCanvas');
+  if(!mc) return null;
+  mc.width = window.innerWidth; 
+  mc.height = window.innerHeight;
+  const fontSize = 16;
+  const matrixCols = Math.floor(mc.width / fontSize);
+  const matrixDrops = Array(matrixCols).fill(1);
+  return {mc, fontSize, matrixCols, matrixDrops};
+}
+
+function startMatrix() {
+  const mData = initMatrix();
+  if(!mData) return;
+  const {mc, fontSize, matrixDrops} = mData;
+  const mctx = mc.getContext('2d');
+  
+  if(matrixInt) clearInterval(matrixInt);
+  matrixInt = setInterval(() => {
+    mctx.fillStyle = 'rgba(10,10,26,0.1)';
+    mctx.fillRect(0,0,mc.width,mc.height);
+    mctx.font = `900 ${fontSize}px Rajdhani`;
+    for(let i=0; i<matrixDrops.length; i++){
+      const ch = matrixChars[Math.floor(Math.random()*matrixChars.length)] || '*';
+      mctx.fillStyle = Math.random() > 0.8 ? '#fff' : '#ff1493';
+      mctx.fillText(ch, i*fontSize, matrixDrops[i]*fontSize);
+      if(matrixDrops[i]*fontSize > mc.height && Math.random() > 0.975) matrixDrops[i] = 0;
+      matrixDrops[i]++;
+    }
+  }, 50);
+}
+
+// === STARS ===
+let stars = [];
+function initStars() {
+  const sc = document.getElementById('starsCanvas');
+  if(!sc) return;
+  sc.width = window.innerWidth; sc.height = window.innerHeight;
+  stars = Array.from({length:150}, ()=>({
+    x:Math.random()*sc.width, y:Math.random()*sc.height, 
+    r:Math.random()*2, a:Math.random(), s:Math.random()*0.01 + 0.005
+  }));
+}
+
+function drawStars() {
+  const sc = document.getElementById('starsCanvas');
+  if(!sc) return;
+  const sctx = sc.getContext('2d');
+  sctx.clearRect(0,0,sc.width,sc.height);
+  stars.forEach(s=>{
+    s.a += s.s; if(s.a>1||s.a<0) s.s*=-1;
+    sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sctx.fillStyle=`rgba(255,255,255,${Math.abs(s.a)})`; sctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+// === FLOW ===
+let countdownTimer;
+function startCountdown() {
+  console.log("startCountdown called");
+  const cd = document.getElementById('countdown');
+  if (!cd) {
+    console.error('HATA: Sayc elementi bulunamad!');
+    return;
+  }
+  
+  let count = 3;
+  cd.textContent = count;
+  
+  if(countdownTimer) clearInterval(countdownTimer);
+  
+  countdownTimer = setInterval(() => {
+    console.log("tick, count:", count);
+    count--;
+    if (count > 0) {
+      cd.textContent = count;
+    } else {
+      clearInterval(countdownTimer);
+      console.log("calling goPhase2");
+      goPhase2();
+    }
+  }, 1000);
+}
+
+function goPhase2() {
+  const p1 = document.getElementById('phase1');
+  const p2 = document.getElementById('phase2');
+  if (p1) p1.classList.add('hidden');
+  if (p2) p2.classList.remove('hidden');
+  
+  const msg = document.getElementById('bigMessage');
+  const heart = document.getElementById('bigHeart');
+  const btn = document.querySelector('#phase2 .continue-btn');
+  const words = CONFIG.matrixMessage.split(' ');
+  let wordIdx = 0;
+
+  function showNextWord() {
+    if (wordIdx < words.length) {
+      msg.textContent = words[wordIdx];
+      msg.style.opacity = '1';
+      msg.style.transform = 'scale(1)';
+      setTimeout(() => {
+        msg.style.opacity = '0';
+        msg.style.transform = 'scale(1.5)';
+        wordIdx++;
+        setTimeout(showNextWord, 600);
+      }, 1200);
+    } else {
+      heart.classList.add('heart-active');
+      setTimeout(() => {
+        heart.classList.remove('heart-active');
+        heart.style.display = 'none';
+        
+        const video = document.getElementById('phase2Video');
+        const gif = document.getElementById('phase2Gif');
+        if (CONFIG.phase2File.endsWith('.mp4')) {
+          video.src = CONFIG.phase2File;
+          video.style.display = 'block';
+          video.style.opacity = '1';
+        } else {
+          gif.src = CONFIG.phase2File;
+          gif.style.display = 'block';
+          gif.style.opacity = '1';
+        }
+        setTimeout(() => { if(btn) btn.style.display = 'block'; }, 2000);
+      }, 2500);
+    }
+  }
+  showNextWord();
+}
+
+function goPhase4() {
+  document.getElementById('phase2').classList.add('hidden');
+  if(matrixInt) clearInterval(matrixInt);
+  const mc = document.getElementById('matrixCanvas');
+  const sc = document.getElementById('starsCanvas');
+  if(mc) mc.style.display = 'none';
+  if(sc) sc.style.display = 'block';
+  initStars(); drawStars();
+  document.getElementById('phase4').classList.remove('hidden');
+  buildBook();
+  launchConfetti();
+}
+
+function goPhase5() {
+  document.getElementById('phase4').classList.add('hidden');
+  document.getElementById('phase5').classList.remove('hidden');
+  buildHeartWall();
+}
+
+// === BOOK & WALL ===
+function buildBook() {
+  const book = document.getElementById('book');
+  book.innerHTML = '';
+  const msgText = document.getElementById('msgText');
+  
+  const frontCover = document.createElement('div');
+  frontCover.className = 'page';
+  frontCover.style.zIndex = CONFIG.pages.length + 2;
+  frontCover.innerHTML = `
+    <div class="page-side page-front cover-front"></div>
+    <div class="page-side page-back" style="background:#f9f9f9;">
+      <div style="padding: 40px; text-align: center; height: 100%; display: flex; align-items: center;">
+        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha gzel... </p>
+      </div>
+    </div>
+  `;
+  frontCover.onclick = () => {
+    const isFlipped = frontCover.classList.toggle('flipped');
+    frontCover.style.zIndex = isFlipped ? 1 : CONFIG.pages.length + 2;
+    msgText.textContent = isFlipped ? (CONFIG.pages[0] ? CONFIG.pages[0].message : "Anlarmz") : "Bizim Hikayemiz ";
+  };
+  book.appendChild(frontCover);
+  msgText.textContent = "Bizim Hikayemiz ";
+
+  CONFIG.pages.forEach((p, i) => {
+    const page = document.createElement('div');
+    page.className = 'page';
+    page.style.zIndex = CONFIG.pages.length - i;
+    page.innerHTML = `
+      <div class="page-side page-front">
+        <img src="${p.photoFront}" class="page-img">
+        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;">An ${i + 1}</p></div>
+      </div>
+      <div class="page-side page-back">
+        <img src="${p.photoBack}" class="page-img">
+        <div class="page-content" style="background:#fff; height:100%; border-top: 1px solid #eee;"><p style="font-size: 13px; color: #888;"></p></div>
+      </div>
+    `;
+    page.onclick = () => {
+      const isFlipped = page.classList.toggle('flipped');
+      if(isFlipped){
+        page.style.zIndex = i + 2;
+        msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Son sayfa... ";
+      } else {
+        setTimeout(() => { page.style.zIndex = CONFIG.pages.length - i; }, 300);
+        msgText.textContent = p.message || "Anlarmz ";
+      }
+    };
+    book.appendChild(page);
+  });
+
+  const backCover = document.createElement('div');
+  backCover.className = 'page';
+  backCover.style.zIndex = 0;
+  backCover.innerHTML = `
+    <div class="page-side page-front" style="background:#f9f9f9; display: flex; align-items: center; justify-content: center;">
+       <p style="font-family:'Dancing Script'; font-size: 24px; color: #ff1493;">Seni Seviyorum!</p>
+    </div>
+    <div class="page-side page-back cover-back"></div>
+  `;
+  book.appendChild(backCover);
+}
+
+function buildHeartWall() {
+  const wall = document.getElementById('heartWall');
+  wall.innerHTML = '';
+
+  // Stars for phase5 canvas
+  const sc5 = document.getElementById('starsCanvas5');
+  if (sc5) {
+    sc5.width = window.innerWidth;
+    sc5.height = window.innerHeight;
+    const ctx5 = sc5.getContext('2d');
+    const stars5 = Array.from({length: 120}, () => ({
+      x: Math.random() * sc5.width, y: Math.random() * sc5.height,
+      r: Math.random() * 1.8 + 0.3, a: Math.random(), s: Math.random() * 0.008 + 0.003
+    }));
+    function drawStars5() {
+      ctx5.clearRect(0, 0, sc5.width, sc5.height);
+      stars5.forEach(s => {
+        s.a += s.s; if (s.a > 1 || s.a < 0) s.s *= -1;
+        ctx5.beginPath(); ctx5.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx5.fillStyle = `rgba(255,255,255,${Math.abs(s.a)})`; ctx5.fill();
+      });
+      requestAnimationFrame(drawStars5);
+    }
+    drawStars5();
+  }
+
+  // Build heart positions - use Supabase storage as fallback (local files don't exist on Vercel)
+  const FALLBACK_PHOTOS = [
+    'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto1.jpg',
+    'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto2.jpg',
+    'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto3.jpg',
+    'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/foto4.jpg',
+    'https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/kapak.jpg',
+  ];
+  const allPhotos = CONFIG.pages.length > 0
+    ? CONFIG.pages.map(p => p.photoFront)
+    : FALLBACK_PHOTOS;
+
+  // Determine card size based on screen
+  const cardSize = Math.min(window.innerWidth * 0.22, 120);
+  const scale = Math.min(window.innerWidth, window.innerHeight) * 0.028;
+
+  // Heart parametric points
+  const heartPoints = [];
+  const step = 0.32;
+  for (let t = 0; t < Math.PI * 2; t += step) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+    heartPoints.push({ x: x * scale, y: y * scale });
+  }
+
+  // Add center cluster points
+  const centerPoints = [
+    {x: 0, y: 0},
+    {x: -scale * 3, y: -scale * 1},
+    {x: scale * 3, y: -scale * 1},
+    {x: 0, y: -scale * 2.5},
+    {x: -scale * 1.5, y: scale * 2},
+    {x: scale * 1.5, y: scale * 2},
+  ];
+  const allPoints = [...heartPoints, ...centerPoints];
+
+  allPoints.forEach((p, i) => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'mini-photo';
+      const photo = allPhotos[i % allPhotos.length];
+      div.style.backgroundImage = `url('${photo}')`;
+      div.style.width = cardSize + 'px';
+      div.style.height = cardSize + 'px';
+      div.style.borderRadius = Math.round(cardSize * 0.24) + 'px';
+      const rot = (Math.random() - 0.5) * 22;
+      const sc = 0.92 + Math.random() * 0.16;
+      div.style.left = `calc(50% + ${p.x}px - ${cardSize/2}px)`;
+      div.style.top  = `calc(50% + ${p.y}px - ${cardSize/2}px)`;
+      wall.appendChild(div);
+
+      // Animate in
+      requestAnimationFrame(() => {
+        div.style.transform = `rotate(${rot}deg) scale(${sc})`;
+        div.classList.add('visible');
+      });
+
+      if (i === allPoints.length - 1) {
+        setTimeout(() => {
+          const finalMsg = document.getElementById('finalMessage');
+          if (finalMsg) {
+            finalMsg.style.opacity = '1';
+            finalMsg.style.transform = 'translateY(-8px)';
+          }
+          launchConfetti();
+        }, 1200);
+      }
+    }, i * 80);
+  });
+}
+
+function launchConfetti() {
+  if (typeof document === 'undefined') return;
+  for(let i=0; i<100; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = ['#ff1493','#ff69b4','#fff','#ffd700'][Math.floor(Math.random()*4)];
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    if(c.animate) {
+      const fall = c.animate([
+        { top: '-10px', opacity: 1 },
+        { top: '100vh', opacity: 0, transform: `rotate(${Math.random()*1000}deg)` }
+      ], { duration: 2000 + Math.random()*3000, easing: 'linear' });
+      fall.onfinish = () => c.remove();
+    } else {
+      setTimeout(() => c.remove(), 4000); // Fallback for browsers without Web Animations API
+    }
+  }
+}
+
+// === BOOTSTRAP ===
+window.addEventListener('resize', () => {
+  if(typeof initMatrix === 'function') initMatrix();
+  if(typeof initStars === 'function') initStars();
+});
+
+// // Script is at the bottom, so DOM is ready.
+startExperience();
+loadGiftData().catch(err => console.warn('Veri yklenemedi:', err));
+
+</script>
+</body>
+</html>
+
+
+
+
