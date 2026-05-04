@@ -255,7 +255,7 @@
                 ? new Date(item.created_at).toLocaleString('tr-TR')
                 : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
-            const giftUrl = `${BASE_URL}/lovebombing.html?id=${item.id_custom}`;
+            const giftUrl = `${BASE_URL}/preview.html?id=${item.id_custom}`;
 
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
             const statusBadge = isDemo
