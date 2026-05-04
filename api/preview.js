@@ -1,11 +1,7 @@
-export const config = { runtime: 'edge' };
+module.exports = function handler(req, res) {
+  const id = req.query.id || 'demo';
 
-export default function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id') || 'demo';
-
-  // Determine base URL from request
-  const host = req.headers.get('host') || 'sudenzkrsvrnn-max.vercel.app';
+  const host = req.headers.host || 'sude-hediye.vercel.app';
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = `${protocol}://${host}`;
 
@@ -19,8 +15,6 @@ export default function handler(req) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sana Özel Bir Hediye Var! 💝</title>
   <meta name="description" content="Senin için özel hazırlanmış sürpriz hediyeni görmek için tıkla!">
-
-  <!-- Open Graph / WhatsApp / Instagram -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="${baseUrl}/api/preview?id=${id}">
   <meta property="og:title" content="Sana Özel Bir Hediye Var! 💝">
@@ -28,33 +22,16 @@ export default function handler(req) {
   <meta property="og:image" content="${ogImageUrl}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Sana Özel Bir Hediye Var! 💝">
-  <meta name="twitter:description" content="Senin için özel hazırlanmış sürpriz hediyeni görmek için tıkla!">
   <meta name="twitter:image" content="${ogImageUrl}">
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #000;
-      color: #fff;
-      font-family: system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .loader {
-      text-align: center;
-    }
-    .loader p { color: #aaa; margin-top: 10px; }
+    body { background: #000; color: #fff; font-family: system-ui, sans-serif;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .loader { text-align: center; }
+    .loader p { color: #aaa; margin-top: 10px; font-size: 16px; }
   </style>
-  <script>
-    // Immediately redirect to the actual gift page
-    window.location.replace("${giftUrl}");
-  </script>
+  <script>window.location.replace("${giftUrl}");</script>
 </head>
 <body>
   <div class="loader">
@@ -64,10 +41,7 @@ export default function handler(req) {
 </body>
 </html>`;
 
-  return new Response(html, {
-    headers: {
-      'content-type': 'text/html; charset=utf-8',
-      'cache-control': 'no-cache',
-    },
-  });
-}
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.status(200).send(html);
+};

@@ -2,6 +2,6 @@
   "name": "sude-hediye",
   "version": "1.0.0",
   "dependencies": {
-    "@vercel/og": "^0.6.2"
+    "qrcode": "^1.5.3"
   }
 }

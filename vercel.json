@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
-  ],
-  "routes": [
-    {
-      "src": "/sude-hediye-main/(.*)",
-      "dest": "/sude-hediye-main/$1"
+  "buildCommand": "npm install",
+  "outputDirectory": "sude-hediye-main",
+  "functions": {
+    "api/og-image.js": {
+      "runtime": "@vercel/node@3"
+    },
+    "api/preview.js": {
+      "runtime": "@vercel/node@3"
     }
-  ]
+  }
 }
