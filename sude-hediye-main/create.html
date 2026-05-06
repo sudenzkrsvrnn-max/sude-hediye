@@ -646,13 +646,14 @@
                     }
                 }
 
-                const closingWordVal = document.getElementById('closingWord').value;
+                const phoneVal = document.getElementById('customerPhone').value.trim();
+                const closingWordVal = document.getElementById('closingWord').value.trim();
                 const { error } = await sb.from('submissions').insert([{
                     id_custom: id.toString(),
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
-                    customer_info: 'Demo - Onay Bekleniyor | Kapanis: ' + closingWordVal
+                    customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
                 }]);
 
                 if (error) throw error;
@@ -676,7 +677,8 @@
             btn.textContent = 'Kaydediliyor...';
 
             try {
-                const id = Math.floor(Math.random() * 900000) + 100000;
+                if (!draftId) throw new Error("Sipariş taslağı bulunamadı. Lütfen sayfayı yenileyin.");
+                const id = draftId;
                 const mems = [];
 
                 // Collect ALL memory cards
@@ -696,13 +698,14 @@
                 const phoneVal = document.getElementById('customerPhone').value.trim();
                 const closingWordVal = document.getElementById('closingWord').value.trim();
                 
-                const { error } = await sb.from('submissions').insert([{
-                    id_custom: id.toString(),
-                    matrix_message: document.getElementById('matrixMessage').value,
-                    gif_url: document.getElementById('selectedGif').value,
-                    memories: mems,
-                    customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
-                }]);
+                const { error } = await sb.from('submissions')
+                    .update({
+                        matrix_message: document.getElementById('matrixMessage').value,
+                        gif_url: document.getElementById('selectedGif').value,
+                        memories: mems,
+                        customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
+                    })
+                    .eq('id_custom', id.toString());
 
                 if(error) throw error;
 
