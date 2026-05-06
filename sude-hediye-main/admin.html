@@ -417,8 +417,15 @@
             memoriesHtml += '</div>';
         }
 
+        let phone = '';
+        if (item.customer_info && item.customer_info.includes('| Tel: ')) {
+            phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
+        }
+        const phoneClean = phone.replace(/[^0-9]/g, '');
+
         document.getElementById('modalBody').innerHTML = `
             <div class="info-row"><span class="info-label">Sipariş ID</span><span class="info-value">#${item.id_custom || '—'}</span></div>
+            <div class="info-row"><span class="info-label">Telefon Numarası</span><span class="info-value">${phone ? `<a href="https://wa.me/${phoneClean}" target="_blank" style="color:#25D366; text-decoration:none; font-weight:bold;">💬 ${phone}</a>` : 'Belirtilmemiş'}</span></div>
             <div class="info-row">
                 <span class="info-label">Durum Güncelle</span>
                 <div style="display:flex; gap:10px; margin-top:5px;">
@@ -455,7 +462,12 @@
             closingWord = item.customer_info.split('| Kapanis: ')[1].trim();
         }
 
-        const newCustomerInfo = newStatus + ' | Kapanis: ' + closingWord;
+        let phone = '';
+        if (item.customer_info && item.customer_info.includes('| Tel: ')) {
+            phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
+        }
+
+        const newCustomerInfo = newStatus + (phone ? ' | Tel: ' + phone : '') + ' | Kapanis: ' + closingWord;
 
         btn.textContent = "...";
         btn.disabled = true;
@@ -636,6 +648,13 @@
             const statusBadge = isDemo
                 ? `<span class="badge-demo">⏳ Demo</span>`
                 : `<span class="badge-active">✅ Aktif</span>`;
+            
+            let phone = '';
+            if (item.customer_info && item.customer_info.includes('| Tel: ')) {
+                phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
+            }
+            const phoneClean = phone.replace(/[^0-9]/g, '');
+            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA</button>` : '';
 
             tr.innerHTML = `
                 <td class="date">${date}</td>
@@ -652,6 +671,7 @@
                 <td>
                     <div class="share-btns" style="display:flex;">
                         <button class="share-btn btn-info" onclick="openModal(${index})">👁️ Detay</button>
+                        ${waBtnHtml}
                         <a href="${giftUrl}" target="_blank" class="share-btn btn-open">🎁 Aç ↗</a>
                     </div>
                 </td>
@@ -677,6 +697,13 @@
             const statusBadge = isDemo
                 ? `<span class="badge-demo">⏳ Demo</span>`
                 : `<span class="badge-active">✅ Aktif</span>`;
+
+            let phone = '';
+            if (item.customer_info && item.customer_info.includes('| Tel: ')) {
+                phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
+            }
+            const phoneClean = phone.replace(/[^0-9]/g, '');
+            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA Git</button>` : '';
 
             const card = document.createElement('div');
             card.className = 'gift-card';
@@ -704,6 +731,7 @@
                 <div class="link-box">
                     <div class="share-btns">
                         <button class="share-btn btn-info" onclick="openModal(${index})">👁️ Müşteri Bilgisi</button>
+                        ${waBtnHtml}
                         <button class="share-btn btn-share" onclick="nativeShare('${giftUrl}')">📤 Linki Paylaş</button>
                         <button class="share-btn btn-copy" onclick="copyLink(this,'${giftUrl}')">📋 Kopyala</button>
                         <a href="${giftUrl}" target="_blank" class="share-btn btn-open">🎁 Aç ↗</a>

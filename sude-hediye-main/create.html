@@ -328,6 +328,10 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label>TELEFON NUMARASI (Zorunlu)</label>
+                    <input type="tel" id="customerPhone" placeholder="Örn: 05551234567" required>
+                </div>
+                <div class="form-group">
                     <label>KAPANIŞ SÖZÜ</label>
                     <input type="text" id="closingWord" placeholder="Örn: Seni Çok Seviyorum! ✨" value="Seni Çok Seviyorum! ✨" maxlength="50">
                 </div>
@@ -474,6 +478,15 @@
         const total = 4;
 
         function move(n) {
+            // Validate Phone Number on Step 1 Next
+            if (cur === 1 && n === 1) {
+                const phoneInput = document.getElementById('customerPhone');
+                if (!phoneInput.value.trim() || phoneInput.value.trim().length < 10) {
+                    alert('Lütfen hediye siparişinizi oluşturabilmemiz için geçerli bir telefon numarası giriniz.');
+                    return;
+                }
+            }
+
             // Entering step 4: auto-save draft first
             if (cur === 3 && n === 1) {
                 saveDraft();
@@ -680,13 +693,15 @@
                     }
                 }
 
-                const closingWordVal = document.getElementById('closingWord').value;
+                const phoneVal = document.getElementById('customerPhone').value.trim();
+                const closingWordVal = document.getElementById('closingWord').value.trim();
+                
                 const { error } = await sb.from('submissions').insert([{
                     id_custom: id.toString(),
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
-                    customer_info: 'Yeni Hediye | Kapanis: ' + closingWordVal
+                    customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
                 }]);
 
                 if(error) throw error;
