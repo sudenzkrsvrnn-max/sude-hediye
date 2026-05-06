@@ -421,7 +421,9 @@
         if (item.customer_info && item.customer_info.includes('| Tel: ')) {
             phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
         }
-        const phoneClean = phone.replace(/[^0-9]/g, '');
+        let phoneClean = phone.replace(/[^0-9]/g, '');
+        if (phoneClean.startsWith('0')) phoneClean = '90' + phoneClean.substring(1);
+        else if (phoneClean.startsWith('5') && phoneClean.length === 10) phoneClean = '90' + phoneClean;
 
         document.getElementById('modalBody').innerHTML = `
             <div class="info-row"><span class="info-label">Sipariş ID</span><span class="info-value">#${item.id_custom || '—'}</span></div>
@@ -653,7 +655,10 @@
             if (item.customer_info && item.customer_info.includes('| Tel: ')) {
                 phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
             }
-            const phoneClean = phone.replace(/[^0-9]/g, '');
+            let phoneClean = phone.replace(/[^0-9]/g, '');
+            if (phoneClean.startsWith('0')) phoneClean = '90' + phoneClean.substring(1);
+            else if (phoneClean.startsWith('5') && phoneClean.length === 10) phoneClean = '90' + phoneClean;
+            
             const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA</button>` : '';
 
             tr.innerHTML = `
@@ -702,7 +707,10 @@
             if (item.customer_info && item.customer_info.includes('| Tel: ')) {
                 phone = item.customer_info.split('| Tel: ')[1].split(' |')[0].trim();
             }
-            const phoneClean = phone.replace(/[^0-9]/g, '');
+            let phoneClean = phone.replace(/[^0-9]/g, '');
+            if (phoneClean.startsWith('0')) phoneClean = '90' + phoneClean.substring(1);
+            else if (phoneClean.startsWith('5') && phoneClean.length === 10) phoneClean = '90' + phoneClean;
+
             const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA Git</button>` : '';
 
             const card = document.createElement('div');
