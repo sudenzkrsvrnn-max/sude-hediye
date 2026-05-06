@@ -397,7 +397,7 @@
 
     function openModal(index) {
         const item = allSubmissions[index];
-        const statusText = item.customer_info && item.customer_info.includes('Demo') ? '⏳ Demo / Ödeme Bekliyor' : '✅ Aktif / Ödendi';
+        const isDemo = item.customer_info && item.customer_info.includes('Demo');
         
         let closingWord = 'Seni Çok Seviyorum! ✨';
         if (item.customer_info && item.customer_info.includes('| Kapanis: ')) {
@@ -419,7 +419,16 @@
 
         document.getElementById('modalBody').innerHTML = `
             <div class="info-row"><span class="info-label">Sipariş ID</span><span class="info-value">#${item.id_custom || '—'}</span></div>
-            <div class="info-row"><span class="info-label">Durum</span><span class="info-value">${statusText}</span></div>
+            <div class="info-row">
+                <span class="info-label">Durum Güncelle</span>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <select id="updateStatusSelect_${item.id_custom}" class="input-field" style="padding:8px 12px; font-size:13px; min-width: 150px;">
+                        <option value="Demo - Onay Bekleniyor" ${isDemo ? 'selected' : ''}>⏳ Demo / Ödeme Bekliyor</option>
+                        <option value="Yeni Hediye" ${!isDemo ? 'selected' : ''}>✅ Aktif / Ödendi</option>
+                    </select>
+                    <button class="btn-primary" style="padding:8px 15px; width:auto;" id="updateBtn_${item.id_custom}" onclick="updateOrderStatus(${index}, this)">Güncelle</button>
+                </div>
+            </div>
             <div class="info-row"><span class="info-label">Büyük Mesaj</span><span class="info-value">${item.matrix_message || '—'}</span></div>
             <div class="info-row"><span class="info-label">Kapanış Sözü</span><span class="info-value">${closingWord}</span></div>
             <div class="info-row">
@@ -434,6 +443,38 @@
             </div>
         `;
         document.getElementById('infoModal').style.display = 'flex';
+    }
+
+    async function updateOrderStatus(index, btn) {
+        if (!sb) return alert("Veritabanı bağlantısı yok.");
+        const item = allSubmissions[index];
+        const newStatus = document.getElementById('updateStatusSelect_' + item.id_custom).value;
+        
+        let closingWord = 'Seni Çok Seviyorum! ✨';
+        if (item.customer_info && item.customer_info.includes('| Kapanis: ')) {
+            closingWord = item.customer_info.split('| Kapanis: ')[1].trim();
+        }
+
+        const newCustomerInfo = newStatus + ' | Kapanis: ' + closingWord;
+
+        btn.textContent = "...";
+        btn.disabled = true;
+
+        try {
+            const { error } = await sb.from('submissions').update({ customer_info: newCustomerInfo }).eq('id_custom', item.id_custom);
+            if (error) throw error;
+            
+            // Reload table in background
+            loadSubmissions();
+            
+            btn.textContent = "✅";
+            setTimeout(() => { btn.textContent = "Güncelle"; btn.disabled = false; }, 2000);
+            
+        } catch(err) {
+            alert("Hata oluştu: " + err.message);
+            btn.textContent = "Güncelle";
+            btn.disabled = false;
+        }
     }
 
     function closeModal() {
