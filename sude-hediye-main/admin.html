@@ -313,6 +313,11 @@
         const item = allSubmissions[index];
         const statusText = item.customer_info && item.customer_info.includes('Demo') ? '⏳ Demo / Ödeme Bekliyor' : '✅ Aktif / Ödendi';
         
+        let closingWord = 'Seni Çok Seviyorum! ✨';
+        if (item.customer_info && item.customer_info.includes('| Kapanis: ')) {
+            closingWord = item.customer_info.split('| Kapanis: ')[1].trim();
+        }
+
         let memoriesHtml = '<div style="color:var(--gray); font-size:13px; margin-top:10px;">Anı eklenmemiş.</div>';
         if (item.memories && item.memories.length > 0) {
             memoriesHtml = '<div style="display:flex; flex-direction:column; gap:10px; margin-top:10px; max-height:250px; overflow-y:auto; padding-right:5px;">';
@@ -330,7 +335,7 @@
             <div class="info-row"><span class="info-label">Sipariş ID</span><span class="info-value">#${item.id_custom || '—'}</span></div>
             <div class="info-row"><span class="info-label">Durum</span><span class="info-value">${statusText}</span></div>
             <div class="info-row"><span class="info-label">Büyük Mesaj</span><span class="info-value">${item.matrix_message || '—'}</span></div>
-            <div class="info-row"><span class="info-label">Kapanış Sözü</span><span class="info-value">${item.recipient_name || 'Seni Çok Seviyorum! ✨'}</span></div>
+            <div class="info-row"><span class="info-label">Kapanış Sözü</span><span class="info-value">${closingWord}</span></div>
             <div class="info-row">
                 <span class="info-label">Seçilen Animasyon (GIF)</span>
                 <div style="margin-top:5px;">

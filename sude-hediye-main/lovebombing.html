@@ -414,7 +414,12 @@ async function loadGiftData() {
       if (data) {
         CONFIG.matrixMessage = data.matrix_message ? String(data.matrix_message) : "SENİ SEVİYORUM";
         CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
-        CONFIG.closingWord = data.recipient_name || "Seni Çok Seviyorum! ✨";
+        
+        let closingWord = "Seni Çok Seviyorum! ✨";
+        if (data.customer_info && data.customer_info.includes('| Kapanis: ')) {
+            closingWord = data.customer_info.split('| Kapanis: ')[1].trim();
+        }
+        CONFIG.closingWord = closingWord;
 
         // memories can come back as JSON string or parsed array — handle both
         let mems = data.memories;

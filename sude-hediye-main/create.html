@@ -633,13 +633,13 @@
                     }
                 }
 
+                const closingWordVal = document.getElementById('closingWord').value;
                 const { error } = await sb.from('submissions').insert([{
                     id_custom: id.toString(),
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
-                    recipient_name: document.getElementById('closingWord').value,
-                    customer_info: 'Demo - Onay Bekleniyor'
+                    customer_info: 'Demo - Onay Bekleniyor | Kapanis: ' + closingWordVal
                 }]);
 
                 if (error) throw error;
@@ -680,13 +680,13 @@
                     }
                 }
 
+                const closingWordVal = document.getElementById('closingWord').value;
                 const { error } = await sb.from('submissions').insert([{
                     id_custom: id.toString(),
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
-                    recipient_name: document.getElementById('closingWord').value,
-                    customer_info: 'Yeni Hediye'
+                    customer_info: 'Yeni Hediye | Kapanis: ' + closingWordVal
                 }]);
 
                 if(error) throw error;
