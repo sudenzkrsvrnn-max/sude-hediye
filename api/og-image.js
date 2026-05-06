@@ -6,10 +6,10 @@ module.exports = async function handler(req, res) {
 
     const giftUrl = `https://sudenzkrsvrnn-max.github.io/sude-hediye/sude-hediye-main/lovebombing.html?id=${id}`;
 
-    // Generate QR code as data URL
+    // Generate QR code as base64 PNG
     const qrDataUrl = await QRCode.toDataURL(giftUrl, {
-      width: 400,
-      margin: 2,
+      width: 600,
+      margin: 1,
       color: {
         dark: '#cc0000',
         light: '#000000',
@@ -17,57 +17,136 @@ module.exports = async function handler(req, res) {
       errorCorrectionLevel: 'H',
     });
 
-    // Extract base64 part
     const base64 = qrDataUrl.split(',')[1];
-    const qrBuffer = Buffer.from(base64, 'base64');
 
-    // Build a simple SVG that composes the final image
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630">
-      <!-- Black background -->
-      <rect width="1200" height="630" fill="#000000"/>
+    // ── Heart path centred on 600,315 within a 1200×630 canvas ──────────────
+    // The heart is drawn so it fills roughly 520×480 px around the centre.
+    const hx = 600;   // heart centre X
+    const hy = 315;   // heart centre Y
+    const hr = 240;   // heart "radius" (half-width)
 
-      <!-- Red border -->
-      <rect x="3" y="3" width="1194" height="624" fill="none" stroke="#cc0000" stroke-width="3" rx="12"/>
+    // Standard parametric heart scaled to our canvas
+    const heartPath = `
+      M ${hx},${hy + hr * 0.9}
+      C ${hx},${hy + hr * 0.9}
+        ${hx - hr * 1.05},${hy + hr * 0.4}
+        ${hx - hr * 1.05},${hy - hr * 0.3}
+      C ${hx - hr * 1.05},${hy - hr * 0.85}
+        ${hx - hr * 0.55},${hy - hr * 1.05}
+        ${hx},${hy - hr * 0.55}
+      C ${hx + hr * 0.55},${hy - hr * 1.05}
+        ${hx + hr * 1.05},${hy - hr * 0.85}
+        ${hx + hr * 1.05},${hy - hr * 0.3}
+      C ${hx + hr * 1.05},${hy + hr * 0.4}
+        ${hx},${hy + hr * 0.9}
+        ${hx},${hy + hr * 0.9}
+      Z
+    `.replace(/\s+/g, ' ').trim();
 
-      <!-- Horizontal ribbon -->
-      <rect x="0" y="230" width="1200" height="55" fill="url(#ribbonGrad)"/>
+    // QR image placed so it fills the heart area
+    const qrX = hx - hr * 1.08;
+    const qrY = hy - hr * 1.08;
+    const qrSize = hr * 2.16;
 
-      <!-- Vertical ribbon -->
-      <rect x="555" y="0" width="55" height="630" fill="url(#ribbonGrad)"/>
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Ribbon gradients -->
+    <linearGradient id="ribbonH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   style="stop-color:#6b0000"/>
+      <stop offset="50%"  style="stop-color:#ff2200"/>
+      <stop offset="100%" style="stop-color:#6b0000"/>
+    </linearGradient>
+    <linearGradient id="ribbonV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   style="stop-color:#6b0000"/>
+      <stop offset="50%"  style="stop-color:#ff2200"/>
+      <stop offset="100%" style="stop-color:#6b0000"/>
+    </linearGradient>
 
-      <!-- Ribbon gradient def -->
-      <defs>
-        <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:#880000"/>
-          <stop offset="50%" style="stop-color:#ff2200"/>
-          <stop offset="100%" style="stop-color:#880000"/>
-        </linearGradient>
-        <clipPath id="heartClip">
-          <path d="M600,500 C600,500 300,360 300,220 C300,120 380,80 460,80 C520,80 570,120 600,160 C630,120 680,80 740,80 C820,80 900,120 900,220 C900,360 600,500 600,500 Z"/>
-        </clipPath>
-      </defs>
+    <!-- Glow filter for the heart -->
+    <filter id="heartGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
 
-      <!-- Heart-clipped QR Code -->
-      <image xlink:href="data:image/png;base64,${base64}" 
-             x="250" y="65" width="700" height="700" 
-             clip-path="url(#heartClip)"
-             preserveAspectRatio="xMidYMid slice"/>
+    <!-- Clip the QR code into a heart shape -->
+    <clipPath id="heartClip">
+      <path d="${heartPath}"/>
+    </clipPath>
+  </defs>
 
-      <!-- Bow emoji area -->
-      <circle cx="585" cy="75" r="55" fill="#cc0000" opacity="0.9"/>
-      <text x="585" y="95" font-size="55" text-anchor="middle" dominant-baseline="middle">🎀</text>
+  <!-- Black background -->
+  <rect width="1200" height="630" fill="#000000"/>
 
-      <!-- Gift text bottom left -->
-      <text x="60" y="580" font-family="Georgia, serif" font-style="italic" font-size="50" fill="white" opacity="0.9">Gift</text>
-      <text x="165" y="582" font-size="40" fill="#ff2200">♥</text>
+  <!-- Subtle radial glow behind heart -->
+  <radialGradient id="bgGlow" cx="50%" cy="50%" r="45%">
+    <stop offset="0%" style="stop-color:#330000;stop-opacity:1"/>
+    <stop offset="100%" style="stop-color:#000000;stop-opacity:1"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
 
-      <!-- Right side info -->
-      <text x="1150" y="290" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.7)" text-anchor="end">💝 Sana Özel Hediye</text>
-      <text x="1150" y="325" font-family="Arial, sans-serif" font-size="16" fill="#ff6666" text-anchor="end">QR kodu tara veya tıkla</text>
-    </svg>`;
+  <!-- Red outer border -->
+  <rect x="4" y="4" width="1192" height="622" fill="none" stroke="#cc0000" stroke-width="2.5" rx="14" opacity="0.8"/>
 
-    res.setHeader('Content-Type', 'image/svg+xml');
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+  <!-- Diagonal ribbon (top-left to bottom-right) -->
+  <line x1="-60" y1="0" x2="1260" y2="630" stroke="url(#ribbonH)" stroke-width="48" opacity="0.85"/>
+
+  <!-- Diagonal ribbon (top-right to bottom-left) -->
+  <line x1="1260" y1="0" x2="-60" y2="630" stroke="url(#ribbonH)" stroke-width="48" opacity="0.85"/>
+
+  <!-- Heart glow (soft red behind the heart) -->
+  <path d="${heartPath}" fill="#cc0000" opacity="0.18" filter="url(#heartGlow)"/>
+
+  <!-- Heart outline (stroke only) -->
+  <path d="${heartPath}" fill="none" stroke="#ff2200" stroke-width="3" opacity="0.7"/>
+
+  <!-- QR Code clipped to heart shape -->
+  <image xlink:href="data:image/png;base64,${base64}"
+         x="${qrX}" y="${qrY}" width="${qrSize}" height="${qrSize}"
+         clip-path="url(#heartClip)"
+         preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Bow / fiyonk in top-left corner -->
+  <!-- Left loop -->
+  <ellipse cx="78" cy="72" rx="58" ry="32" fill="#cc0000" transform="rotate(-35,78,72)" opacity="0.95"/>
+  <ellipse cx="78" cy="72" rx="42" ry="20" fill="#aa0000" transform="rotate(-35,78,72)" opacity="0.6"/>
+  <!-- Right loop -->
+  <ellipse cx="148" cy="72" rx="58" ry="32" fill="#cc0000" transform="rotate(35,148,72)" opacity="0.95"/>
+  <ellipse cx="148" cy="72" rx="42" ry="20" fill="#aa0000" transform="rotate(35,148,72)" opacity="0.6"/>
+  <!-- Ribbon tails -->
+  <path d="M113,88 L 60,155" stroke="#cc0000" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <path d="M113,88 L 166,155" stroke="#cc0000" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <!-- Knot circle -->
+  <circle cx="113" cy="80" r="22" fill="#ff2200"/>
+  <circle cx="113" cy="80" r="13" fill="#cc0000"/>
+
+  <!-- Bottom-right bow (mirror) -->
+  <ellipse cx="1122" cy="558" rx="58" ry="32" fill="#cc0000" transform="rotate(-35,1122,558)" opacity="0.95"/>
+  <ellipse cx="1122" cy="558" rx="42" ry="20" fill="#aa0000" transform="rotate(-35,1122,558)" opacity="0.6"/>
+  <ellipse cx="1192" cy="558" rx="58" ry="32" fill="#cc0000" transform="rotate(35,1192,558)" opacity="0.95"/>
+  <ellipse cx="1192" cy="558" rx="42" ry="20" fill="#aa0000" transform="rotate(35,1192,558)" opacity="0.6"/>
+  <path d="M1157,544 L 1104,477" stroke="#cc0000" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <path d="M1157,544 L 1210,477" stroke="#cc0000" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="1157" cy="552" r="22" fill="#ff2200"/>
+  <circle cx="1157" cy="552" r="13" fill="#cc0000"/>
+
+  <!-- Gift ♥ signature — bottom left -->
+  <text x="52" y="590" font-family="Georgia, 'Times New Roman', serif"
+        font-style="italic" font-size="48" fill="white" opacity="0.9">Gift</text>
+  <text x="160" y="593" font-family="Arial, sans-serif"
+        font-size="38" fill="#ff2200" opacity="1">&#x2665;</text>
+
+  <!-- Right side text -->
+  <text x="1148" y="140" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="20" fill="rgba(255,255,255,0.75)" text-anchor="end" letter-spacing="1">&#x1F496; Sana &#xD6;zel Hediye</text>
+  <text x="1148" y="168" font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="15" fill="#ff6666" text-anchor="end">QR kodu tara veya t&#x131;kla</text>
+</svg>`;
+
+    res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
     res.status(200).send(svgContent);
 
   } catch (err) {
