@@ -171,6 +171,34 @@
         .info-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
         .info-value { font-size: 14px; color: #fff; background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 10px; word-break: break-word; }
 
+        /* TABS */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: transparent; color: var(--gray); border: none; padding: 10px 15px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; font-family: 'Outfit', sans-serif; position: relative; white-space: nowrap; }
+        .tab-btn:hover { color: #fff; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 2px; background: var(--primary); }
+
+        /* MANUAL FORM */
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 13px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .input-field { padding: 14px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-family: 'Outfit', sans-serif; font-size: 15px; outline: none; transition: 0.3s; width: 100%; }
+        .input-field:focus { border-color: var(--primary); background: rgba(255,255,255,0.05); }
+        .btn-primary { padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Outfit', sans-serif; font-size: 14px; width: 100%; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-secondary { padding: 10px 16px; background: rgba(255,255,255,0.05); color: #fff; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; transition: 0.3s; font-family: 'Outfit', sans-serif; font-size: 13px; display:inline-block; margin-top:10px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+        
+        .gif-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        @media(max-width: 500px) { .gif-grid { grid-template-columns: repeat(3, 1fr); } }
+        .gif-item { cursor: pointer; border-radius: 10px; overflow: hidden; border: 2px solid transparent; transition: 0.2s; opacity: 0.5; aspect-ratio: 1; display:flex; align-items:center; justify-content:center; background:#000; }
+        .gif-item img { width: 100%; height: 100%; object-fit: contain; }
+        .gif-item:hover { opacity: 0.8; }
+        .gif-item.active { border-color: var(--primary); opacity: 1; transform: scale(1.05); }
+        
+        .memory-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 10px; position: relative; display:flex; flex-direction:column; gap:10px;}
+        .memory-remove { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.2); color: #ff4444; border: none; border-radius: 5px; cursor: pointer; width: 24px; height: 24px; display:flex; align-items:center; justify-content:center; }
+
         /* ── Responsive breakpoint ── */
         @media (max-width: 767px) {
             body { padding: 14px; }
@@ -216,6 +244,13 @@
     </div>
 </header>
 
+<!-- TABS -->
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('list', this)">Sipariş Listesi</button>
+    <button class="tab-btn" onclick="switchTab('manual', this)">Manuel Sipariş Ekle</button>
+</div>
+
+<div id="tabList">
 <!-- DESKTOP TABLE -->
 <div class="table-container">
     <table>
@@ -238,6 +273,57 @@
 <!-- MOBILE CARD LIST -->
 <div class="card-list" id="cardList"></div>
 <div id="statusMsgMobile" style="display:none; text-align:center; padding:50px; color:var(--gray); font-size:15px;"></div>
+</div> <!-- END tabList -->
+
+<div id="tabManual" style="display:none;">
+    <div style="background:var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); max-width: 600px; margin: 0 auto;">
+        <h2 style="margin-bottom: 20px; color: var(--primary-light);">Sipariş Bilgileri</h2>
+        
+        <div class="form-group">
+            <label>Özel Sipariş ID (Link sonu)</label>
+            <input type="text" id="manualId" placeholder="Örn: sude-dogum-gunu" class="input-field">
+            <small style="color:var(--gray); font-size:12px;">Linkiniz şöyle olacak: <strong>...lovebombing.html?id=<span id="previewId" style="color:#fff;">sude-dogum-gunu</span></strong></small>
+        </div>
+
+        <div class="form-group">
+            <label>Durum</label>
+            <select id="manualStatus" class="input-field">
+                <option value="Yeni Hediye">✅ Aktif / Ödendi (Yeni Hediye)</option>
+                <option value="Demo - Onay Bekleniyor">⏳ Demo / Ödeme Bekliyor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Büyük Mesaj</label>
+            <input type="text" id="manualMatrix" placeholder="Örn: SENİ ÇOK SEVİYORUM" class="input-field">
+        </div>
+
+        <div class="form-group">
+            <label>Kapanış Sözü</label>
+            <input type="text" id="manualClosing" placeholder="Örn: Seni Çok Seviyorum! ✨" class="input-field">
+        </div>
+
+        <div class="form-group">
+            <label>Animasyon Seçimi</label>
+            <div class="gif-grid" id="manualGifGrid"></div>
+            <input type="hidden" id="manualSelectedGif" value="gifs/1.gif">
+        </div>
+
+        <div class="form-group">
+            <label>Anılar (Fotoğraflar ve Notlar)</label>
+            <div id="manualMemories"></div>
+            <button class="btn-secondary" onclick="addManualMemory()">+ Yeni Anı Ekle</button>
+        </div>
+
+        <button class="btn-primary" id="manualSaveBtn" onclick="saveManualOrder()" style="margin-top: 20px;">Siparişi Kaydet & Link Oluştur</button>
+
+        <div id="manualResult" style="display:none; margin-top: 20px; padding: 15px; background: rgba(0,200,100,0.1); border: 1px solid #44cc88; border-radius: 10px; text-align: center;">
+            <div style="color: #44cc88; font-weight: bold; margin-bottom: 10px;">✅ Sipariş Başarıyla Oluşturuldu!</div>
+            <div id="manualLinkResult" style="color: #fff; font-size: 14px; margin-bottom: 15px; word-break: break-all;"></div>
+            <button class="btn-primary" style="background:#000; border:1px solid #44cc88; color:#44cc88;" onclick="copyManualResultLink(this)">📋 Linki Kopyala</button>
+        </div>
+    </div>
+</div>
 
 <!-- CUSTOMER INFO MODAL -->
 <div id="infoModal">
@@ -358,6 +444,126 @@
     window.onclick = function(event) {
         const modal = document.getElementById('infoModal');
         if (event.target === modal) closeModal();
+    }
+
+    // -- MANUAL TAB LOGIC --
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tabList').style.display = tabId === 'list' ? 'block' : 'none';
+        document.getElementById('tabManual').style.display = tabId === 'manual' ? 'block' : 'none';
+        
+        if (tabId === 'manual' && document.getElementById('manualGifGrid').innerHTML === '') {
+            renderManualGifs();
+        }
+    }
+
+    document.getElementById('manualId').addEventListener('input', function(e) {
+        document.getElementById('previewId').textContent = e.target.value || 'sude-dogum-gunu';
+    });
+
+    function renderManualGifs() {
+        const grid = document.getElementById('manualGifGrid');
+        for (let i = 1; i <= 12; i++) {
+            const url = `gifs/${i}.gif`;
+            grid.innerHTML += `
+                <div class="gif-item ${i===1?'active':''}" onclick="selectManualGif(this, '${url}')">
+                    <img src="${url}">
+                </div>
+            `;
+        }
+    }
+
+    function selectManualGif(element, url) {
+        document.querySelectorAll('.gif-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('manualSelectedGif').value = url;
+    }
+
+    let memoryIndex = 0;
+    function addManualMemory() {
+        memoryIndex++;
+        const memDiv = document.createElement('div');
+        memDiv.className = 'memory-box';
+        memDiv.id = `mem-${memoryIndex}`;
+        memDiv.innerHTML = `
+            <button class="memory-remove" onclick="document.getElementById('mem-${memoryIndex}').remove()">✕</button>
+            <div style="font-size:12px; color:var(--primary); font-weight:bold;">📸 Anı ${memoryIndex}</div>
+            <input type="file" accept="image/*" class="input-field" onchange="convertManualImage(this, 'mem-img-${memoryIndex}')" style="padding:10px;">
+            <input type="hidden" id="mem-img-${memoryIndex}" class="mem-photo-val">
+            <input type="text" placeholder="Bu anı için bir not (İsteğe bağlı)..." class="input-field mem-note-val">
+        `;
+        document.getElementById('manualMemories').appendChild(memDiv);
+    }
+
+    function convertManualImage(input, hiddenId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(hiddenId).value = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    async function saveManualOrder() {
+        if (!sb) return alert("Supabase bağlantısı kurulamadı!");
+        
+        const id_custom = document.getElementById('manualId').value.trim();
+        if (!id_custom) return alert("Lütfen Özel Sipariş ID girin!");
+
+        const btn = document.getElementById('manualSaveBtn');
+        btn.textContent = 'Kaydediliyor...';
+        btn.disabled = true;
+
+        const matrix_message = document.getElementById('manualMatrix').value.trim() || 'SENİ ÇOK SEVİYORUM';
+        const closingWord = document.getElementById('manualClosing').value.trim() || 'Seni Çok Seviyorum! ✨';
+        const status = document.getElementById('manualStatus').value;
+        const customer_info = status + ' | Kapanis: ' + closingWord;
+        const gif_url = document.getElementById('manualSelectedGif').value;
+
+        // Gather memories
+        const mems = [];
+        document.querySelectorAll('.memory-box').forEach(box => {
+            const photoVal = box.querySelector('.mem-photo-val').value;
+            const noteVal = box.querySelector('.mem-note-val').value.trim();
+            if (photoVal || noteVal) {
+                mems.push({ photo: photoVal, note: noteVal });
+            }
+        });
+
+        try {
+            const { error } = await sb.from('submissions').insert([{
+                id_custom, matrix_message, gif_url, memories: mems, customer_info
+            }]);
+            
+            if (error) {
+                if(error.code === '23505') throw new Error("Bu Sipariş ID zaten kullanılıyor. Lütfen farklı bir ID girin.");
+                throw error;
+            }
+
+            document.getElementById('manualResult').style.display = 'block';
+            const link = BASE_URL + '/lovebombing.html?id=' + encodeURIComponent(id_custom);
+            document.getElementById('manualLinkResult').textContent = link;
+            
+            // Reload list in background
+            loadSubmissions();
+
+        } catch (err) {
+            alert("Hata: " + err.message);
+        } finally {
+            btn.textContent = 'Siparişi Kaydet & Link Oluştur';
+            btn.disabled = false;
+        }
+    }
+
+    function copyManualResultLink(btn) {
+        const link = document.getElementById('manualLinkResult').textContent;
+        navigator.clipboard.writeText(link).then(() => {
+            const original = btn.textContent;
+            btn.textContent = '✅ Kopyalandı!';
+            setTimeout(() => btn.textContent = original, 2000);
+        });
     }
 
     /* ── DESKTOP TABLE ── */
