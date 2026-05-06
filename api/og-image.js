@@ -140,7 +140,7 @@ module.exports = async function handler(req, res) {
 
   <!-- Right side text -->
   <text x="1148" y="140" font-family="'Helvetica Neue', Arial, sans-serif"
-        font-size="20" fill="rgba(255,255,255,0.75)" text-anchor="end" letter-spacing="1">&#x1F496; Sana &#xD6;zel Hediye</text>
+        font-size="20" fill="rgba(255,255,255,0.75)" text-anchor="end" letter-spacing="1">&#x1F496; Sana &#xD6;zel S&#xFC;priz</text>
   <text x="1148" y="168" font-family="'Helvetica Neue', Arial, sans-serif"
         font-size="15" fill="#ff6666" text-anchor="end">QR kodu tara veya t&#x131;kla</text>
 </svg>`;

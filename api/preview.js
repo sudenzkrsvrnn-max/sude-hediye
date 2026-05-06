@@ -16,13 +16,13 @@ module.exports = function handler(req, res) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- ── Primary SEO ── -->
-  <title>Sana Özel Bir Hediye Var! 💝</title>
+  <title>Sana Özel Bir Süpriz Var! 💝</title>
   <meta name="description" content="Senin için özel hazırlanmış sürpriz hediyeni görmek için tıkla!">
 
   <!-- ── Open Graph (WhatsApp, Facebook, Instagram, Telegram) ── -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="${previewPageUrl}">
-  <meta property="og:title"       content="Sana Özel Bir Hediye Var! 💝">
+  <meta property="og:title"       content="Sana Özel Bir Süpriz Var! 💝">
   <meta property="og:description" content="Senin için özel olarak hazırlanmış sürpriz bir hediye var. Görmek için tıkla! 🎁">
   <meta property="og:image"       content="${ogImageUrl}">
   <meta property="og:image:type"  content="image/svg+xml">
@@ -33,7 +33,7 @@ module.exports = function handler(req, res) {
 
   <!-- ── Twitter / X Card ── -->
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Sana Özel Bir Hediye Var! 💝">
+  <meta name="twitter:title"       content="Sana Özel Bir Süpriz Var! 💝">
   <meta name="twitter:description" content="Senin için özel olarak hazırlanmış sürpriz bir hediye var. Görmek için tıkla! 🎁">
   <meta name="twitter:image"       content="${ogImageUrl}">
 
@@ -214,7 +214,7 @@ module.exports = function handler(req, res) {
       </svg>
     </div>
 
-    <h1 class="title">Sana Özel Bir<br>Hediye Var! 💝</h1>
+    <h1 class="title">Sana Özel Bir<br>Süpriz Var! 💝</h1>
     <p class="subtitle">Hediyene yönlendiriliyorsun…</p>
 
     <!-- Progress bar -->
@@ -228,7 +228,7 @@ module.exports = function handler(req, res) {
     </a>
 
     <div class="signature">
-      Gift <strong>BY SUDE</strong>
+      Gift <strong>by Gülümse Diye</strong>
     </div>
   </div>
 
