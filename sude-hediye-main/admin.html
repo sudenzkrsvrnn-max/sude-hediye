@@ -12,30 +12,33 @@
             --primary-light: #ff69b4;
             --text: #ffffff;
             --gray: #a0a0a0;
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255,255,255,0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Outfit', sans-serif;
-            padding: 40px;
+            padding: 20px;
+            min-height: 100vh;
         }
 
-        /* LOGIN */
+        /* ── LOGIN ── */
         #loginOverlay {
             position: fixed; inset: 0; background: #050505;
             z-index: 1000; display: flex; align-items: center;
             justify-content: center; flex-direction: column; gap: 20px;
+            padding: 24px;
         }
-        #loginOverlay h1 { font-size: 28px; font-weight: 800; color: var(--primary); }
-        #loginOverlay p { color: var(--gray); font-size: 14px; }
+        #loginOverlay h1 { font-size: clamp(22px,6vw,28px); font-weight: 800; color: var(--primary); text-align:center; }
+        #loginOverlay p  { color: var(--gray); font-size: 14px; text-align:center; }
         #adminPass {
             padding: 15px 20px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.15);
             background: rgba(255,255,255,0.05); color: white;
-            width: 280px; text-align: center; font-size: 18px;
+            width: min(280px,90vw); text-align: center; font-size: 18px;
             font-family: 'Outfit', sans-serif; letter-spacing: 4px; outline: none;
         }
         #adminPass:focus { border-color: var(--primary); }
@@ -43,115 +46,164 @@
             padding: 14px 50px; background: var(--primary); color: white;
             border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
             cursor: pointer; font-family: 'Outfit', sans-serif; transition: 0.3s;
+            width: min(280px,90vw);
         }
         #loginBtn:hover { background: var(--primary-light); transform: translateY(-2px); }
         #loginError { color: #ff4444; font-size: 13px; display: none; }
 
-        /* HEADER */
+        /* ── HEADER ── */
         header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 40px; padding-bottom: 20px;
+            display: flex; flex-wrap: wrap; gap: 14px;
+            justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 18px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary); }
+        .logo { font-size: 18px; font-weight: 800; color: var(--primary); }
+
+        .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
         .stat-card {
-            background: var(--card-bg); padding: 15px 30px;
-            border-radius: 15px; text-align: center;
+            background: var(--card-bg); padding: 10px 18px;
+            border-radius: 12px; text-align: center;
             border: 1px solid rgba(255,255,255,0.05);
         }
-        .stat-value { font-size: 28px; font-weight: 800; color: var(--primary-light); }
-        .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 22px; font-weight: 800; color: var(--primary-light); }
+        .stat-label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
 
         #refreshBtn {
-            padding: 10px 20px; background: rgba(255,255,255,0.05);
+            padding: 10px 16px; background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1); color: var(--gray);
             border-radius: 10px; cursor: pointer; font-family: 'Outfit', sans-serif;
-            font-size: 14px; transition: 0.3s;
+            font-size: 13px; transition: 0.3s; white-space: nowrap;
         }
         #refreshBtn:hover { border-color: var(--primary); color: white; }
 
-        /* TABLE */
+        /* ── STATUS MSG ── */
+        #statusMsg { text-align: center; padding: 50px; color: var(--gray); font-size: 15px; }
+        .empty-icon { font-size: 48px; display: block; margin-bottom: 15px; }
+
+        /* ══════════════════════════════════════════
+           DESKTOP TABLE (≥ 768px)
+        ══════════════════════════════════════════ */
         .table-container {
             background: var(--card-bg); border-radius: 20px;
-            overflow: hidden; border: 1px solid rgba(255,255,255,0.05);
+            overflow-x: auto; border: 1px solid rgba(255,255,255,0.05);
         }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 700px; }
         th {
-            background: rgba(255,255,255,0.03); padding: 18px 20px;
+            background: rgba(255,255,255,0.03); padding: 16px 18px;
             font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px;
+            white-space: nowrap;
         }
-        td { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.04); font-size: 14px; }
+        td { padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.04); font-size: 13px; vertical-align: top; }
         tr:hover td { background: rgba(255,255,255,0.02); }
 
-        .badge-id {
-            background: rgba(255,20,147,0.1); color: var(--primary-light);
-            padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;
-        }
-        .badge-demo {
-            background: rgba(255,140,0,0.15); color: #ffaa44;
-            padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-        }
-        .badge-active {
-            background: rgba(0,200,100,0.15); color: #44cc88;
-            padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        /* ══════════════════════════════════════════
+           MOBILE CARDS (< 768px)
+        ══════════════════════════════════════════ */
+        .card-list { display: none; flex-direction: column; gap: 14px; }
+
+        .gift-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        /* LINK ROW */
-        .link-box {
-            display: flex; flex-direction: column; gap: 8px; max-width: 340px;
+        .card-top {
+            display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
         }
-        .link-url-row {
-            display: flex; align-items: center; gap: 6px;
-        }
+        .card-id-status { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .card-date { font-size: 11px; color: var(--gray); text-align: right; flex-shrink: 0; }
+
+        .card-body { display: flex; flex-direction: column; gap: 6px; }
+        .card-label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+        .card-value { font-size: 14px; font-weight: 600; }
+
+        .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card-field { display: flex; flex-direction: column; gap: 3px; }
+
+        /* Link box */
+        .link-box { display: flex; flex-direction: column; gap: 8px; }
+        .link-url-row { display: flex; align-items: center; gap: 6px; }
         .link-text {
             font-size: 11px; color: rgba(255,255,255,0.4);
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
             flex: 1; font-family: monospace;
         }
+
+        /* Badges */
+        .badge-id {
+            background: rgba(255,20,147,0.1); color: var(--primary-light);
+            padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;
+        }
+        .badge-demo {
+            background: rgba(255,140,0,0.15); color: #ffaa44;
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        }
+        .badge-active {
+            background: rgba(0,200,100,0.15); color: #44cc88;
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        }
+
+        /* Buttons */
         .copy-btn {
-            flex-shrink: 0; padding: 5px 10px;
+            flex-shrink: 0; padding: 7px 12px;
             background: rgba(255,20,147,0.12);
             border: 1px solid rgba(255,20,147,0.3);
-            color: var(--primary-light); border-radius: 7px;
+            color: var(--primary-light); border-radius: 8px;
             font-size: 12px; font-weight: 700; cursor: pointer;
             font-family: 'Outfit', sans-serif; transition: 0.2s;
-            white-space: nowrap;
+            white-space: nowrap; min-height: 36px;
         }
-        .copy-btn:hover { background: rgba(255,20,147,0.25); }
+        .copy-btn:hover  { background: rgba(255,20,147,0.25); }
         .copy-btn.copied { background: rgba(0,200,100,0.2); border-color: #44cc88; color: #44cc88; }
 
-        /* Share buttons row */
-        .share-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+        .share-btns { display: flex; gap: 7px; flex-wrap: wrap; }
         .share-btn {
             display: inline-flex; align-items: center; gap: 5px;
-            padding: 6px 11px; border-radius: 8px; border: none;
+            padding: 8px 13px; border-radius: 9px; border: none;
             font-size: 12px; font-weight: 700; cursor: pointer;
             font-family: 'Outfit', sans-serif; transition: 0.2s;
-            text-decoration: none; white-space: nowrap;
+            text-decoration: none; white-space: nowrap; min-height: 36px;
         }
-        .share-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-        .share-btn.wa  { background: #25D366; color: #fff; }
-        .share-btn.sms { background: #0a84ff; color: #fff; }
-        .share-btn.ig  {
-            background: linear-gradient(135deg,#f09433,#bc1888);
-            color: #fff;
-        }
+        .share-btn:hover  { opacity: 0.85; transform: translateY(-1px); }
+        .share-btn:active { transform: scale(0.96); }
+        .share-btn.wa   { background: #25D366; color: #fff; }
+        .share-btn.sms  { background: #0a84ff; color: #fff; }
+        .share-btn.ig   { background: linear-gradient(135deg,#f09433,#bc1888); color: #fff; }
         .share-btn.ig.copied { background: rgba(0,200,100,0.25); color: #44cc88; border: 1px solid #44cc88; }
 
         .btn-view {
-            padding: 7px 14px; background: var(--primary); color: white;
-            text-decoration: none; border-radius: 8px; font-size: 12px;
-            font-weight: 600; transition: 0.3s; display: inline-block; white-space: nowrap;
+            padding: 9px 16px; background: var(--primary); color: white;
+            text-decoration: none; border-radius: 9px; font-size: 13px;
+            font-weight: 600; transition: 0.3s; display: inline-flex;
+            align-items: center; gap: 6px; white-space: nowrap; min-height: 36px;
         }
         .btn-view:hover { background: var(--primary-light); }
 
         .date { color: var(--gray); font-size: 12px; }
-        .msg-cell { font-weight: 600; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .msg-cell { font-weight: 600; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        #statusMsg {
-            text-align: center; padding: 50px; color: var(--gray); font-size: 15px;
+        /* ── Responsive breakpoint ── */
+        @media (max-width: 767px) {
+            body { padding: 14px; }
+
+            .table-container { display: none; }
+            .card-list { display: flex; }
+
+            header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .stat-card { flex: 1; }
         }
-        .empty-icon { font-size: 48px; display: block; margin-bottom: 15px; }
+
+        @media (max-width: 400px) {
+            .share-btns { flex-direction: column; }
+            .share-btn, .copy-btn, .btn-view { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -168,19 +220,20 @@
 <!-- DASHBOARD -->
 <header>
     <div class="logo">📊 Admin Dashboard</div>
-    <div style="display:flex; gap:15px; align-items:center;">
+    <div class="header-right">
         <button id="refreshBtn" onclick="loadSubmissions()">↻ Yenile</button>
         <div class="stat-card">
             <div class="stat-value" id="totalCount">—</div>
-            <div class="stat-label">Toplam Hediye</div>
+            <div class="stat-label">Toplam</div>
         </div>
         <div class="stat-card">
             <div class="stat-value" id="activeCount">—</div>
-            <div class="stat-label">Aktif Sipariş</div>
+            <div class="stat-label">Aktif</div>
         </div>
     </div>
 </header>
 
+<!-- DESKTOP TABLE -->
 <div class="table-container">
     <table>
         <thead>
@@ -188,9 +241,9 @@
                 <th>Tarih</th>
                 <th>ID</th>
                 <th>Durum</th>
-                <th>Açılış Mesajı</th>
+                <th>Mesaj</th>
                 <th>Anı</th>
-                <th>Müşteri Linki &amp; Paylaş</th>
+                <th>Link &amp; Paylaş</th>
                 <th>İşlem</th>
             </tr>
         </thead>
@@ -198,6 +251,10 @@
     </table>
     <div id="statusMsg"><span class="empty-icon">⏳</span>Veriler yükleniyor...</div>
 </div>
+
+<!-- MOBILE CARD LIST -->
+<div class="card-list" id="cardList"></div>
+<div id="statusMsgMobile" style="display:none; text-align:center; padding:50px; color:var(--gray); font-size:15px;"></div>
 
 <script>
     const ADMIN_PASS = "admin123";
@@ -242,6 +299,7 @@
         document.getElementById('statusMsg').style.display = 'block';
         document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">⏳</span>Veriler yükleniyor...';
         document.getElementById('tableBody').innerHTML = '';
+        document.getElementById('cardList').innerHTML = '';
         if (!sb) return;
         try {
             const { data, error } = await sb
@@ -250,15 +308,23 @@
                 .order('created_at', { ascending: false });
             if (error) throw error;
             renderTable(data || []);
+            renderCards(data || []);
         } catch (err) {
             document.getElementById('statusMsg').innerHTML = `<span class="empty-icon">❌</span>Hata: ${err.message}`;
         }
     }
 
+    function buildShareData(giftUrl) {
+        const waMsg  = encodeURIComponent(`💝 Sana özel bir hediye hazırladım!\n\nGörmek için tıkla 👇\n${giftUrl}`);
+        const smsMsg = encodeURIComponent(`💝 Sana özel bir hediye var! Görmek için tıkla: ${giftUrl}`);
+        const igMsg  = `💝 Sana özel bir hediye hazırladım! 🎁\n\n${giftUrl}`;
+        return { waMsg, smsMsg, igMsg };
+    }
+
+    /* ── DESKTOP TABLE ── */
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         document.getElementById('totalCount').textContent = data.length;
-
         const activeOrders = data.filter(d => d.customer_info && !d.customer_info.includes('Demo'));
         document.getElementById('activeCount').textContent = activeOrders.length;
 
@@ -266,26 +332,19 @@
             document.getElementById('statusMsg').innerHTML = '<span class="empty-icon">🔭</span>Henüz hiç başvuru yok.';
             return;
         }
-
         document.getElementById('statusMsg').style.display = 'none';
         tbody.innerHTML = '';
 
         data.forEach(item => {
             const tr = document.createElement('tr');
-            const date = item.created_at
-                ? new Date(item.created_at).toLocaleString('tr-TR')
-                : '—';
+            const date = item.created_at ? new Date(item.created_at).toLocaleString('tr-TR') : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
             const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}`;
-
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
             const statusBadge = isDemo
                 ? `<span class="badge-demo">⏳ Demo</span>`
                 : `<span class="badge-active">✅ Aktif</span>`;
-
-            const waMsg  = encodeURIComponent(`💝 Sana özel bir hediye hazırladım!\n\nGörmek için tıkla 👇\n${giftUrl}`);
-            const smsMsg = encodeURIComponent(`💝 Sana özel bir hediye var! Görmek için tıkla: ${giftUrl}`);
-            const igMsg  = `💝 Sana özel bir hediye hazırladım! 🎁\n\n${giftUrl}`;
+            const { waMsg, smsMsg, igMsg } = buildShareData(giftUrl);
 
             tr.innerHTML = `
                 <td class="date">${date}</td>
@@ -297,26 +356,83 @@
                     <div class="link-box">
                         <div class="link-url-row">
                             <span class="link-text" title="${giftUrl}">${giftUrl}</span>
-                            <button class="copy-btn" onclick="copyLink(this, '${giftUrl}')">📋 Kopyala</button>
+                            <button class="copy-btn" onclick="copyLink(this,'${giftUrl}')">📋 Kopyala</button>
                         </div>
                         <div class="share-btns">
                             <a href="https://wa.me/?text=${waMsg}" target="_blank" class="share-btn wa">💬 WhatsApp</a>
                             <a href="sms:?&body=${smsMsg}" class="share-btn sms">📱 SMS</a>
-                            <button class="share-btn ig" onclick="copyForIG(this, \`${igMsg.replace(/`/g,"'")}\`)">📸 IG Kopyala</button>
+                            <button class="share-btn ig" onclick="copyForIG(this,\`${igMsg.replace(/`/g,"'")}\`)">📸 IG Kopyala</button>
                         </div>
                     </div>
                 </td>
-                <td>
-                    <a href="${giftUrl}" target="_blank" class="btn-view">Görüntüle ↗</a>
-                </td>
+                <td><a href="${giftUrl}" target="_blank" class="btn-view">Görüntüle ↗</a></td>
             `;
             tbody.appendChild(tr);
         });
     }
 
+    /* ── MOBILE CARDS ── */
+    function renderCards(data) {
+        const list = document.getElementById('cardList');
+        list.innerHTML = '';
+
+        if (data.length === 0) return;
+
+        data.forEach(item => {
+            const date = item.created_at
+                ? new Date(item.created_at).toLocaleString('tr-TR', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' })
+                : '—';
+            const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
+            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}`;
+            const isDemo = item.customer_info && item.customer_info.includes('Demo');
+            const statusBadge = isDemo
+                ? `<span class="badge-demo">⏳ Demo</span>`
+                : `<span class="badge-active">✅ Aktif</span>`;
+            const { waMsg, smsMsg, igMsg } = buildShareData(giftUrl);
+
+            const card = document.createElement('div');
+            card.className = 'gift-card';
+            card.innerHTML = `
+                <div class="card-top">
+                    <div class="card-id-status">
+                        <span class="badge-id">#${item.id_custom || '—'}</span>
+                        ${statusBadge}
+                    </div>
+                    <div class="card-date">🕐 ${date}</div>
+                </div>
+
+                <div class="card-row">
+                    <div class="card-field">
+                        <span class="card-label">Mesaj</span>
+                        <span class="card-value" style="font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                              title="${item.matrix_message || ''}">${item.matrix_message || '—'}</span>
+                    </div>
+                    <div class="card-field">
+                        <span class="card-label">Anı</span>
+                        <span class="card-value">${memCount} 📸</span>
+                    </div>
+                </div>
+
+                <div class="link-box">
+                    <div class="link-url-row">
+                        <span class="link-text" title="${giftUrl}">${giftUrl}</span>
+                        <button class="copy-btn" onclick="copyLink(this,'${giftUrl}')">📋</button>
+                    </div>
+                    <div class="share-btns">
+                        <a href="https://wa.me/?text=${waMsg}" target="_blank" class="share-btn wa">💬 WhatsApp</a>
+                        <a href="sms:?&body=${smsMsg}" class="share-btn sms">📱 SMS</a>
+                        <button class="share-btn ig" onclick="copyForIG(this,\`${igMsg.replace(/`/g,"'")}\`)">📸 IG</button>
+                        <a href="${giftUrl}" target="_blank" class="btn-view">Aç ↗</a>
+                    </div>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
     function copyLink(btn, url) {
         navigator.clipboard.writeText(url).then(() => {
-            btn.textContent = '✅ Kopyalandı';
+            btn.textContent = '✅';
             btn.classList.add('copied');
             setTimeout(() => { btn.textContent = '📋 Kopyala'; btn.classList.remove('copied'); }, 2000);
         }).catch(() => {
