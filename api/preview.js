@@ -1,13 +1,14 @@
 module.exports = function handler(req, res) {
   const id = req.query.id || 'demo';
+  const isDemo = req.query.demo === 'true';
 
   const host = req.headers.host || 'sude-hediye.vercel.app';
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const baseUrl = `${protocol}://${host}`;
 
-  const giftUrl = `https://sudenzkrsvrnn-max.github.io/sude-hediye/sude-hediye-main/lovebombing.html?id=${id}`;
+  const giftUrl = `https://sudenzkrsvrnn-max.github.io/sude-hediye/sude-hediye-main/lovebombing.html?id=${id}${isDemo ? '&demo=true' : ''}`;
   const ogImageUrl = `${baseUrl}/api/og-image?id=${id}`;
-  const previewPageUrl = `${baseUrl}/api/preview?id=${id}`;
+  const previewPageUrl = `${baseUrl}/api/preview?id=${id}${isDemo ? '&demo=true' : ''}`;
 
   const html = `<!DOCTYPE html>
 <html lang="tr">

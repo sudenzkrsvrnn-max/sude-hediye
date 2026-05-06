@@ -645,8 +645,8 @@
             const tr = document.createElement('tr');
             const date = item.created_at ? new Date(item.created_at).toLocaleString('tr-TR') : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
-            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}`;
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
+            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}` + (isDemo ? '&demo=true' : '');
             const statusBadge = isDemo
                 ? `<span class="badge-demo">⏳ Demo</span>`
                 : `<span class="badge-active">✅ Aktif</span>`;
@@ -697,8 +697,8 @@
                 ? new Date(item.created_at).toLocaleString('tr-TR', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' })
                 : '—';
             const memCount = Array.isArray(item.memories) ? item.memories.length : 0;
-            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}`;
             const isDemo = item.customer_info && item.customer_info.includes('Demo');
+            const giftUrl = `${BASE_URL}/api/preview?id=${item.id_custom}` + (isDemo ? '&demo=true' : '');
             const statusBadge = isDemo
                 ? `<span class="badge-demo">⏳ Demo</span>`
                 : `<span class="badge-active">✅ Aktif</span>`;
