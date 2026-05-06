@@ -668,8 +668,12 @@
                 <td class="msg-cell" title="${item.matrix_message || ''}">${item.matrix_message || '—'}</td>
                 <td>${memCount} 📸</td>
                 <td>
-                    <div class="share-btns" style="display:flex;">
-                        <button class="share-btn btn-share" onclick="nativeShare('${giftUrl}')">📤 Paylaş</button>
+                    <div class="share-btns" style="display:flex; gap:10px;">
+                        <select class="share-btn btn-share" style="appearance:none; text-align:center; cursor:pointer;" onchange="if(this.value){ nativeShare(this.value); this.selectedIndex=0; }">
+                            <option value="" disabled selected>📤 Linki Paylaş ▼</option>
+                            <option value="${BASE_URL}/api/preview?id=${item.id_custom}&demo=true">⏳ Demo (Örnektir)</option>
+                            <option value="${BASE_URL}/api/preview?id=${item.id_custom}">✅ Aktif (Orijinal)</option>
+                        </select>
                         <button class="share-btn btn-copy" onclick="copyLink(this,'${giftUrl}')">📋 Kopyala</button>
                     </div>
                 </td>
@@ -740,7 +744,11 @@
                     <div class="share-btns">
                         <button class="share-btn btn-info" onclick="openModal(${index})">👁️ Müşteri Bilgisi</button>
                         ${waBtnHtml}
-                        <button class="share-btn btn-share" onclick="nativeShare('${giftUrl}')">📤 Linki Paylaş</button>
+                        <select class="share-btn btn-share" style="appearance:none; text-align:center; cursor:pointer;" onchange="if(this.value){ nativeShare(this.value); this.selectedIndex=0; }">
+                            <option value="" disabled selected>📤 Linki Paylaş ▼</option>
+                            <option value="${BASE_URL}/api/preview?id=${item.id_custom}&demo=true">⏳ Demo (Örnektir)</option>
+                            <option value="${BASE_URL}/api/preview?id=${item.id_custom}">✅ Aktif (Orijinal)</option>
+                        </select>
                         <button class="share-btn btn-copy" onclick="copyLink(this,'${giftUrl}')">📋 Kopyala</button>
                         <a href="${giftUrl}" target="_blank" class="share-btn btn-open">🎁 Aç ↗</a>
                     </div>
