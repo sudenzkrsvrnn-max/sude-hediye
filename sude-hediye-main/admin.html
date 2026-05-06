@@ -427,7 +427,7 @@
 
         document.getElementById('modalBody').innerHTML = `
             <div class="info-row"><span class="info-label">Sipariş ID</span><span class="info-value">#${item.id_custom || '—'}</span></div>
-            <div class="info-row"><span class="info-label">Telefon Numarası</span><span class="info-value">${phone ? `<a href="https://wa.me/${phoneClean}" target="_blank" style="color:#25D366; text-decoration:none; font-weight:bold;">💬 ${phone}</a>` : 'Belirtilmemiş'}</span></div>
+            <div class="info-row"><span class="info-label">Telefon Numarası</span><span class="info-value">${phone ? `<a href="whatsapp-business://send?phone=${phoneClean}" style="color:#25D366; text-decoration:none; font-weight:bold;">💬 WA Business Aç</a>` : 'Belirtilmemiş'}</span></div>
             <div class="info-row">
                 <span class="info-label">Durum Güncelle</span>
                 <div style="display:flex; gap:10px; margin-top:5px;">
@@ -659,7 +659,7 @@
             if (phoneClean.startsWith('0')) phoneClean = '90' + phoneClean.substring(1);
             else if (phoneClean.startsWith('5') && phoneClean.length === 10) phoneClean = '90' + phoneClean;
             
-            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA</button>` : '';
+            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.location.href='whatsapp-business://send?phone=${phoneClean}'">💬 WA Business</button>` : '';
 
             tr.innerHTML = `
                 <td class="date">${date}</td>
@@ -711,7 +711,7 @@
             if (phoneClean.startsWith('0')) phoneClean = '90' + phoneClean.substring(1);
             else if (phoneClean.startsWith('5') && phoneClean.length === 10) phoneClean = '90' + phoneClean;
 
-            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.open('https://wa.me/${phoneClean}', '_blank')">💬 WA Git</button>` : '';
+            const waBtnHtml = phoneClean ? `<button class="share-btn" style="background:#25D366; color:#fff;" onclick="window.location.href='whatsapp-business://send?phone=${phoneClean}'">💬 WA Business</button>` : '';
 
             const card = document.createElement('div');
             card.className = 'gift-card';
