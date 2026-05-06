@@ -464,14 +464,20 @@
 
     function renderManualGifs() {
         const grid = document.getElementById('manualGifGrid');
-        for (let i = 1; i <= 12; i++) {
-            const url = `gifs/${i}.gif`;
+        const gifs = [
+            '1gif.png', '2gif.png', '3gif.png', '4gif.png',
+            '5gif.gif', '6gif.gif', '7gif.gif', '8gif.gif',
+            '9gif.gif', '10gif.gif', '11gif.gif', '12gif.jpeg'
+        ];
+        gifs.forEach((filename, idx) => {
+            const url = `https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/${filename}`;
             grid.innerHTML += `
-                <div class="gif-item ${i===1?'active':''}" onclick="selectManualGif(this, '${url}')">
+                <div class="gif-item ${idx===0?'active':''}" onclick="selectManualGif(this, '${url}')">
                     <img src="${url}">
                 </div>
             `;
-        }
+        });
+        document.getElementById('manualSelectedGif').value = `https://ymkfyaurdgfvdhkkpqam.supabase.co/storage/v1/object/public/assets/1gif.png`;
     }
 
     function selectManualGif(element, url) {
