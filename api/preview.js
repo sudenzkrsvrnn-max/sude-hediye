@@ -61,7 +61,7 @@ module.exports = function handler(req, res) {
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse at center, rgba(180,0,0,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(255,20,147,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -90,7 +90,7 @@ module.exports = function handler(req, res) {
       width: 110px;
       height: 110px;
       animation: heartbeat 1.2s ease-in-out infinite;
-      filter: drop-shadow(0 0 18px rgba(220,0,0,0.7));
+      filter: drop-shadow(0 0 18px rgba(255,20,147,0.7));
     }
     @keyframes heartbeat {
       0%,100% { transform: scale(1);   }
@@ -120,7 +120,7 @@ module.exports = function handler(req, res) {
       font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 26px;
-      background: linear-gradient(135deg, #fff 30%, #ff6666);
+      background: linear-gradient(135deg, #fff 30%, #ff69b4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -143,7 +143,7 @@ module.exports = function handler(req, res) {
     .progress-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #cc0000, #ff2200, #ff6666);
+      background: linear-gradient(90deg, #ff1493, #ff69b4, #ffb6c1);
       border-radius: 10px;
       animation: progressFill 2.8s ease-out forwards;
     }
@@ -158,24 +158,24 @@ module.exports = function handler(req, res) {
       align-items: center;
       gap: 10px;
       padding: 15px 32px;
-      background: linear-gradient(135deg, #cc0000, #ff2200);
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
       color: #fff;
       text-decoration: none;
       border-radius: 50px;
       font-weight: 700;
       font-size: 16px;
       letter-spacing: 0.5px;
-      box-shadow: 0 6px 30px rgba(200,0,0,0.45);
+      box-shadow: 0 6px 30px rgba(255,20,147,0.45);
       transition: transform 0.25s, box-shadow 0.25s;
       animation: pulseShadow 2s ease-in-out infinite;
     }
     .btn-gift:hover {
       transform: scale(1.06);
-      box-shadow: 0 10px 40px rgba(200,0,0,0.65);
+      box-shadow: 0 10px 40px rgba(255,20,147,0.65);
     }
     @keyframes pulseShadow {
-      0%,100% { box-shadow: 0 6px 30px rgba(200,0,0,0.45); }
-      50%      { box-shadow: 0 6px 45px rgba(200,0,0,0.75); }
+      0%,100% { box-shadow: 0 6px 30px rgba(255,20,147,0.45); }
+      50%      { box-shadow: 0 6px 45px rgba(255,20,147,0.75); }
     }
 
     .signature {
@@ -185,7 +185,7 @@ module.exports = function handler(req, res) {
       color: rgba(255,255,255,0.35);
     }
     .signature strong {
-      color: #cc0000;
+      color: #ff1493;
       font-style: normal;
       font-family: 'Outfit', sans-serif;
       font-size: 11px;
@@ -207,10 +207,10 @@ module.exports = function handler(req, res) {
     <div class="heart-wrap">
       <svg viewBox="0 0 100 90" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 85 C50 85 5 52 5 27 C5 11 17 2 30 2 C39 2 47 7 50 14 C53 7 61 2 70 2 C83 2 95 11 95 27 C95 52 50 85 50 85 Z"
-              fill="#cc0000" stroke="#ff4444" stroke-width="2"/>
+              fill="#ff1493" stroke="#ff69b4" stroke-width="2"/>
         <!-- subtle inner highlight -->
         <path d="M50 78 C50 78 12 50 12 29 C12 17 22 9 32 9 C40 9 47 14 50 20"
-              stroke="rgba(255,120,120,0.35)" stroke-width="3" stroke-linecap="round" fill="none"/>
+              stroke="rgba(255,182,193,0.35)" stroke-width="3" stroke-linecap="round" fill="none"/>
       </svg>
     </div>
 
