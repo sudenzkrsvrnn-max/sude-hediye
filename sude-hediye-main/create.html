@@ -327,6 +327,10 @@
                         <div class="suggestion-pill" onclick="fillMsg('İYİ Kİ VARSIN SEVGİLİM')">İYİ Kİ VARSIN SEVGİLİM</div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>KAPANIŞ SÖZÜ</label>
+                    <input type="text" id="closingWord" placeholder="Örn: Seni Çok Seviyorum! ✨" value="Seni Çok Seviyorum! ✨" maxlength="50">
+                </div>
             </div>
 
             <!-- STEP 2: ANIMATION -->
@@ -634,6 +638,7 @@
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
+                    recipient_name: document.getElementById('closingWord').value,
                     customer_info: 'Demo - Onay Bekleniyor'
                 }]);
 
@@ -680,6 +685,7 @@
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
+                    recipient_name: document.getElementById('closingWord').value,
                     customer_info: 'Yeni Hediye'
                 }]);
 

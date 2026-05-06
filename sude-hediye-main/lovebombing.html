@@ -414,6 +414,7 @@ async function loadGiftData() {
       if (data) {
         CONFIG.matrixMessage = data.matrix_message ? String(data.matrix_message) : "SENİ SEVİYORUM";
         CONFIG.phase2File = data.gif_url || CONFIG.phase2File;
+        CONFIG.closingWord = data.recipient_name || "Seni Çok Seviyorum! ✨";
 
         // memories can come back as JSON string or parsed array — handle both
         let mems = data.memories;
@@ -786,6 +787,7 @@ function buildHeartWall() {
         setTimeout(() => {
           const finalMsg = document.getElementById('finalMessage');
           if (finalMsg) {
+            finalMsg.textContent = CONFIG.closingWord || "Seni Çok Seviyorum! ✨";
             finalMsg.style.opacity = '1';
             finalMsg.style.transform = 'translateY(-8px)';
           }
