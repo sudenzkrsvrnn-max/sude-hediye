@@ -434,6 +434,7 @@
                     <div class="summary-row"><span>📝 Mesaj:</span> <span class="summary-val" id="sumMsg">—</span></div>
                     <div class="summary-row"><span>🎞️ Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
                     <div class="summary-row" id="sumMemRow"><span>📸 Anı Fotoğrafı:</span> <span class="summary-val" id="sumMem">Eklenmedi</span></div>
+                    <div class="summary-row"><span>💌 Kapanış Sözü:</span> <span class="summary-val" id="sumClosing">—</span></div>
                 </div>
             </div>
 
@@ -513,6 +514,7 @@
 
             if (cur === 4) {
                 document.getElementById('sumMsg').textContent = document.getElementById('matrixMessage').value;
+                document.getElementById('sumClosing').textContent = document.getElementById('closingWord').value || 'Eklenmedi';
                 // Check memory count
                 const firstImg = document.querySelector('.mem-img');
                 if (firstImg && firstImg.src && firstImg.src.startsWith('data:')) {

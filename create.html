@@ -327,6 +327,14 @@
                         <div class="suggestion-pill" onclick="fillMsg('İYİ Kİ VARSIN SEVGİLİM')">İYİ Kİ VARSIN SEVGİLİM</div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>TELEFON NUMARASI (Zorunlu)</label>
+                    <input type="tel" id="customerPhone" placeholder="Örn: 05551234567" required>
+                </div>
+                <div class="form-group">
+                    <label>KAPANIŞ SÖZÜ</label>
+                    <input type="text" id="closingWord" placeholder="Örn: Seni Çok Seviyorum! ✨" value="Seni Çok Seviyorum! ✨" maxlength="50">
+                </div>
             </div>
 
             <!-- STEP 2: ANIMATION -->
@@ -426,6 +434,7 @@
                     <div class="summary-row"><span>📝 Mesaj:</span> <span class="summary-val" id="sumMsg">—</span></div>
                     <div class="summary-row"><span>🎞️ Animasyon:</span> <span class="summary-val">Seçildi ✓</span></div>
                     <div class="summary-row" id="sumMemRow"><span>📸 Anı Fotoğrafı:</span> <span class="summary-val" id="sumMem">Eklenmedi</span></div>
+                    <div class="summary-row"><span>💌 Kapanış Sözü:</span> <span class="summary-val" id="sumClosing">—</span></div>
                 </div>
             </div>
 
@@ -470,6 +479,15 @@
         const total = 4;
 
         function move(n) {
+            // Validate Phone Number on Step 1 Next
+            if (cur === 1 && n === 1) {
+                const phoneInput = document.getElementById('customerPhone');
+                if (!phoneInput.value.trim() || phoneInput.value.trim().length < 10) {
+                    alert('Lütfen hediye siparişinizi oluşturabilmemiz için geçerli bir telefon numarası giriniz.');
+                    return;
+                }
+            }
+
             // Entering step 4: auto-save draft first
             if (cur === 3 && n === 1) {
                 saveDraft();
@@ -496,6 +514,7 @@
 
             if (cur === 4) {
                 document.getElementById('sumMsg').textContent = document.getElementById('matrixMessage').value;
+                document.getElementById('sumClosing').textContent = document.getElementById('closingWord').value || 'Eklenmedi';
                 // Check memory count
                 const firstImg = document.querySelector('.mem-img');
                 if (firstImg && firstImg.src && firstImg.src.startsWith('data:')) {
@@ -629,12 +648,14 @@
                     }
                 }
 
+                const phoneVal = document.getElementById('customerPhone').value.trim();
+                const closingWordVal = document.getElementById('closingWord').value.trim();
                 const { error } = await sb.from('submissions').insert([{
                     id_custom: id.toString(),
                     matrix_message: document.getElementById('matrixMessage').value,
                     gif_url: document.getElementById('selectedGif').value,
                     memories: mems,
-                    customer_info: 'Demo - Onay Bekleniyor'
+                    customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
                 }]);
 
                 if (error) throw error;
@@ -658,7 +679,8 @@
             btn.textContent = 'Kaydediliyor...';
 
             try {
-                const id = Math.floor(Math.random() * 900000) + 100000;
+                if (!draftId) throw new Error("Sipariş taslağı bulunamadı. Lütfen sayfayı yenileyin.");
+                const id = draftId;
                 const mems = [];
 
                 // Collect ALL memory cards
@@ -675,13 +697,17 @@
                     }
                 }
 
-                const { error } = await sb.from('submissions').insert([{
-                    id_custom: id.toString(),
-                    matrix_message: document.getElementById('matrixMessage').value,
-                    gif_url: document.getElementById('selectedGif').value,
-                    memories: mems,
-                    customer_info: 'Yeni Hediye'
-                }]);
+                const phoneVal = document.getElementById('customerPhone').value.trim();
+                const closingWordVal = document.getElementById('closingWord').value.trim();
+                
+                const { error } = await sb.from('submissions')
+                    .update({
+                        matrix_message: document.getElementById('matrixMessage').value,
+                        gif_url: document.getElementById('selectedGif').value,
+                        memories: mems,
+                        customer_info: 'Demo - Onay Bekleniyor | Tel: ' + phoneVal + ' | Kapanis: ' + closingWordVal
+                    })
+                    .eq('id_custom', id.toString());
 
                 if(error) throw error;
 
