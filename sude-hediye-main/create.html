@@ -386,7 +386,7 @@
             <div class="step" id="step3">
                 <h2>Anılarını Ekle</h2>
                 <p class="step-desc">Defterde yer alacak fotoğraflarını ve notlarını ekle. Birden fazla anı ekleyebilirsin.</p>
-                <p class="mem-count"><span id="memCountTxt">1</span> / 5 anı</p>
+                <p class="mem-count"><span id="memCountTxt">1</span> / 10 anı</p>
                 <div class="memory-list" id="memoryList">
                     <!-- First card is always shown -->
                 </div>
@@ -538,7 +538,7 @@
 
         function addMemoryCard() {
             const list = document.getElementById('memoryList');
-            if (memCardCount >= 5) return;
+            if (memCardCount >= 10) return;
 
             const idx = memCardCount;
             memCardCount++;
@@ -565,7 +565,7 @@
             `;
             list.appendChild(card);
 
-            if (memCardCount >= 5) {
+            if (memCardCount >= 10) {
                 document.getElementById('addMemBtn').style.display = 'none';
             }
         }
