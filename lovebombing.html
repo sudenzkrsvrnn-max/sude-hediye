@@ -274,6 +274,34 @@ canvas{position:fixed;inset:0;z-index:1;}
 
 
 </style>
+    <!-- Apple Emojis -->
+    <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
+    <script>
+        function applyAppleEmojis() {
+            if (typeof twemoji !== 'undefined') {
+                twemoji.parse(document.body, {
+                    base: 'https://unpkg.com/emoji-datasource-apple@15.0.1/img/apple/',
+                    ext: '.png'
+                });
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            applyAppleEmojis();
+            let timeout;
+            const observer = new MutationObserver(() => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    observer.disconnect();
+                    applyAppleEmojis();
+                    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+                }, 100);
+            });
+            observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+        });
+    </script>
+    <style>
+        img.emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; pointer-events: none; }
+    </style>
 </head>
 <body>
 
