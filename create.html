@@ -300,9 +300,10 @@
         function applyAppleEmojis() {
             if (typeof twemoji !== 'undefined') {
                 twemoji.parse(document.body, {
-                    base: 'https://unpkg.com/emoji-datasource-apple@15.0.1/img/apple/',
-                    size: '64',
-                    ext: '.png'
+                    callback: function(icon, options, variant) {
+                        var char = String.fromCodePoint(...icon.split('-').map(function(x) { return parseInt(x, 16); }));
+                        return 'https://emojicdn.elk.sh/' + encodeURIComponent(char) + '?style=apple';
+                    }
                 });
             }
         }
