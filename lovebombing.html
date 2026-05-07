@@ -98,7 +98,12 @@ canvas{position:fixed;inset:0;z-index:1;}
   box-shadow:0 8px 32px rgba(255,20,147,0.3);
   position:relative; z-index: 100;
 }
-#msgBox::after{content:'💕';position:absolute;top:10px;right:15px;font-size:16px;}
+#msgBox::after{
+  content:'';
+  position:absolute;top:10px;right:15px;
+  width:16px;height:16px;
+  background: url('https://emojicdn.elk.sh/💕?style=apple') no-repeat center/contain;
+}
 #msgText{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;
   color:#333;line-height:1.4;text-align:center;}
 
@@ -274,8 +279,6 @@ canvas{position:fixed;inset:0;z-index:1;}
 
 
 </style>
-    <!-- Apple Emojis -->
-    <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js"></script>
     <script>
         function applyAppleEmojis() {
             if (typeof twemoji !== 'undefined') {
@@ -296,7 +299,7 @@ canvas{position:fixed;inset:0;z-index:1;}
                     observer.disconnect();
                     applyAppleEmojis();
                     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-                }, 100);
+                }, 250);
             });
             observer.observe(document.body, { childList: true, subtree: true, characterData: true });
         });
@@ -352,7 +355,7 @@ canvas{position:fixed;inset:0;z-index:1;}
   <canvas id="starsCanvas5"></canvas>
   <div class="heart-glow-bg"></div>
   <div class="heart-wall" id="heartWall"></div>
-  <h2 id="finalMessage">Seni Çok Seviyorum! ✨</h2>
+  <h2 id="finalMessage">Seni Çok Seviyorum! <img class="emoji" src="https://emojicdn.elk.sh/✨?style=apple" /></h2>
   <div class="bottom-line"></div>
   <button id="replayBtn" onclick="location.reload()">↺ Baştan İzle</button>
 </div>
@@ -649,17 +652,17 @@ function buildBook() {
     <div class="page-side page-front cover-front"></div>
     <div class="page-side page-back" style="background:#f9f9f9;">
       <div style="padding: 40px; text-align: center; height: 100%; display: flex; align-items: center;">
-        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha güzel... ❤️</p>
+        <p style="font-family:'Playfair Display'; font-style: italic; font-size: 18px; color: #555;">Her sayfa seninle daha güzel... <img class="emoji" src="https://emojicdn.elk.sh/❤️?style=apple" /></p>
       </div>
     </div>
   `;
   frontCover.onclick = () => {
     const isFlipped = frontCover.classList.toggle('flipped');
     frontCover.style.zIndex = isFlipped ? 1 : CONFIG.pages.length + 2;
-    msgText.textContent = isFlipped ? (CONFIG.pages[0] ? CONFIG.pages[0].message : "Anılarımız") : "Bizim Hikayemiz 💝";
+    msgText.innerHTML = isFlipped ? (CONFIG.pages[0] ? CONFIG.pages[0].message : "Anılarımız <img class='emoji' src='https://emojicdn.elk.sh/💝?style=apple'/>") : "Bizim Hikayemiz <img class='emoji' src='https://emojicdn.elk.sh/💝?style=apple'/>";
   };
   book.appendChild(frontCover);
-  msgText.textContent = "Bizim Hikayemiz 💝";
+  msgText.innerHTML = "Bizim Hikayemiz <img class='emoji' src='https://emojicdn.elk.sh/💝?style=apple'/>";
 
   CONFIG.pages.forEach((p, i) => {
     const page = document.createElement('div');
@@ -669,17 +672,17 @@ function buildBook() {
       <div class="page-side page-front">
         ${p.photoFront
           ? `<img src="${p.photoFront}" class="page-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-             <div class="page-img" style="display:none; background:linear-gradient(135deg,#ffe0f0,#fff0f8); align-items:center; justify-content:center; font-size:50px;">💕</div>`
-          : `<div class="page-img" style="background:linear-gradient(135deg,#ffe0f0,#fff0f8); display:flex; align-items:center; justify-content:center; font-size:50px;">💕</div>`
+             <div class="page-img" style="display:none; background:linear-gradient(135deg,#ffe0f0,#fff0f8); align-items:center; justify-content:center;"><img src="https://emojicdn.elk.sh/💕?style=apple" style="width:50px;height:50px;"/></div>`
+          : `<div class="page-img" style="background:linear-gradient(135deg,#ffe0f0,#fff0f8); display:flex; align-items:center; justify-content:center;"><img src="https://emojicdn.elk.sh/💕?style=apple" style="width:50px;height:50px;"/></div>`
         }
         <div class="page-content">${p.message || `Anı ${i + 1}`}</div>
       </div>
       <div class="page-side page-back">
         ${p.photoBack
           ? `<img src="${p.photoBack}" class="page-img">`
-          : `<div class="page-img" style="background:linear-gradient(135deg,#fff0f8,#ffe0f0); display:flex; align-items:center; justify-content:center; font-size:50px;">💕</div>`
+          : `<div class="page-img" style="background:linear-gradient(135deg,#fff0f8,#ffe0f0); display:flex; align-items:center; justify-content:center;"><img src="https://emojicdn.elk.sh/💕?style=apple" style="width:50px;height:50px;"/></div>`
         }
-        <div class="page-content" style="background:#fff; border-top:1px solid #eee;">💕</div>
+        <div class="page-content" style="background:#fff; border-top:1px solid #eee;"><img src="https://emojicdn.elk.sh/💕?style=apple" style="width:16px;height:16px;"/></div>
       </div>
     `;
     page.onclick = () => {
@@ -687,13 +690,13 @@ function buildBook() {
       if(isFlipped){
         page.style.zIndex = i + 2;
         if (i === CONFIG.pages.length - 1) {
-          msgText.textContent = "Kapatmak için son kez dokun... ❤️";
+          msgText.innerHTML = "Kapatmak için son kez dokun... <img class='emoji' src='https://emojicdn.elk.sh/❤️?style=apple'/>";
         } else {
-          msgText.textContent = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Anılarımız 💝";
+          msgText.innerHTML = CONFIG.pages[i+1] ? CONFIG.pages[i+1].message : "Anılarımız <img class='emoji' src='https://emojicdn.elk.sh/💝?style=apple'/>";
         }
       } else {
         setTimeout(() => { page.style.zIndex = CONFIG.pages.length - i; }, 300);
-        msgText.textContent = p.message || "Anılarımız 💝";
+        msgText.innerHTML = p.message || "Anılarımız <img class='emoji' src='https://emojicdn.elk.sh/💝?style=apple'/>";
       }
     };
     book.appendChild(page);
@@ -712,7 +715,7 @@ function buildBook() {
     if (backCover.classList.contains('flipped')) return;
     backCover.classList.add('flipped');
     backCover.style.zIndex = CONFIG.pages.length + 5;
-    msgText.textContent = "Sonsuza Dek... ❤️";
+    msgText.innerHTML = "Sonsuza Dek... <img class='emoji' src='https://emojicdn.elk.sh/❤️?style=apple'/>";
     setTimeout(goPhase5, 1800);
   };
   book.appendChild(backCover);
